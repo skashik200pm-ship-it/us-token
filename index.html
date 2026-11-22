@@ -3,31 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US Token</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>US TOKEN</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial,sans-serif;padding-bottom:90px}
-.top{display:flex;align-items:center;gap:8px;padding:14px 16px}
-.top .flag{font-size:28px}
-.top b{font-size:22px;letter-spacing:1px}
-.live{margin-left:auto;background:#2a0000;color:#ff3333;border:1px solid #ff3333;font-size:11px;padding:4px 8px;border-radius:8px;font-weight:bold}
+body{background:#000;color:#fff;font-family:Arial,sans-serif;padding-bottom:95px}
+.top{display:flex;align-items:center;gap:10px;padding:14px 16px}
+.top .back{color:#3a7bd5;font-size:24px}
+.top .flag{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden}
+.top b{font-size:23px;letter-spacing:1px}
+.live{margin-left:auto;background:#200000;color:#ff3333;border:1px solid #ff3333;font-size:12px;padding:5px 8px;border-radius:8px;font-weight:bold;white-space:nowrap}
 .note{text-align:center;color:#c9a86a;font-size:11px;padding:0 16px}
-.coin-wrap{text-align:center;margin:16px auto 4px;position:relative;width:240px;height:240px}
-.coin{width:220px;height:220px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFE55C,#FFD700 40%,#B8860B);border:4px solid #FFD700;box-shadow:0 0 60px rgba(255,215,0,.5);display:flex;align-items:center;justify-content:center;position:relative}
-.diamond{width:90px;height:130px;background:#2A5BD7;clip-path:polygon(50% 0,100% 40%,50% 100%,0 40%);box-shadow:0 0 20px #2A5BD7;position:relative}
-.diamond:after{content:"";position:absolute;left:0;top:40%;width:100%;height:1px;background:rgba(255,255,255,.6)}
-.badge{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:#1a3a8a;border:2px solid #FFD700;border-radius:20px;padding:4px 14px;font-weight:900;color:#fff;font-size:14px;z-index:2}
-.us-token-text{text-align:center;color:#E6C87A;font-weight:900;font-size:18px;letter-spacing:2px;margin-top:10px}
-.banner{margin:14px 16px;background:linear-gradient(#FFD700,#C9A900);color:#000;text-align:center;font-weight:900;font-size:18px;padding:12px;border-radius:4px;clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,4% 50%)}
-.count-box{margin:10px 16px;border:1px solid #333;background:#0d0d0d;border-radius:10px;padding:14px;text-align:center}
-.count-box b{font-size:22px;color:#E6C87A}
-.count-box small{color:#c9a86a}
-.two{display:flex;gap:10px;margin:10px 16px}
-.two .box{flex:1;border:1px solid #333;background:#0d0d0d;border-radius:10px;padding:14px;text-align:center}
-.two .box small{color:#4a6fa5;font-size:11px}
-.two .box b{font-size:20px}
-.two .box p{color:#c9a86a;font-size:12px;margin-top:4px}
-.start{margin:14px 16px;background:#FFD700;color:#000;border:none;width:calc(100% - 32px);padding:16px;border-radius:12px;font-size:20px;font-weight:900}
-.mining-note{text-align:center;color:#666;font-size:12px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;padding
+.coin-wrap{text-align:center;margin:18px auto 2px;position:relative;width:250px;height:250px}
+.coin{width:230px;height:230px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 32% 30%,#FFF2A0,#FFD700 38%,#D4A017 62%,#8A6500);border:5px solid #E6C100;box-shadow:0 0 70px rgba(255,180,0,.55),inset 0 0 0 6px rgba(255,255,255,.25),inset 
