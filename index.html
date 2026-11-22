@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold-light: #ffe787;
@@ -51,7 +51,6 @@
       box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
     }
 
-    /* Subtle Dark Marble Texture */
     .app-container::before {
       content: "";
       position: absolute;
@@ -71,14 +70,12 @@
       padding: 12px 16px 16px;
     }
 
-    /* Gold Metallic Text */
     .gold-text {
       background: linear-gradient(180deg, #fff3b8 0%, #f6c945 50%, #c89116 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Gold Ribbon Banner */
     .ribbon-wrapper {
       position: relative;
       display: flex;
@@ -132,7 +129,6 @@
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
     }
 
-    /* Cards */
     .gold-card {
       background: linear-gradient(180deg, rgba(22, 27, 38, 0.85) 0%, rgba(12, 15, 22, 0.95) 100%);
       border: 1px solid rgba(246, 201, 69, 0.24);
@@ -140,7 +136,6 @@
       box-shadow: inset 0 1px 0 rgba(255, 231, 135, 0.08), 0 4px 16px rgba(0, 0, 0, 0.45);
     }
 
-    /* Coin Pulse Animation */
     @keyframes floatCoin {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-4px); }
@@ -160,7 +155,6 @@
       transition: all 0.3s ease;
     }
 
-    /* Start Mining Button */
     .start-btn {
       background: linear-gradient(180deg, #ffe169 0%, #f5c332 55%, #d99f14 100%);
       color: #120d02;
@@ -180,7 +174,6 @@
       box-shadow: 0 4px 22px rgba(16, 185, 129, 0.38), inset 0 1px 1px rgba(255, 255, 255, 0.6);
     }
 
-    /* Live Dot Blink */
     @keyframes blinkLive {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.35; transform: scale(0.8); }
@@ -190,7 +183,6 @@
       animation: blinkLive 1.4s infinite ease-in-out;
     }
 
-    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -211,4 +203,742 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4
+      gap: 4px;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .nav-item.active {
+      color: #f6c945;
+    }
+
+    .nav-item.active svg {
+      filter: drop-shadow(0 0 6px rgba(246, 201, 69, 0.45));
+    }
+
+    .tab-section {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .tab-section.active {
+      display: flex;
+    }
+
+    #toast {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(22, 28, 40, 0.96);
+      border: 1px solid rgba(246, 201, 69, 0.5);
+      color: #ffe787;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      white-space: nowrap;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast">Notification</div>
+
+  <div class="app-container">
+    <header class="relative z-10 flex items-center justify-between px-4 pt-3 pb-2">
+      <div class="flex items-center gap-2.5">
+        <button onclick="handleBack()" class="text-gray-400 hover:text-white p-1 -ml-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <div class="w-8 h-8 rounded-full overflow-hidden border border-amber-300/40 shadow-md flex-shrink-0">
+          <svg viewBox="0 0 64 64" class="w-full h-full">
+            <rect width="64" height="64" fill="#b22234"/>
+            <rect y="5" width="64" height="5" fill="#ffffff"/>
+            <rect y="15" width="64" height="5" fill="#ffffff"/>
+            <rect y="25" width="64" height="5" fill="#ffffff"/>
+            <rect y="35" width="64" height="5" fill="#ffffff"/>
+            <rect y="45" width="64" height="5" fill="#ffffff"/>
+            <rect y="55" width="64" height="5" fill="#ffffff"/>
+            <rect width="34" height="35" fill="#3c3b6e"/>
+            <g fill="#ffffff">
+              <circle cx="7" cy="7" r="1.5"/><circle cx="15" cy="7" r="1.5"/><circle cx="23" cy="7" r="1.5"/><circle cx="29" cy="7" r="1.5"/>
+              <circle cx="11" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="26" cy="12" r="1.5"/>
+              <circle cx="7" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/><circle cx="23" cy="17" r="1.5"/><circle cx="29" cy="17" r="1.5"/>
+              <circle cx="11" cy="22" r="1.5"/><circle cx="19" cy="22" r="1.5"/><circle cx="26" cy="22" r="1.5"/>
+              <circle cx="7" cy="27" r="1.5"/><circle cx="15" cy="27" r="1.5"/><circle cx="23" cy="27" r="1.5"/><circle cx="29" cy="27" r="1.5"/>
+            </g>
+          </svg>
+        </div>
+
+        <span class="font-extrabold text-[17px] tracking-wide text-white">US TOKEN</span>
+      </div>
+
+      <div class="flex items-center gap-1.5 bg-[#241014] border border-red-500/40 px-2.5 py-1 rounded-md shadow-inner">
+        <span class="w-2 h-2 rounded-full bg-red-500 live-dot"></span>
+        <span class="text-[11px] font-bold text-red-400 tracking-wider">LIVE</span>
+        <span id="liveSessionClock" class="text-[12px] font-mono font-bold text-red-300">02:14:36</span>
+      </div>
+    </header>
+
+    <div class="relative z-10 text-center px-4 pb-2">
+      <p class="text-[11.5px] font-medium text-[#d8b458]/90">
+        Wallet Connect will be available after 3 months - <span id="unlockDateLabel">22 Feb 2027</span>
+      </p>
+    </div>
+
+    <!-- HOME TAB -->
+    <main id="tab-home" class="tab-section active content-layer pt-1">
+      <div class="gold-card py-2.5 px-4 text-center mb-2">
+        <div id="countdownTimer" class="font-mono text-[22px] sm:text-[24px] font-bold tracking-tight gold-text leading-tight">
+          90 days 00:00:00
+        </div>
+        <p id="countdownSubtext" class="text-[11px] text-gray-400 mt-0.5">
+          starts today and runs for 3 months
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center justify-center my-1">
+        <div id="coinGraphic" class="relative w-[196px] h-[196px] flex items-center justify-center coin-idle">
+          <svg viewBox="0 0 260 260" class="w-full h-full overflow-visible">
+            <defs>
+              <radialGradient id="coinGoldOuter" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#fff4b8"/>
+                <stop offset="30%" stop-color="#f5c63b"/>
+                <stop offset="75%" stop-color="#b98114"/>
+                <stop offset="100%" stop-color="#784f06"/>
+              </radialGradient>
+              <radialGradient id="coinGoldInner" cx="50%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#ffe785"/>
+                <stop offset="55%" stop-color="#d49b20"/>
+                <stop offset="100%" stop-color="#8b5c08"/>
+              </radialGradient>
+              <linearGradient id="ethLeftTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </linearGradient>
+              <linearGradient id="ethRightTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1e40af"/>
+                <stop offset="100%" stop-color="#0f172a"/>
+              </linearGradient>
+              <linearGradient id="ethLeftBottom" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6"/>
+                <stop offset="100%" stop-color="#1e3a8a"/>
+              </linearGradient>
+              <linearGradient id="ethRightBottom" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#172554"/>
+                <stop offset="100%" stop-color="#090d16"/>
+              </linearGradient>
+              <linearGradient id="shieldBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1e3a8a"/>
+                <stop offset="100%" stop-color="#0f172a"/>
+              </linearGradient>
+            </defs>
+
+            <circle cx="130" cy="122" r="102" fill="url(#coinGoldOuter)" stroke="#fff0a6" stroke-width="2"/>
+            <circle cx="130" cy="122" r="91" fill="none" stroke="#7c5207" stroke-width="2.5"/>
+            <circle cx="130" cy="122" r="85" fill="url(#coinGoldInner)" stroke="#ffea96" stroke-width="1"/>
+            <circle cx="130" cy="122" r="76" fill="none" stroke="#8f610c" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+            <path d="M56 142 C48 112, 58 80, 82 62" fill="none" stroke="#fff0a6" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
+            <path d="M204 142 C212 112, 202 80, 178 62" fill="none" stroke="#fff0a6" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
+
+            <g transform="translate(130, 116)">
+              <polygon points="0,-54 -34,2 0,20" fill="url(#ethLeftTop)"/>
+              <polygon points="0,-54 34,2 0,20" fill="url(#ethRightTop)"/>
+              <line x1="0" y1="-54" x2="0" y2="20" stroke="#93c5fd" stroke-width="1" opacity="0.8"/>
+              <polygon points="0,28 -34,10 0,56" fill="url(#ethLeftBottom)"/>
+              <polygon points="0,28 34,10 0,56" fill="url(#ethRightBottom)"/>
+              <line x1="0" y1="28" x2="0" y2="56" stroke="#60a5fa" stroke-width="0.9" opacity="0.7"/>
+            </g>
+
+            <path d="M84 196 Q130 212 176 196 L184 208 Q130 226 76 208 Z" fill="url(#coinGoldOuter)" stroke="#7c5207" stroke-width="1"/>
+
+            <g transform="translate(130, 204)">
+              <path d="M-24,-20 L24,-20 L24,2 C24,16 0,26 0,26 C0,26 -24,16 -24,2 Z" fill="url(#shieldBlue)" stroke="#ffe57f" stroke-width="2.5"/>
+              <circle cx="-9" cy="-12" r="1.4" fill="#ffe57f"/>
+              <circle cx="0" cy="-13" r="1.6" fill="#ffe57f"/>
+              <circle cx="9" cy="-12" r="1.4" fill="#ffe57f"/>
+              <text x="0" y="9" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-weight="800" font-size="16" letter-spacing="0.5">US</text>
+            </g>
+          </svg>
+        </div>
+
+        <h1 class="text-[17px] font-extrabold tracking-wider gold-text -mt-1">US TOKEN</h1>
+      </div>
+
+      <div class="mt-2 mb-3">
+        <button id="startMiningBtn" onclick="toggleMining()" class="start-btn w-full py-3.5 px-5 flex items-center justify-center gap-2.5 text-[16px] tracking-wide cursor-pointer">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 5.5L18.5 9.5"/>
+            <path d="M3 21L13 11"/>
+            <path d="M13 6C16.5 6 19.5 8 21 11.5C18.5 10.5 16 10.5 14 11.5C13 13.5 13 16 14 18.5C10.5 17 8.5 14 8.5 10.5"/>
+          </svg>
+          <span id="startBtnText">START MINING</span>
+        </button>
+
+        <div class="text-center mt-1.5 flex items-center justify-center gap-1.5 text-[11.5px]">
+          <span id="miningStatusDot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span id="miningStatusText" class="text-gray-300 font-medium">Ready to mine</span>
+          <span class="text-gray-500">•</span>
+          <span id="miningRateLabel" class="text-[#f6c945] font-semibold">+0.12 US/hour</span>
+        </div>
+      </div>
+
+      <div class="ribbon-wrapper">
+        <div class="ribbon-tail-left"></div>
+        <div class="ribbon-body">
+          <span>Coming Soon on Exchange</span>
+        </div>
+        <div class="ribbon-tail-right"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mt-1">
+        <div class="gold-card p-3 text-center">
+          <p class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase">MINED BALANCE</p>
+          <div class="text-[19px] font-extrabold text-white mt-1 tracking-tight">
+            <span id="minedBalanceDisplay">1,245.78</span> <span class="text-[15px]">US</span>
+          </div>
+          <p class="text-[11px] font-semibold text-[#e6be53] mt-0.5">
+            ≈ $<span id="minedUsdDisplay">623.90</span> USD
+          </p>
+        </div>
+
+        <div class="gold-card p-3 text-center">
+          <p class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase">REFERRAL BONUS</p>
+          <div class="text-[19px] font-extrabold text-white mt-1 tracking-tight">
+            <span id="referralBalanceDisplay">120.00</span> <span class="text-[15px]">US</span>
+          </div>
+          <p class="text-[11px] font-semibold text-[#e6be53] mt-0.5">
+            ≈ $<span id="referralUsdDisplay">60.00</span> USD
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- MINE TAB -->
+    <section id="tab-mine" class="tab-section content-layer">
+      <div class="gold-card p-4 mb-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs text-gray-400 uppercase font-semibold">Current Hashrate</p>
+            <h2 id="mineTabRate" class="text-2xl font-extrabold gold-text mt-0.5">+0.12 US/hr</h2>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-400/30 flex items-center justify-center text-amber-400">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">
+          Mining runs continuously during the 90-day pre-exchange window. Upgrade your rig or invite friends to boost speed.
+        </p>
+      </div>
+
+      <h3 class="text-xs font-bold uppercase tracking-wider text-amber-300/90 mb-2 px-1">Daily & Speed Boosters</h3>
+
+      <div class="space-y-2.5">
+        <div class="gold-card p-3.5 flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-sm text-white">Daily Check-In Reward</h4>
+            <p class="text-xs text-gray-400">Claim +5.00 US bonus every 24h</p>
+          </div>
+          <button id="dailyClaimBtn" onclick="claimDailyBonus()" class="start-btn px-3.5 py-2 text-xs font-extrabold cursor-pointer">
+            CLAIM +5 US
+          </button>
+        </div>
+
+        <div class="gold-card p-3.5 flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-sm text-white">Turbo Miner Rig (Lv.<span id="rigLevel">1</span>)</h4>
+            <p class="text-xs text-gray-400">Increases speed by +0.06 US/hr</p>
+          </div>
+          <button onclick="upgradeRig()" class="bg-[#1e2636] hover:bg-[#283247] border border-amber-400/40 text-amber-300 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer">
+            50 US
+          </button>
+        </div>
+
+        <div class="gold-card p-3.5 flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-sm text-white">Join Official Telegram</h4>
+            <p class="text-xs text-gray-400">Verified community task</p>
+          </div>
+          <button id="tgTaskBtn" onclick="completeSocialTask()" class="bg-[#1e2636] border border-amber-400/40 text-amber-300 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer">
+            +15 US
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- WALLET TAB -->
+    <section id="tab-wallet" class="tab-section content-layer">
+      <div class="gold-card p-5 text-center mb-3">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Combined Assets</p>
+        <div class="text-3xl font-extrabold text-white mt-1">
+          <span id="walletTotalUs">1,365.78</span> <span class="text-lg gold-text">US</span>
+        </div>
+        <p class="text-sm font-semibold text-amber-300 mt-1">
+          ≈ $<span id="walletTotalUsd">683.90</span> USD <span class="text-xs text-gray-400">($0.50 / US)</span>
+        </p>
+
+        <div class="mt-4 pt-3 border-t border-white/10">
+          <button onclick="tryConnectWallet()" class="w-full py-3 rounded-xl bg-[#181f2c] border border-amber-400/35 text-amber-200/80 font-bold text-sm flex items-center justify-center gap-2 cursor-pointer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>Wallet Connect Unlocks 22 Feb 2027</span>
+          </button>
+        </div>
+      </div>
+
+      <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 px-1">Recent Activity</h3>
+      <div class="space-y-2 text-xs">
+        <div class="gold-card p-3 flex items-center justify-between">
+          <div>
+            <p class="font-semibold text-white">Pre-Launch Mining Pool</p>
+            <p class="text-gray-400 text-[11px]">Active Session Balance</p>
+          </div>
+          <span class="font-bold text-emerald-400">+1,245.78 US</span>
+        </div>
+        <div class="gold-card p-3 flex items-center justify-between">
+          <div>
+            <p class="font-semibold text-white">Referral Rewards</p>
+            <p class="text-gray-400 text-[11px]">12 Invited Friends</p>
+          </div>
+          <span class="font-bold text-amber-300">+120.00 US</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- REFER TAB -->
+    <section id="tab-refer" class="tab-section content-layer">
+      <div class="gold-card p-4 text-center mb-3">
+        <h2 class="text-lg font-extrabold gold-text">Invite Friends & Earn US</h2>
+        <p class="text-xs text-gray-300 mt-1">
+          Earn <span class="text-amber-300 font-bold">+10.00 US ($5.00)</span> for every friend who joins and starts mining!
+        </p>
+
+        <div class="grid grid-cols-2 gap-2.5 mt-4">
+          <div class="bg-black/40 border border-white/10 rounded-lg p-2.5">
+            <p class="text-[10px] text-gray-400 uppercase">Total Invited</p>
+            <p id="invitedCountDisplay" class="text-xl font-extrabold text-white mt-0.5">12</p>
+          </div>
+          <div class="bg-black/40 border border-white/10 rounded-lg p-2.5">
+            <p class="text-[10px] text-gray-400 uppercase">Referral Earned</p>
+            <p class="text-xl font-extrabold gold-text mt-0.5"><span id="referTabEarned">120.00</span> US</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="gold-card p-4 mb-3">
+        <label class="text-[11px] font-semibold text-gray-400 uppercase block mb-1.5">Your Telegram Invite Link</label>
+        <div class="flex items-center gap-2">
+          <input id="refLinkInput" type="text" readonly value="https://t.me/USTokenMinerBot?start=ref_849201"
+            class="w-full bg-black/50 border border-amber-400/30 rounded-lg px-3 py-2.5 text-xs text-amber-200 font-mono outline-none" />
+          <button onclick="copyRefLink()" class="start-btn px-3.5 py-2.5 text-xs font-extrabold whitespace-nowrap cursor-pointer">
+            COPY
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 mt-3">
+          <button onclick="shareToTelegram()" class="start-btn py-2.5 px-3 text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer">
+            <span>Share on Telegram</span>
+          </button>
+          <button onclick="simulateReferral()" class="bg-[#1b2434] border border-amber-400/40 text-amber-300 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer">
+            + Test Invite (+10 US)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE TAB -->
+    <section id="tab-profile" class="tab-section content-layer">
+      <div class="gold-card p-4 flex items-center gap-3.5 mb-3">
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center text-black font-extrabold text-xl shadow-lg">
+          <span id="userAvatarLetter">U</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 id="tgUserName" class="font-extrabold text-base text-white">US Miner</h2>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full font-bold">VERIFIED</span>
+          </div>
+          <p id="tgUserHandle" class="text-xs text-gray-400 mt-0.5">@us_token_miner</p>
+          <p class="text-[11px] text-amber-300/90 mt-0.5">ID: <span id="tgUserId" class="font-mono">849201742</span></p>
+        </div>
+      </div>
+
+      <div class="gold-card divide-y divide-white/10 text-xs">
+        <div class="p-3.5 flex justify-between">
+          <span class="text-gray-400">Token Symbol</span>
+          <span class="font-bold text-white">US TOKEN (US)</span>
+        </div>
+        <div class="p-3.5 flex justify-between">
+          <span class="text-gray-400">Pre-Launch Reference Price</span>
+          <span class="font-bold text-amber-300">1 US = $0.50 USD</span>
+        </div>
+        <div class="p-3.5 flex justify-between">
+          <span class="text-gray-400">Mining Duration</span>
+          <span class="font-bold text-white">90 Days (3 Months)</span>
+        </div>
+        <div class="p-3.5 flex justify-between">
+          <span class="text-gray-400">Exchange & Wallet Unlock</span>
+          <span class="font-bold text-amber-300">22 Feb 2027</span>
+        </div>
+      </div>
+
+      <button onclick="resetDemoData()" class="mt-4 w-full py-2.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-xs font-semibold cursor-pointer">
+        Reset Local Mining Session
+      </button>
+    </section>
+
+    <!-- Bottom 5-Item Navigation Bar -->
+    <nav class="bottom-nav">
+      <div class="nav-item active" data-tab="home" onclick="switchTab('home', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+        </svg>
+        <span>Home</span>
+      </div>
+
+      <div class="nav-item" data-tab="mine" onclick="switchTab('mine', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.5 5.5L18.5 9.5"/>
+          <path d="M3 21L13 11"/>
+          <path d="M13 6C16.5 6 19.5 8 21 11.5C18.5 10.5 16 10.5 14 11.5C13 13.5 13 16 14 18.5C10.5 17 8.5 14 8.5 10.5"/>
+        </svg>
+        <span>Mine</span>
+      </div>
+
+      <div class="nav-item" data-tab="wallet" onclick="switchTab('wallet', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+          <path d="M16 14h.01"/>
+          <path d="M4 7V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span>Wallet</span>
+      </div>
+
+      <div class="nav-item" data-tab="refer" onclick="switchTab('refer', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <circle cx="12" cy="10" r="3"/>
+          <path d="M7 18.5c1.2-2 3-3 5-3s3.8 1 5 3"/>
+        </svg>
+        <span>Refer</span>
+      </div>
+
+      <div class="nav-item" data-tab="profile" onclick="switchTab('profile', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <circle cx="12" cy="10" r="3"/>
+          <path d="M7 18.5c1.2-2 3-3 5-3s3.8 1 5 3"/>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
+    const TOKEN_USD_PRICE = 0.5008;
+
+    const defaultState = {
+      isMining: false,
+      endTimestamp: null,
+      minedBalance: 1245.78,
+      referralBonus: 120.00,
+      invitedCount: 12,
+      hourlyRate: 0.12,
+      rigLevel: 1,
+      liveSeconds: 2 * 3600 + 14 * 60 + 36,
+      lastTick: Date.now(),
+      dailyClaimed: false,
+      tgTaskClaimed: false
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('us_token_miner_v2'));
+        if (saved) {
+          const merged = { ...defaultState, ...saved };
+          if (merged.isMining && merged.lastTick) {
+            const elapsedSec = Math.max(0, (Date.now() - merged.lastTick) / 1000);
+            const perSec = merged.hourlyRate / 3600;
+            merged.minedBalance += elapsedSec * perSec;
+            merged.liveSeconds += Math.floor(elapsedSec);
+          }
+          merged.lastTick = Date.now();
+          return merged;
+        }
+      } catch (e) {}
+      return { ...defaultState };
+    }
+
+    function saveState() {
+      state.lastTick = Date.now();
+      localStorage.setItem('us_token_miner_v2', JSON.stringify(state));
+    }
+
+    function initTelegram() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        if (tg.setHeaderColor) tg.setHeaderColor('#0b0f17');
+        if (tg.setBackgroundColor) tg.setBackgroundColor('#070a10');
+
+        const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
+        if (user) {
+          const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'US Miner';
+          document.getElementById('tgUserName').textContent = fullName;
+          document.getElementById('userAvatarLetter').textContent = fullName.charAt(0).toUpperCase();
+          document.getElementById('tgUserHandle').textContent = user.username ? `@${user.username}` : '@telegram_miner';
+          document.getElementById('tgUserId').textContent = user.id;
+          document.getElementById('refLinkInput').value = `https://t.me/USTokenMinerBot?start=ref_${user.id}`;
+        }
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function formatNumber(num) {
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatHMS(totalSeconds) {
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = Math.floor(totalSeconds % 60);
+      return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function toggleMining() {
+      if (!state.isMining) {
+        state.isMining = true;
+        if (!state.endTimestamp) {
+          state.endTimestamp = Date.now() + NINETY_DAYS_MS;
+        }
+        state.lastTick = Date.now();
+        showToast('Mining started! 3-month countdown active.');
+        if (window.Telegram?.WebApp?.HapticFeedback) {
+          window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+        }
+      } else {
+        state.isMining = false;
+        showToast('Mining session paused.');
+      }
+      saveState();
+      renderUI();
+    }
+
+    function updateCountdown() {
+      const countdownEl = document.getElementById('countdownTimer');
+      const subtextEl = document.getElementById('countdownSubtext');
+
+      if (!state.endTimestamp) {
+        countdownEl.textContent = '90 days 00:00:00';
+        subtextEl.textContent = 'starts today and runs for 3 months';
+        return;
+      }
+
+      const remaining = Math.max(0, state.endTimestamp - Date.now());
+      const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+
+      countdownEl.textContent = `${days} days ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      subtextEl.textContent = state.isMining
+        ? '3-month mining countdown in progress'
+        : 'countdown active • press START MINING to earn';
+    }
+
+    function renderUI() {
+      const btn = document.getElementById('startMiningBtn');
+      const btnText = document.getElementById('startBtnText');
+      const statusDot = document.getElementById('miningStatusDot');
+      const statusText = document.getElementById('miningStatusText');
+      const coin = document.getElementById('coinGraphic');
+
+      if (state.isMining) {
+        btn.classList.add('mining-on');
+        btnText.textContent = 'MINING ACTIVE';
+        statusDot.className = 'w-2 h-2 rounded-full bg-emerald-400 live-dot';
+        statusText.textContent = 'Mining session active';
+        statusText.className = 'text-emerald-300 font-semibold';
+        coin.classList.remove('coin-idle');
+        coin.classList.add('coin-active');
+      } else {
+        btn.classList.remove('mining-on');
+        btnText.textContent = 'START MINING';
+        statusDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400';
+        statusText.textContent = 'Mining session ready';
+        statusText.className = 'text-gray-300 font-medium';
+        coin.classList.remove('coin-active');
+        coin.classList.add('coin-idle');
+      }
+
+      document.getElementById('miningRateLabel').textContent = `+${state.hourlyRate.toFixed(2)} US/hour`;
+      document.getElementById('mineTabRate').textContent = `+${state.hourlyRate.toFixed(2)} US/hr`;
+      document.getElementById('rigLevel').textContent = state.rigLevel;
+
+      const minedUsd = state.minedBalance * TOKEN_USD_PRICE;
+      const refUsd = state.referralBonus * 0.50;
+      const totalUs = state.minedBalance + state.referralBonus;
+      const totalUsd = minedUsd + refUsd;
+
+      document.getElementById('minedBalanceDisplay').textContent = formatNumber(state.minedBalance);
+      document.getElementById('minedUsdDisplay').textContent = formatNumber(minedUsd);
+
+      document.getElementById('referralBalanceDisplay').textContent = formatNumber(state.referralBonus);
+      document.getElementById('referralUsdDisplay').textContent = formatNumber(refUsd);
+
+      document.getElementById('walletTotalUs').textContent = formatNumber(totalUs);
+      document.getElementById('walletTotalUsd').textContent = formatNumber(totalUsd);
+
+      document.getElementById('invitedCountDisplay').textContent = state.invitedCount;
+      document.getElementById('referTabEarned').textContent = formatNumber(state.referralBonus);
+      document.getElementById('liveSessionClock').textContent = formatHMS(state.liveSeconds);
+
+      if (state.dailyClaimed) {
+        const dBtn = document.getElementById('dailyClaimBtn');
+        dBtn.textContent = 'CLAIMED';
+        dBtn.style.opacity = '0.6';
+      }
+
+      if (state.tgTaskClaimed) {
+        const tBtn = document.getElementById('tgTaskBtn');
+        tBtn.textContent = 'DONE';
+        tBtn.style.opacity = '0.6';
+      }
+
+      updateCountdown();
+    }
+
+    setInterval(() => {
+      state.liveSeconds += 1;
+      if (state.isMining) {
+        const perSecond = state.hourlyRate / 3600;
+        state.minedBalance += perSecond;
+      }
+      saveState();
+      renderUI();
+    }, 1000);
+
+    function switchTab(tabName, el) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      if (el) el.classList.add('active');
+    }
+
+    function handleBack() {
+      const homeNav = document.querySelector('.nav-item[data-tab="home"]');
+      switchTab('home', homeNav);
+    }
+
+    function claimDailyBonus() {
+      if (state.dailyClaimed) {
+        showToast('Daily bonus already claimed today!');
+        return;
+      }
+      state.dailyClaimed = true;
+      state.minedBalance += 5.00;
+      saveState();
+      renderUI();
+      showToast('+5.00 US added to your mined balance!');
+    }
+
+    function upgradeRig() {
+      if (state.minedBalance < 50) {
+        showToast('Insufficient US balance (50 US required)');
+        return;
+      }
+      state.minedBalance -= 50;
+      state.rigLevel += 1;
+      state.hourlyRate = +(state.hourlyRate + 0.06).toFixed(2);
+      saveState();
+      renderUI();
+      showToast(`Upgraded to Level ${state.rigLevel} (+${state.hourlyRate.toFixed(2)} US/hr)!`);
+    }
+
+    function completeSocialTask() {
+      if (state.tgTaskClaimed) {
+        showToast('Task already completed!');
+        return;
+      }
+      state.tgTaskClaimed = true;
+      state.minedBalance += 15.00;
+      saveState();
+      renderUI();
+      showToast('+15.00 US social bonus credited!');
+    }
+
+    function tryConnectWallet() {
+      showToast('Wallet Connect unlocks on 22 Feb 2027 (after 3 months).');
+    }
+
+    function copyRefLink() {
+      const input = document.getElementById('refLinkInput');
+      navigator.clipboard?.writeText(input.value);
+      showToast('Referral link copied!');
+    }
+
+    function shareToTelegram() {
+      const link = document.getElementById('refLinkInput').value;
+      const text = encodeURIComponent('Join US TOKEN Mining before exchange listing and get free US tokens!');
+      const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
+      if (window.Telegram?.WebApp?.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    function simulateReferral() {
+      state.invitedCount += 1;
+      state.referralBonus += 10.00;
+      saveState();
+      renderUI();
+      showToast('New friend joined! +10.00 US Referral Bonus');
+    }
+
+    function resetDemoData() {
+      localStorage.removeItem('us_token_miner_v2');
+      state = { ...defaultState };
+      renderUI();
+      showToast('Session reset to default.');
+    }
+
+    initTelegram();
+    renderUI();
+  </script>
+</body>
+</html>
