@@ -1,425 +1,342 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<title>US TOKEN — Mining Versions Hub</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-html,body{margin:0;padding:0;background:#05070c;color:#fff;font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
-body{display:flex;justify-content:center}
-.shell{width:100%;max-width:430px;min-height:100vh;background:#070a10;display:flex;flex-direction:column;justify-content:space-between;position:relative;border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)}
-.v-switcher{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 10px;background:#0b0f18;border-bottom:1px solid rgba(255,255,255,.08)}
-.v-btn{padding:6px 4px;border-radius:8px;font-size:10.5px;font-weight:700;background:#131926;color:#94a3b8;border:1px solid rgba(255,255,255,.06);cursor:pointer;text-align:center}
-.v-btn.on{background:linear-gradient(180deg,#ffe169,#e6b422);color:#111;border-color:#ffe787}
+import sqlite3
+from datetime import datetime
 
-.gold{background:linear-gradient(180deg,#fff3b8,#f6c945 55%,#c89116);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.card{background:linear-gradient(180deg,rgba(22,27,38,.92),rgba(11,14,21,.98));border:1px solid rgba(246,201,69,.24);border-radius:12px}
-.card-cyan{background:linear-gradient(180deg,rgba(14,27,42,.92),rgba(8,15,26,.98));border:1px solid rgba(34,211,238,.28);border-radius:12px}
-.card-vip{background:linear-gradient(180deg,rgba(32,20,46,.92),rgba(14,10,22,.98));border:1px solid rgba(251,191,36,.32);border-radius:12px}
-.card-sq{background:linear-gradient(180deg,rgba(15,34,29,.92),rgba(8,19,16,.98));border:1px solid rgba(52,211,153,.28);border-radius:12px}
+DB_FILE = "us_token.db"
 
-.btn-gold{background:linear-gradient(180deg,#ffe169,#f5c332 55%,#d99f14);color:#120d02;font-weight:800;border-radius:12px;cursor:pointer;box-shadow:0 4px 18px rgba(245,195,50,.28)}
-.btn-gold.active{background:linear-gradient(180deg,#34d399,#10b981 55%,#059669);color:#031c12;box-shadow:0 4px 18px rgba(16,185,129,.35)}
-.btn-cyan{background:linear-gradient(180deg,#67e8f9,#06b6d4 55%,#0891b2);color:#041c24;font-weight:800;border-radius:12px;cursor:pointer}
-.btn-vip{background:linear-gradient(180deg,#fde68a,#f59e0b 55%,#b45309);color:#1c1102;font-weight:800;border-radius:12px;cursor:pointer}
-.btn-sq{background:linear-gradient(180deg,#6ee7b7,#10b981 55%,#047857);color:#031f16;font-weight:800;border-radius:12px;cursor:pointer}
 
-.ribbon{margin:6px auto 8px;width:92%;height:34px;background:linear-gradient(180deg,#fce38a,#e5b338 50%,#b98518);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#1c1404;font-weight:800;font-size:12.5px}
+def get_connection():
+    con = sqlite3.connect(DB_FILE)
+    con.row_factory = sqlite3.Row
+    return con
 
-@keyframes spinSlow{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
-.eth-spin{transform-origin:130px 116px;animation:spinSlow 7s linear infinite}
-.eth-spin.fast{animation-duration:2.6s}
 
-@keyframes spinCircle{to{transform:rotate(360deg)}}
-.loader-ring{width:34px;height:34px;border:3px solid rgba(246,201,69,.2);border-top-color:#f6c945;border-radius:50%;animation:spinCircle .8s linear infinite;margin:0 auto}
+def init_db():
+    con = get_connection()
+    cur = con.cursor()
 
-.ver{display:none;flex-direction:column;padding:8px 14px 12px;flex:1;gap:8px}.ver.on{display:flex}
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT,
+            full_name TEXT,
+            balance REAL DEFAULT 0,
+            total_earned REAL DEFAULT 0,
+            referral_code TEXT UNIQUE,
+            referrer_id INTEGER,
+            last_daily TEXT,
+            is_banned INTEGER DEFAULT 0,
+            created_at TEXT
+        )
+    """)
 
-.nav{width:100%;height:62px;background:#0b0f17;border-top:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(5,1fr);flex-shrink:0}
-.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#7c8596;font-size:10.5px;background:none;border:none;cursor:pointer}
-.nav button.on{color:#f6c945;font-weight:700}
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            link TEXT,
+            reward REAL,
+            is_active INTEGER DEFAULT 1,
+            created_at TEXT
+        )
+    """)
 
-#toast{position:fixed;top:64px;left:50%;transform:translateX(-50%);background:#161c28;border:1px solid #f6c945;color:#ffe787;padding:7px 14px;border-radius:99px;font-size:12px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
-#toast.show{opacity:1}
-#wModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:80;align-items:flex-end;justify-content:center}
-#wModal.show{display:flex}
-</style>
-</head>
-<body>
-<div id="toast"></div>
-<div class="shell">
-<div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS task_completions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            task_id INTEGER,
+            completed_at TEXT,
+            UNIQUE(user_id, task_id)
+        )
+    """)
 
-<!-- Top Version Switcher -->
-<div class="v-switcher">
-  <button class="v-btn on" onclick="setVer(1,this)">V1: Gold US</button>
-  <button class="v-btn" onclick="setVer(2,this)">V2: Cyber Rig</button>
-  <button class="v-btn" onclick="setVer(3,this)">V3: VIP Launch</button>
-  <button class="v-btn" onclick="setVer(4,this)">V4: Squad Pool</button>
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS withdrawals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            amount REAL,
+            method TEXT,
+            account TEXT,
+            status TEXT DEFAULT 'pending',
+            created_at TEXT,
+            processed_at TEXT
+        )
+    """)
 
-<!-- Header: US Flag + Small Binance Logo + Sound Toggle + Wallet Connect -->
-<header class="flex items-center justify-between px-3.5 pt-2.5 pb-1">
-  <div class="flex items-center gap-2">
-    <div class="relative w-8 h-8 flex-shrink-0">
-      <div class="w-8 h-8 rounded-full overflow-hidden border border-amber-300/50">
-        <svg viewBox="0 0 64 64" class="w-full h-full">
-          <rect width="64" height="64" fill="#b22234"/>
-          <rect y="8" width="64" height="6" fill="#fff"/><rect y="20" width="64" height="6" fill="#fff"/><rect y="32" width="64" height="6" fill="#fff"/><rect y="44" width="64" height="6" fill="#fff"/><rect y="56" width="64" height="6" fill="#fff"/>
-          <rect width="32" height="34" fill="#3c3b6e"/>
-        </svg>
-      </div>
-      <div class="w-4 h-4 rounded-full bg-[#14171f] border border-amber-400 flex items-center justify-center absolute -bottom-1 -right-1">
-        <svg width="10" height="10" viewBox="0 0 32 32" fill="#F3BA2F">
-          <path d="M16 4l3.7 3.7-6.5 6.5-3.7-3.7L16 4zm7.4 7.4L27.1 15l-3.7 3.7-3.7-3.7 3.7-3.6zM8.6 11.4L12.3 15l-3.7 3.7L4.9 15l3.7-3.6zm7.4 1.6l3 3-3 3-3-3 3-3zm0 8.8l6.5-6.5 3.7 3.7L16 29.2l-10.2-10.2 3.7-3.7 6.5 6.5z"/>
-        </svg>
-      </div>
-    </div>
-    <div>
-      <div class="flex items-center gap-1.5">
-        <span class="font-extrabold text-[15px] tracking-wide">US TOKEN</span>
-        <span class="bg-red-950/80 border border-red-500/40 px-1.5 py-0.5 rounded text-[9px] font-bold text-red-400">LIVE</span>
-      </div>
-      <span id="liveClock" class="text-[10px] font-mono text-gray-400">02:14:36</span>
-    </div>
-  </div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )
+    """)
 
-  <div class="flex items-center gap-1.5">
-    <button onclick="toggleSound()" id="sndBtn" class="bg-[#151a24] border border-white/15 px-2 py-1.5 rounded-full text-[11px] cursor-pointer" title="Sound">🔊</button>
-    <button onclick="openWalletModal()" class="flex items-center gap-1 bg-[#1a202c] border border-amber-400/50 px-2.5 py-1.5 rounded-full text-[11px] font-bold text-amber-300 cursor-pointer">
-      <span id="walletBtnText">Connect Wallet</span>
-    </button>
-  </div>
-</header>
+    cur.execute(
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)",
+        ("daily_bonus", "1")
+    )
 
-<p class="text-center text-[10.5px] text-amber-300/80 px-3 pb-1">Wallet Connect will be available after 3 months - 22 Feb 2027</p>
+    cur.execute(
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)",
+        ("referral_bonus", "0.50")
+    )
 
-<!-- ==================== VERSION 1: GOLD US ==================== -->
-<section id="v1" class="ver on">
-  <div class="card py-2 px-3 text-center">
-    <div class="cdText font-mono text-[21px] font-extrabold gold">90 days 00:00:00</div>
-    <p class="text-[10.5px] text-gray-400">starts today and runs for 3 months</p>
-  </div>
-  <div class="flex flex-col items-center">
-    <div class="w-[162px] h-[162px]">
-      <svg viewBox="0 0 260 260" class="w-full h-full overflow-visible">
-        <defs>
-          <radialGradient id="vg1" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#fff4b8"/><stop offset="40%" stop-color="#f5c63b"/><stop offset="100%" stop-color="#875807"/></radialGradient>
-          <radialGradient id="vg2" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#ffe785"/><stop offset="100%" stop-color="#96640a"/></radialGradient>
-        </defs>
-        <circle cx="130" cy="122" r="102" fill="url(#vg1)" stroke="#fff0a6" stroke-width="2"/>
-        <circle cx="130" cy="122" r="88" fill="url(#vg2)" stroke="#7c5207" stroke-width="2"/>
-        <g class="ethSpinTarget eth-spin">
-          <polygon points="130,62 96,118 130,136" fill="#60a5fa"/>
-          <polygon points="130,62 164,118 130,136" fill="#1e40af"/>
-          <polygon points="130,144 96,126 130,172" fill="#3b82f6"/>
-          <polygon points="130,144 164,126 130,172" fill="#172554"/>
-        </g>
-        <g transform="translate(130,203)">
-          <path d="M-23,-19 L23,-19 L23,2 C23,15 0,25 0,25 C0,25 -23,15 -23,2 Z" fill="#172554" stroke="#ffe57f" stroke-width="2.5"/>
-          <text x="0" y="8" text-anchor="middle" fill="#fff" font-weight="800" font-size="15">US</text>
-        </g>
-      </svg>
-    </div>
-    <span class="text-[15px] font-extrabold gold -mt-1">US TOKEN</span>
-  </div>
-  <button class="mineBtnEl btn-gold w-full py-3 text-[15px]" onclick="toggleMine()">START MINING</button>
-  <p class="text-center text-[11px] text-gray-300">
-    <span class="stLabel">Ready to mine</span> • <span class="rateLabel text-amber-300 font-bold">+12.50 US/hour</span>
-    <span class="liveGainBadge text-emerald-400 font-mono font-bold ml-1"></span>
-  </p>
-  <div class="ribbon">Coming Soon on Exchange</div>
-  <div class="grid grid-cols-2 gap-2">
-    <div class="card p-2.5 text-center">
-      <p class="text-[10px] text-gray-400 font-bold">MINED BALANCE</p>
-      <div class="text-[17px] font-extrabold"><span class="balUsEl">1,245.78</span> US</div>
-      <p class="text-[10.5px] text-amber-300">≈ $<span class="balUsdEl">623.90</span> USD</p>
-    </div>
-    <div class="card p-2.5 text-center">
-      <p class="text-[10px] text-gray-400 font-bold">REFERRAL BONUS</p>
-      <div class="text-[17px] font-extrabold"><span class="refUsEl">120.00</span> US</div>
-      <p class="text-[10.5px] text-amber-300">≈ $<span class="refUsdEl">60.00</span> USD</p>
-    </div>
-  </div>
-</section>
+    cur.execute(
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)",
+        ("min_withdraw", "10")
+    )
 
-<!-- ==================== VERSION 2: CYBER RIG ==================== -->
-<section id="v2" class="ver">
-  <div class="card-cyan p-3 text-center">
-    <p class="text-[10px] uppercase tracking-wider text-cyan-300 font-bold">90-Day Hashrate Cycle</p>
-    <div class="cdText font-mono text-[20px] font-extrabold text-white mt-0.5">90 days 00:00:00</div>
-  </div>
-  <div class="card-cyan p-3.5">
-    <div class="flex justify-between items-center mb-2">
-      <span class="text-xs font-bold text-cyan-300">QUANTUM RIG #01</span>
-      <span class="stLabel text-xs font-mono text-emerald-400">Ready to mine</span>
-    </div>
-    <div class="flex items-center justify-between my-2">
-      <div>
-        <p class="text-[10px] text-gray-400">MINED US <span class="liveGainBadge text-cyan-300 font-mono"></span></p>
-        <p class="text-2xl font-extrabold text-white"><span class="balUsEl">1,245.78</span></p>
-      </div>
-      <div class="w-14 h-14 rounded-full bg-cyan-500/15 border border-cyan-400/40 flex items-center justify-center">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-    </div>
-  </div>
-  <button class="mineBtnEl btn-cyan w-full py-3 text-[14.5px]" onclick="toggleMine()">START CYBER MINING</button>
-  <div class="grid grid-cols-3 gap-2 text-center">
-    <div class="card-cyan p-2"><p class="text-[9.5px] text-gray-400">SPEED</p><p class="rateLabel text-xs font-bold text-cyan-300">+12.50/hr</p></div>
-    <div class="card-cyan p-2"><p class="text-[9.5px] text-gray-400">REFERRAL</p><p class="text-xs font-bold text-white"><span class="refUsEl">120.00</span></p></div>
-    <div class="card-cyan p-2"><p class="text-[9.5px] text-gray-400">PRICE</p><p class="text-xs font-bold text-emerald-400">$0.50</p></div>
-  </div>
-</section>
+    con.commit()
+    con.close()
 
-<!-- ==================== VERSION 3: VIP LAUNCHPAD ==================== -->
-<section id="v3" class="ver">
-  <div class="card-vip p-3.5 text-center">
-    <span class="inline-block bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full">PRE-EXCHANGE LAUNCHPAD</span>
-    <div class="cdText font-mono text-[20px] font-extrabold gold mt-1.5">90 days 00:00:00</div>
-    <p class="text-[11px] text-gray-400 mt-0.5">Listing & Wallet Unlock: 22 Feb 2027</p>
-  </div>
-  <div class="card-vip p-3.5 space-y-2">
-    <div class="flex justify-between text-xs"><span class="text-gray-400">Mined Allocation <span class="liveGainBadge text-emerald-400 font-mono"></span></span><span class="font-bold text-white"><span class="balUsEl">1,245.78</span> US</span></div>
-    <div class="flex justify-between text-xs"><span class="text-gray-400">Referral Pool</span><span class="font-bold text-amber-300"><span class="refUsEl">120.00</span> US</span></div>
-    <div class="flex justify-between text-xs"><span class="text-gray-400">Est. Value</span><span class="font-bold text-emerald-400">≈ $<span class="balUsdEl">623.90</span> USD</span></div>
-  </div>
-  <button class="mineBtnEl btn-vip w-full py-3 text-[14.5px]" onclick="toggleMine()">ACTIVATE VIP SESSION</button>
-  <div class="card-vip p-3 flex items-center justify-between">
-    <div><p class="text-xs font-bold text-amber-200">Daily Launch Boost</p><p class="text-[10.5px] text-gray-400">Instant +5.00 US reward</p></div>
-    <button onclick="addBonus(5,'VIP +5.00 US added!')" class="btn-vip px-3 py-1.5 text-xs">+5 US</button>
-  </div>
-</section>
 
-<!-- ==================== VERSION 4: SQUAD POOL ==================== -->
-<section id="v4" class="ver">
-  <div class="card-sq p-3 text-center">
-    <p class="text-[10px] font-bold text-emerald-300 uppercase">Squad Mining Pool</p>
-    <div class="cdText font-mono text-[20px] font-extrabold text-white mt-0.5">90 days 00:00:00</div>
-  </div>
-  <div class="card-sq p-3.5">
-    <div class="flex justify-between items-center">
-      <div>
-        <p class="text-[10px] text-gray-400">YOUR SQUAD BALANCE <span class="liveGainBadge text-emerald-300 font-mono"></span></p>
-        <p class="text-2xl font-extrabold text-emerald-300"><span class="balUsEl">1,245.78</span> US</p>
-      </div>
-      <div class="text-right">
-        <p class="text-[10px] text-gray-400">SQUAD BONUS</p>
-        <p class="text-sm font-bold text-white">+<span class="refUsEl">120.00</span> US</p>
-      </div>
-    </div>
-    <div class="mt-3 pt-2.5 border-t border-white/10 flex justify-between text-[11px] text-gray-300">
-      <span>Active Squad: <strong id="sqCount" class="text-emerald-300">12 Members</strong></span>
-      <span>Multiplier: <strong class="text-amber-300">1.2x</strong></span>
-    </div>
-  </div>
-  <button class="mineBtnEl btn-sq w-full py-3 text-[14.5px]" onclick="toggleMine()">START SQUAD MINING</button>
-  <button onclick="fakeInvite()" class="card-sq p-3 text-xs font-bold text-emerald-300 text-center cursor-pointer">+ Add Squad Friend (+10.00 US Bonus)</button>
-</section>
+def now():
+    return datetime.utcnow().isoformat()
 
-</div>
 
-<!-- Wallet Modal with Processing State -->
-<div id="wModal" onclick="if(event.target===this && !connectingWallet)closeWalletModal()">
-  <div class="w-full max-w-[430px] bg-[#111622] border-t border-amber-400/40 rounded-t-2xl p-4">
-    <div id="walletListView" class="space-y-2">
-      <div class="flex justify-between items-center pb-2 border-b border-white/10">
-        <span class="font-bold text-sm gold">Connect Telegram Wallet</span>
-        <button onclick="closeWalletModal()" class="text-gray-400 text-sm px-2 cursor-pointer">✕</button>
-      </div>
-      <button onclick="startWalletProcess('Telegram Wallet','TON Space & @wallet')" class="w-full card p-3 flex justify-between items-center text-left cursor-pointer">
-        <div><p class="font-bold text-sm">Telegram Wallet</p><p class="text-[11px] text-gray-400">@wallet • Built-in TON Wallet</p></div>
-        <span class="text-xs text-amber-300 font-bold">Connect</span>
-      </button>
-      <button onclick="startWalletProcess('Tonkeeper','Tonkeeper Mobile Signer')" class="w-full card p-3 flex justify-between items-center text-left cursor-pointer">
-        <div><p class="font-bold text-sm">Tonkeeper</p><p class="text-[11px] text-gray-400">Popular TON Wallet</p></div>
-        <span class="text-xs text-amber-300 font-bold">Connect</span>
-      </button>
-      <button onclick="startWalletProcess('MyTonWallet','MyTonWallet Extension/App')" class="w-full card p-3 flex justify-between items-center text-left cursor-pointer">
-        <div><p class="font-bold text-sm">MyTonWallet</p><p class="text-[11px] text-gray-400">TON & Jettons Wallet</p></div>
-        <span class="text-xs text-amber-300 font-bold">Connect</span>
-      </button>
-      <button onclick="startWalletProcess('Binance Web3','Binance Web3 MPC Vault')" class="w-full card p-3 flex justify-between items-center text-left cursor-pointer">
-        <div><p class="font-bold text-sm">Binance Web3 Wallet</p><p class="text-[11px] text-gray-400">Multi-Chain Self-Custody</p></div>
-        <span class="text-xs text-amber-300 font-bold">Connect</span>
-      </button>
-    </div>
+def get_setting(key, default="0"):
+    con = get_connection()
+    row = con.execute(
+        "SELECT value FROM settings WHERE key=?", (key,)
+    ).fetchone()
+    con.close()
+    return float(row["value"]) if row else float(default)
 
-    <!-- Connecting Processing View -->
-    <div id="walletProcessView" class="hidden py-6 text-center space-y-2.5">
-      <div class="loader-ring"></div>
-      <p id="procWalletName" class="font-bold text-base gold">Connecting Tonkeeper...</p>
-      <p id="procWalletStep" class="text-xs text-gray-400">Requesting session handshake...</p>
-    </div>
-  </div>
-</div>
 
-<!-- Bottom 5-Tab Bar -->
-<nav class="nav">
-  <button class="on" onclick="navClick('Home',this)"><span>Home</span></button>
-  <button onclick="navClick('Mine',this)"><span>Mine</span></button>
-  <button onclick="navClick('Wallet',this)"><span>Wallet</span></button>
-  <button onclick="navClick('Refer',this)"><span>Refer</span></button>
-  <button onclick="navClick('Profile',this)"><span>Profile</span></button>
-</nav>
-</div>
+def set_setting(key, value):
+    con = get_connection()
+    con.execute(
+        """
+        INSERT INTO settings (key, value)
+        VALUES (?, ?)
+        ON CONFLICT(key) DO UPDATE SET value=excluded.value
+        """,
+        (key, str(value))
+    )
+    con.commit()
+    con.close()
 
-<script>
-const DAY90 = 90*24*3600*1000;
-let audioCtx = null;
-let connectingWallet = false;
 
-let st = JSON.parse(localStorage.getItem('us_hub_v2')||'null') || {
-  ver:1, on:false, end:null, bal:1245.78, ref:120.00, inv:12, rate:12.50, sec:8076, wallet:null, sound:true, sessionGain:0
-};
+def create_user(user_id, username, full_name, referrer_id=None):
+    con = get_connection()
+    cur = con.cursor()
 
-function save(){localStorage.setItem('us_hub_v2',JSON.stringify(st))}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2300)}
-function fmt(n){return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function hms(s){const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=Math.floor(s%60);return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`}
+    referral_code = f"UST{user_id}"
 
-function playTone(freq, dur, type='sine', vol=0.12){
-  if(!st.sound) return;
-  try{
-    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + dur);
-  }catch(e){}
-}
+    cur.execute(
+        """
+        INSERT OR IGNORE INTO users
+        (user_id, username, full_name, referral_code, referrer_id, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (user_id, username, full_name, referral_code, referrer_id, now())
+    )
 
-function toggleSound(){
-  st.sound = !st.sound; save(); render();
-  toast(st.sound ? 'Sound ON 🔊' : 'Sound OFF 🔇');
-}
+    con.commit()
+    con.close()
 
-function setVer(v,el){
-  playTone(620, 0.08, 'triangle', 0.08);
-  st.ver=v; save(); render();
-}
 
-function toggleMine(){
-  st.on = !st.on;
-  if(st.on){
-    if(!st.end) st.end = Date.now() + DAY90;
-    playTone(520, 0.12, 'triangle', 0.16);
-    setTimeout(()=>playTone(780, 0.18, 'sine', 0.16), 110);
-    toast('Mining started! Coins accumulating live.');
-  }else{
-    playTone(340, 0.14, 'sine', 0.12);
-    toast('Mining session paused.');
-  }
-  save(); render();
-}
+def get_user(user_id):
+    con = get_connection()
+    user = con.execute(
+        "SELECT * FROM users WHERE user_id=?", (user_id,)
+    ).fetchone()
+    con.close()
+    return user
 
-function openWalletModal(){
-  playTone(660, 0.07, 'sine', 0.08);
-  document.getElementById('walletListView').classList.remove('hidden');
-  document.getElementById('walletProcessView').classList.add('hidden');
-  document.getElementById('wModal').classList.add('show');
-}
 
-function closeWalletModal(){
-  if(connectingWallet) return;
-  document.getElementById('wModal').classList.remove('show');
-}
+def get_user_by_referral_code(code):
+    con = get_connection()
+    user = con.execute(
+        "SELECT * FROM users WHERE referral_code=?", (code,)
+    ).fetchone()
+    con.close()
+    return user
 
-function startWalletProcess(name, sub){
-  connectingWallet = true;
-  playTone(580, 0.09, 'triangle', 0.12);
-  document.getElementById('walletListView').classList.add('hidden');
-  document.getElementById('walletProcessView').classList.remove('hidden');
-  document.getElementById('procWalletName').textContent = `Connecting ${name}...`;
-  document.getElementById('procWalletStep').textContent = `${sub} • Waiting for approval`;
 
-  setTimeout(()=>{
-    document.getElementById('procWalletStep').textContent = 'Verifying cryptographic proof...';
-    playTone(720, 0.08, 'sine', 0.1);
-  }, 900);
+def add_balance(user_id, amount, count_as_earned=True):
+    con = get_connection()
+    con.execute(
+        """
+        UPDATE users
+        SET balance = balance + ?,
+            total_earned = total_earned + ?
+        WHERE user_id=?
+        """,
+        (amount, amount if count_as_earned else 0, user_id)
+    )
+    con.commit()
+    con.close()
 
-  setTimeout(()=>{
-    connectingWallet = false;
-    st.wallet = name;
-    save(); render();
-    document.getElementById('wModal').classList.remove('show');
-    playTone(880, 0.16, 'triangle', 0.16);
-    toast(`${name} connected successfully!`);
-  }, 1900);
-}
 
-function addBonus(v,msg){
-  playTone(840, 0.14, 'triangle', 0.14);
-  st.bal+=v; st.sessionGain+=v; save(); render(); toast(msg);
-}
+def deduct_balance(user_id, amount):
+    con = get_connection()
+    con.execute(
+        "UPDATE users SET balance = balance - ? WHERE user_id=?",
+        (amount, user_id)
+    )
+    con.commit()
+    con.close()
 
-function fakeInvite(){
-  playTone(760, 0.14, 'triangle', 0.14);
-  st.inv++; st.ref+=10; save(); render(); toast('+10.00 US referral bonus!');
-}
 
-function navClick(name,el){
-  playTone(540, 0.06, 'sine', 0.07);
-  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  if(name==='Wallet') openWalletModal();
-  else if(name==='Refer') fakeInvite();
-  else toast(`${name} view active`);
-}
+def set_daily_claimed(user_id):
+    con = get_connection()
+    con.execute(
+        "UPDATE users SET last_daily=? WHERE user_id=?",
+        (datetime.utcnow().date().isoformat(), user_id)
+    )
+    con.commit()
+    con.close()
 
-function render(){
-  document.querySelectorAll('.ver').forEach(s=>s.classList.remove('on'));
-  document.getElementById('v'+st.ver).classList.add('on');
-  document.querySelectorAll('.v-btn').forEach((b,i)=>b.classList.toggle('on',i+1===st.ver));
-  document.getElementById('sndBtn').textContent = st.sound ? '🔊' : '🔇';
 
-  document.querySelectorAll('.mineBtnEl').forEach(b=>{
-    b.classList.toggle('active',st.on);
-    b.textContent = st.on ? 'MINING ACTIVE (PAUSE)' : (st.ver===1?'START MINING':st.ver===2?'START CYBER MINING':st.ver===3?'ACTIVATE VIP SESSION':'START SQUAD MINING');
-  });
-  document.querySelectorAll('.ethSpinTarget').forEach(e=>e.classList.toggle('fast',st.on));
-  document.querySelectorAll('.stLabel').forEach(l=>l.textContent=st.on?'Mining active':'Ready to mine');
-  document.querySelectorAll('.rateLabel').forEach(r=>r.textContent=`+${st.rate.toFixed(2)} US/hour`);
-  document.querySelectorAll('.liveGainBadge').forEach(g=>{
-    g.textContent = st.sessionGain > 0 ? `(+${st.sessionGain.toFixed(2)})` : '';
-  });
-  document.querySelectorAll('.balUsEl').forEach(x=>x.textContent=fmt(st.bal));
-  document.querySelectorAll('.balUsdEl').forEach(x=>x.textContent=fmt(st.bal*0.5008));
-  document.querySelectorAll('.refUsEl').forEach(x=>x.textContent=fmt(st.ref));
-  document.querySelectorAll('.refUsdEl').forEach(x=>x.textContent=fmt(st.ref*0.5));
-  document.getElementById('sqCount').textContent = `${st.inv} Members`;
-  document.getElementById('liveClock').textContent = hms(st.sec);
-  document.getElementById('walletBtnText').textContent = st.wallet ? `${st.wallet} ✓` : 'Connect Wallet';
+def create_withdrawal(user_id, amount, method, account):
+    con = get_connection()
+    cur = con.cursor()
+    cur.execute(
+        """
+        INSERT INTO withdrawals
+        (user_id, amount, method, account, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        (user_id, amount, method, account, now())
+    )
+    withdrawal_id = cur.lastrowid
+    con.commit()
+    con.close()
+    return withdrawal_id
 
-  let cdTxt = '90 days 00:00:00';
-  if(st.end){
-    const rem=Math.max(0,st.end-Date.now());
-    const d=Math.floor(rem/86400000),h=Math.floor(rem%86400000/3600000),m=Math.floor(rem%3600000/60000),s=Math.floor(rem%60000/1000);
-    cdTxt = `${d} days ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  }
-  document.querySelectorAll('.cdText').forEach(c=>c.textContent=cdTxt);
-}
 
-if(window.Telegram?.WebApp){window.Telegram.WebApp.ready();window.Telegram.WebApp.expand();}
-setInterval(()=>{
-  st.sec++;
-  if(st.on){
-    const inc = st.rate/3600;
-    st.bal += inc;
-    st.sessionGain += inc;
-    playTone(920, 0.03, 'sine', 0.03);
-  }
-  save(); render();
-},1000);
-render();
-</script>
-</body>
-</html>
+def get_withdrawal(withdrawal_id):
+    con = get_connection()
+    row = con.execute(
+        "SELECT * FROM withdrawals WHERE id=?", (withdrawal_id,)
+    ).fetchone()
+    con.close()
+    return row
+
+
+def update_withdrawal_status(withdrawal_id, status):
+    con = get_connection()
+    con.execute(
+        "UPDATE withdrawals SET status=?, processed_at=? WHERE id=?",
+        (status, now(), withdrawal_id)
+    )
+    con.commit()
+    con.close()
+
+
+def get_pending_withdrawals():
+    con = get_connection()
+    rows = con.execute(
+        """
+        SELECT w.*, u.username, u.full_name
+        FROM withdrawals w
+        JOIN users u ON u.user_id = w.user_id
+        WHERE w.status='pending'
+        ORDER BY w.id DESC
+        """
+    ).fetchall()
+    con.close()
+    return rows
+
+
+def get_all_users():
+    con = get_connection()
+    rows = con.execute(
+        "SELECT * FROM users ORDER BY total_earned DESC"
+    ).fetchall()
+    con.close()
+    return rows
+
+
+def get_active_tasks():
+    con = get_connection()
+    rows = con.execute(
+        "SELECT * FROM tasks WHERE is_active=1 ORDER BY id DESC"
+    ).fetchall()
+    con.close()
+    return rows
+
+
+def get_all_tasks():
+    con = get_connection()
+    rows = con.execute(
+        "SELECT * FROM tasks ORDER BY id DESC"
+    ).fetchall()
+    con.close()
+    return rows
+
+
+def create_task(title, link, reward):
+    con = get_connection()
+    con.execute(
+        "INSERT INTO tasks (title, link, reward, created_at) VALUES (?, ?, ?, ?)",
+        (title, link, reward, now())
+    )
+    con.commit()
+    con.close()
+
+
+def complete_task(user_id, task_id):
+    con = get_connection()
+    cur = con.cursor()
+
+    task = cur.execute(
+        "SELECT * FROM tasks WHERE id=? AND is_active=1", (task_id,)
+    ).fetchone()
+
+    if not task:
+        con.close()
+        return None
+
+    already = cur.execute(
+        "SELECT 1 FROM task_completions WHERE user_id=? AND task_id=?",
+        (user_id, task_id)
+    ).fetchone()
+
+    if already:
+        con.close()
+        return "already"
+
+    cur.execute(
+        "INSERT INTO task_completions (user_id, task_id, completed_at) VALUES (?, ?, ?)",
+        (user_id, task_id, now())
+    )
+
+    con.execute(
+        """
+        UPDATE users
+        SET balance = balance + ?,
+            total_earned = total_earned + ?
+        WHERE user_id=?
+        """,
+        (task["reward"], task["reward"], user_id)
+    )
+
+    con.commit()
+    con.close()
+    return task["reward"]
+
+
+def get_stats():
+    con = get_connection()
+    total_users = con.execute("SELECT COUNT(*) c FROM users").fetchone()["c"]
+    total_balance = con.execute(
+        "SELECT COALESCE(SUM(balance), 0) s FROM users"
+    ).fetchone()["s"]
+    total_earned = con.execute(
+        "SELECT COALESCE(SUM(total_earned), 0) s FROM users"
+    ).fetchone()["s"]
+    pending = con.execute(
+        "SELECT COUNT(*) c FROM withdrawals WHERE status='pending'"
+    ).fetchone()["c"]
+    con.close()
+
+    return {
+        "total_users": total_users,
+        "total_balance": total_balance,
+        "total_earned": total_earned,
+        "pending_withdrawals": pending,
+    }
+
+
+init_db()
