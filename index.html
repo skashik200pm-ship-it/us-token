@@ -1,34 +1,75 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>US TOKEN</title>
+<title>US TOKEN - Powered by Ethereum</title>
 <style>
-body{background:#0a0f2a;color:white;text-align:center;font-family:sans-serif;padding:20px}
-.coin{font-size:80px}
-.box{background:#1a2350;padding:20px;border-radius:20px;margin-top:20px}
-button{background:#facc15;border:none;padding:15px 30px;font-size:20px;font-weight:bold;border-radius:30px;margin-top:15px}
-h1{color:#facc15}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#050a2a;color:white;min-height:100vh;padding:15px;padding-bottom:90px}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:15px}
+.badge{background:#0d173f;border:1px solid #2a3a7a;padding:8px 10px;border-radius:10px;display:flex;gap:6px;align-items:center}
+.live{color:#4ade80;font-weight:bold}
+.coin-wrap{text-align:center;margin:20px 0}
+.coin{width:210px;height:210px;background:radial-gradient(circle at 30% 30%,#ffe98a,#d4af37 55%,#8a6d00);border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(250,204,21,.4);border:6px solid #facc15;position:relative}
+.coin-inner{font-size:90px}
+.coin span{position:absolute;background:#1e3a8a;color:white;font-size:14px;font-weight:900;padding:3px 8px;border-radius:20px;bottom:55px}
+h1{text-align:center;font-size:24px;margin-top:10px}
+.sub{text-align:center;color:#93c5fd;font-size:13px;letter-spacing:1px;margin:6px 0 12px}
+.goldbar{background:linear-gradient(90deg,#facc15,#fde68a);color:#000;text-align:center;padding:10px;border-radius:20px;font-weight:900;font-size:12px;margin:0 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 10px}
+.card{background:#111c4d;border:1px solid #2a3a7a;border-radius:15px;padding:14px;text-align:center}
+.card small{color:#cbd5e1;font-size:11px}
+.card b{display:block;font-size:16px;margin:5px 0 2px}
+.card p{font-size:10px;color:#94a3b8}
+.mining{background:#111c4d;border:1px solid #2a3a7a;border-radius:15px;padding:15px;margin:0 10px}
+.status{color:#4ade80;font-size:12px;font-weight:bold}
+.flex{display:flex;justify-content:space-around;text-align:center;margin:15px 0}
+.flex small{color:#cbd5e1}
+.flex b{display:block;margin-top:4px}
+button{width:100%;background:linear-gradient(90deg,#facc15,#fde68a);border:none;padding:15px;font-size:19px;font-weight:900;border-radius:12px;color:#000}
+.footer{text-align:center;font-size:10px;color:#94a3b8;margin-top:12px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#0a1233;display:flex;justify-content:space-around;padding:14px 0;font-size:22px;border-top:1px solid #2a3a7a}
 </style>
 </head>
 <body>
-<div class="coin">🪙</div>
-<h1>US TOKEN</h1>
-<p>Free Mining - Earn Daily</p>
-<div class="box">
-<h2>Balance</h2>
-<h1 id="bal">0.0000 US</h1>
-<p id="status">Press START to Mining</p>
+<div class="top"><div>⏰ LIVE • <span id="clock">14:32:11</span></div><div>🇺🇸 USA - Operated from United States</div></div>
+<div class="top"><div class="badge">⏳ COUNTDOWN<br><b>28d 06:12:45</b></div></div>
+
+<div class="coin-wrap"><div class="coin"><div class="coin-inner">🔷</div><span>US<br>US TOKEN</span></div></div>
+<h1>US TOKEN - Powered by Ethereum</h1>
+<p class="sub">DIGITAL TOKEN — LISTING SOON</p>
+<div class="goldbar">COMING SOON ON EXCHANGE • LISTING IN 1-2 MONTHS ✨</div>
+
+<div class="grid">
+<div class="card"><small>Balance</small><b id="bal">+0.000000 UST</b><p>USD ≈ $0.00</p></div>
+<div class="card"><small>Session Reward</small><b id="sess">+0.000120 UST</b><p>Earned this session</p></div>
+</div>
+
+<div class="mining">
+<div class="status">● MINING STATUS — <span id="mstatus">READY ✔️</span></div>
+<div class="flex"><div><small>Processing time</small><b id="time">00:00:00</b></div><div><small>Mining period</small><b>30 Days</b></div></div>
 <button onclick="start()">START MINING ⛏️</button>
 </div>
+<p class="footer">Token Name: US Token • Symbol: UST • Ethereum ERC-20 • Listing: Exchange Soon</p>
+<div class="nav"><span>☰</span><span>▶️</span><span>🚀</span><span>👛</span><span>🕒</span></div>
+
 <script>
-let b=0;let on=false;
+let b=0, s=0.00012, sec=0, on=false;
+function fmt(n){return n.toFixed(6)}
 function start(){
 if(on) return; on=true;
-document.getElementById('status').innerText='Mining Running...';
-setInterval(()=>{b+=0.001;document.getElementById('bal').innerText=b.toFixed(4)+' US'},1000);
+document.getElementById('mstatus').innerText='MINING...';
+setInterval(()=>{
+b+=0.00001; s+=0.00001; sec++;
+let h=String(Math.floor(sec/3600)).padStart(2,'0');
+let m=String(Math.floor(sec%3600/60)).padStart(2,'0');
+let ss=String(sec%60).padStart(2,'0');
+document.getElementById('bal').innerText='+'+fmt(b)+' UST';
+document.getElementById('sess').innerText='+'+fmt(s)+' UST';
+document.getElementById('time').innerText=h+':'+m+':'+ss;
+},1000);
 }
+setInterval(()=>{document.getElementById('clock').innerText=new Date().toLocaleTimeString()},1000);
 </script>
 </body>
 </html>
