@@ -22,7 +22,6 @@
       --text-dim: #5e6678;
       --border: rgba(255, 255, 255, 0.08);
       --border-gold: rgba(244, 196, 48, 0.35);
-      --success: #22c55e;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -78,7 +77,7 @@
     .view {
       display: none;
       padding: 12px 16px 18px;
-      animation: fadeIn 0.18s ease;
+      animation: fadeIn 0.16s ease;
     }
 
     .view.active {
@@ -109,12 +108,12 @@
     }
 
     .coin-wrap.mining-active-anim svg.coin-svg {
-      animation: pulseCoin 2.2s ease-in-out infinite;
+      animation: pulseCoin 2s ease-in-out infinite;
     }
 
     @keyframes pulseCoin {
       0%, 100% { transform: scale(1) translateY(0); }
-      50% { transform: scale(1.03) translateY(-4px); }
+      50% { transform: scale(1.035) translateY(-4px); }
     }
 
     .coin-title {
@@ -218,6 +217,7 @@
       cursor: pointer;
       box-shadow: 0 8px 24px var(--gold-glow);
       transition: transform 0.1s ease;
+      user-select: none;
     }
 
     .btn-gold:active {
@@ -244,6 +244,7 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
+      user-select: none;
     }
 
     .btn-secondary:active, .btn-gold-sm:active {
@@ -260,11 +261,23 @@
       font-size: 12px;
       cursor: pointer;
       white-space: nowrap;
+      user-select: none;
     }
 
     .btn-gold-sm:disabled {
       opacity: 0.45;
       cursor: not-allowed;
+    }
+
+    .btn-del-sm {
+      padding: 6px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.14);
+      color: #fca5a5;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .mining-meta {
@@ -349,7 +362,7 @@
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       flex-shrink: 0;
     }
 
@@ -416,7 +429,7 @@
 
     .input {
       width: 100%;
-      height: 39px;
+      height: 40px;
       border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--bg-app);
@@ -562,8 +575,8 @@
       <div class="balance-grid">
         <div class="stat-box">
           <div class="stat-label">MINED BALANCE</div>
-          <div class="stat-value" id="minedBalanceText">1,290.7800 US</div>
-          <div class="stat-usd" id="minedUsdText">≈ $645.39 USD</div>
+          <div class="stat-value" id="minedBalanceText">1,360.8512 US</div>
+          <div class="stat-usd" id="minedUsdText">≈ $680.43 USD</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">REFERRAL BONUS</div>
@@ -636,8 +649,8 @@
 
       <div class="card card-gold">
         <div class="muted">Total Balance</div>
-        <div class="stat-value mt-8" style="font-size: 23px;" id="walletTotalUS">1,490.78 US</div>
-        <div class="stat-usd mt-8" id="walletTotalUSD">≈ $745.39 USD</div>
+        <div class="stat-value mt-8" style="font-size: 23px;" id="walletTotalUS">1,560.85 US</div>
+        <div class="stat-usd mt-8" id="walletTotalUSD">≈ $780.43 USD</div>
       </div>
 
       <div class="card">
@@ -677,7 +690,7 @@
             <div class="stat-value mt-8" id="refCountDisplay">10</div>
           </div>
         </div>
-        <div class="ref-box" id="refLinkBox">https://t.me/USTokenMinerBot?start=ref_884210</div>
+        <div class="ref-box" id="refLinkBox">https://t.me/USTokenMinerBot?start=ref_8813537807</div>
         <div class="balance-grid" style="margin-top: 0;">
           <button class="btn-gold-sm" id="copyRefBtn" type="button" style="height: 38px;">Copy Link</button>
           <button class="btn-secondary" id="simInviteBtn" type="button" style="height: 38px;">+1 Referral</button>
@@ -686,14 +699,15 @@
 
       <!-- Admin Login Box -->
       <div class="card" id="adminLoginCard">
-        <div class="task-name" style="color: var(--gold-2); margin-bottom: 10px;">Admin Login</div>
+        <div class="task-name" style="color: var(--gold-2); margin-bottom: 6px;">Admin Login</div>
+        <div class="muted" style="margin-bottom: 10px;">Default: <span style="color:#fde68a;">admin</span> / <span style="color:#fde68a;">123</span></div>
         <div class="field-group">
           <label class="field-label" for="adminUserInput">Admin Username</label>
-          <input class="input" id="adminUserInput" type="text" placeholder="admin" />
+          <input class="input" id="adminUserInput" type="text" autocomplete="username" placeholder="admin" />
         </div>
         <div class="field-group">
           <label class="field-label" for="adminPassInput">Admin Password</label>
-          <input class="input" id="adminPassInput" type="password" placeholder="••••••••" />
+          <input class="input" id="adminPassInput" type="password" autocomplete="current-password" placeholder="123" />
         </div>
         <button class="btn-gold" id="adminLoginBtn" type="button" style="height: 42px; margin-top: 6px;">
           Login to Admin Panel
@@ -703,30 +717,34 @@
       <!-- Admin Dashboard (Visible after login) -->
       <div class="card card-gold" id="adminDashboardCard" style="display: none;">
         <div class="row-between" style="margin-bottom: 12px;">
-          <div class="task-name" style="color: var(--gold-2);">Admin Panel (Active)</div>
+          <div class="task-name" style="color: var(--gold-2);">Admin Panel (Logged In)</div>
           <button class="btn-secondary" id="adminLogoutBtn" type="button" style="width: auto; height: 32px; padding: 0 10px; font-size: 11.5px;">
             Logout
           </button>
         </div>
 
+        <div class="task-name" style="margin-bottom: 8px;">Give New Task to Users</div>
+
         <div class="field-group">
-          <label class="field-label" for="newTaskTitle">New Task Title</label>
-          <input class="input" id="newTaskTitle" type="text" placeholder="e.g. Join Telegram Group & Verify" />
+          <label class="field-label" for="newTaskTitle">Task Title</label>
+          <input class="input" id="newTaskTitle" type="text" placeholder="e.g. Join Channel & Like Post" />
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="newTaskUrl">Task Link (URL - Optional)</label>
+          <label class="field-label" for="newTaskUrl">Task Link (Optional)</label>
           <input class="input" id="newTaskUrl" type="url" placeholder="https://t.me/your_channel" />
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="newTaskReward">Task Reward (US)</label>
+          <label class="field-label" for="newTaskReward">Reward (US)</label>
           <input class="input" id="newTaskReward" type="number" min="1" step="0.5" placeholder="50" />
         </div>
 
-        <button class="btn-gold-sm" id="addTaskBtn" type="button" style="width: 100%; height: 38px; margin-bottom: 14px;">
-          + Publish Task to Users
+        <button class="btn-gold-sm" id="addTaskBtn" type="button" style="width: 100%; height: 40px; margin-bottom: 12px;">
+          + Add Task
         </button>
+
+        <div id="adminManageTaskList" style="margin-bottom: 14px;"></div>
 
         <div class="field-group">
           <label class="field-label" for="adminRateInput">Hourly Mining Rate (US / hr)</label>
@@ -769,13 +787,12 @@
   </div>
 
   <script>
-    // Change these credentials before deploying publicly
     const ADMIN_CREDENTIALS = {
       username: "admin",
       password: "123"
     };
 
-    const STORAGE_KEY = "us_token_app_v2";
+    const STORAGE_KEY = "us_token_app_v3";
     const USD_RATE = 0.5;
     const SESSION_MS = 6 * 60 * 60 * 1000;
 
@@ -785,9 +802,8 @@
       tg.expand();
     }
 
-    // Gentle click sound via Web Audio API
     let audioCtx = null;
-    function playClickSound(type = "tap") {
+    function playSound(type = "tap") {
       try {
         const Ctx = window.AudioContext || window.webkitAudioContext;
         if (!Ctx) return;
@@ -800,24 +816,24 @@
 
         if (type === "start") {
           osc.frequency.setValueAtTime(520, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.14);
+          osc.frequency.exponentialRampToValueAtTime(860, audioCtx.currentTime + 0.13);
         } else {
-          osc.frequency.setValueAtTime(640, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(420, audioCtx.currentTime + 0.06);
+          osc.frequency.setValueAtTime(620, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(420, audioCtx.currentTime + 0.055);
         }
 
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+        gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.13);
 
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.15);
+        osc.stop(audioCtx.currentTime + 0.14);
       } catch {}
     }
 
     const defaultState = {
-      minedBalance: 1290.78,
+      minedBalance: 1360.8512,
       refBalance: 200.00,
       refCount: 10,
       hourlyRate: 1.20,
@@ -901,7 +917,7 @@
     }
 
     function toggleMining() {
-      playClickSound("start");
+      playSound("start");
       tickMining();
       if (!state.miningActive) {
         state.miningActive = true;
@@ -918,7 +934,7 @@
     }
 
     function switchView(target) {
-      playClickSound("tap");
+      playSound("tap");
       document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
       const el = document.getElementById("view-" + target);
@@ -926,13 +942,15 @@
       const nav = document.querySelector(`.nav-btn[data-target="${target}"]`);
       if (nav) nav.classList.add("active");
       if (target === "tasks") renderTasks();
+      if (target === "refer") render();
     }
 
     function renderTasks() {
       const box = document.getElementById("tasksList");
+      if (!box) return;
       box.innerHTML = "";
       if (!state.tasks.length) {
-        box.innerHTML = `<div class="card"><div class="muted">No tasks available right now. Admin can add tasks from the Refer/Admin tab.</div></div>`;
+        box.innerHTML = `<div class="card"><div class="muted">No tasks yet. Login to Admin Panel in Refer tab to add tasks.</div></div>`;
         return;
       }
 
@@ -943,7 +961,7 @@
           ? `<a class="task-link" href="${task.url}" target="_blank" rel="noopener noreferrer">${task.url}</a>`
           : "";
         item.innerHTML = `
-          <div class="task-icon">${task.badge || "US"}</div>
+          <div class="task-icon">${task.badge || "TASK"}</div>
           <div class="task-info">
             <div class="task-name">${task.title}</div>
             ${linkHtml}
@@ -960,7 +978,7 @@
 
       box.querySelectorAll("button[data-tid]").forEach(btn => {
         btn.addEventListener("click", () => {
-          playClickSound("start");
+          playSound("start");
           const id = btn.getAttribute("data-tid");
           const t = state.tasks.find(x => x.id === id);
           if (t && !t.completed) {
@@ -968,14 +986,46 @@
             state.minedBalance += Number(t.reward);
             saveState();
             render();
-            showToast(`+${Number(t.reward).toFixed(2)} US added!`);
+            renderTasks();
+            showToast(`+${Number(t.reward).toFixed(2)} US claimed!`);
           }
+        });
+      });
+    }
+
+    function renderAdminManageTasks() {
+      const el = document.getElementById("adminManageTaskList");
+      if (!el) return;
+      if (!state.tasks.length) {
+        el.innerHTML = `<div class="muted">No active tasks.</div>`;
+        return;
+      }
+      el.innerHTML = state.tasks.map(t => `
+        <div class="row-between" style="background: var(--bg-app); padding: 8px 10px; border-radius: 9px; margin-bottom: 6px; border: 1px solid var(--border);">
+          <div style="min-width:0; flex:1;">
+            <div style="font-size:12px; font-weight:700;">${t.title}</div>
+            <div class="muted">+${Number(t.reward).toFixed(2)} US</div>
+          </div>
+          <button class="btn-del-sm" data-del-id="${t.id}" type="button">Delete</button>
+        </div>
+      `).join("");
+
+      el.querySelectorAll("button[data-del-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          playSound("tap");
+          const id = btn.getAttribute("data-del-id");
+          state.tasks = state.tasks.filter(x => x.id !== id);
+          saveState();
+          renderAdminManageTasks();
+          renderTasks();
+          showToast("Task removed.");
         });
       });
     }
 
     function renderAdminWithdrawals() {
       const el = document.getElementById("adminWithdrawList");
+      if (!el) return;
       if (!state.withdrawals.length) {
         el.innerHTML = `<div class="muted">No user withdrawal requests yet.</div>`;
         return;
@@ -1063,7 +1113,6 @@
         document.getElementById("refLinkBox").textContent = `https://t.me/USTokenMinerBot?start=ref_${tgUser.id}`;
       }
 
-      // Admin login / panel toggle
       const loginCard = document.getElementById("adminLoginCard");
       const dashCard = document.getElementById("adminDashboardCard");
       if (state.isAdminLoggedIn) {
@@ -1075,6 +1124,7 @@
         if (document.activeElement !== document.getElementById("adminBannerInput")) {
           document.getElementById("adminBannerInput").value = state.bannerText;
         }
+        renderAdminManageTasks();
         renderAdminWithdrawals();
       } else {
         loginCard.style.display = "block";
@@ -1082,7 +1132,6 @@
       }
     }
 
-    // Bindings
     document.querySelectorAll(".nav-btn").forEach(b => {
       b.addEventListener("click", () => switchView(b.getAttribute("data-target")));
     });
@@ -1091,7 +1140,7 @@
     document.getElementById("boostMiningBtn").addEventListener("click", toggleMining);
 
     document.getElementById("dailyCheckinBtn").addEventListener("click", () => {
-      playClickSound("start");
+      playSound("start");
       const now = Date.now();
       if (now - state.lastCheckin < 86400000) return;
       state.lastCheckin = now;
@@ -1102,7 +1151,7 @@
     });
 
     document.getElementById("upgradeRigBtn").addEventListener("click", () => {
-      playClickSound("tap");
+      playSound("tap");
       const cost = state.rigLevel * 100;
       const total = state.minedBalance + state.refBalance;
       if (total < cost) {
@@ -1124,7 +1173,7 @@
     });
 
     document.getElementById("connectWalletBtn").addEventListener("click", () => {
-      playClickSound("tap");
+      playSound("tap");
       state.walletAddress = state.walletAddress ? "" : "UQBx9f...4k82M";
       saveState();
       render();
@@ -1132,7 +1181,7 @@
     });
 
     document.getElementById("submitWithdrawBtn").addEventListener("click", () => {
-      playClickSound("tap");
+      playSound("tap");
       const inp = document.getElementById("withdrawAmountInput");
       const amt = parseFloat(inp.value);
       const total = state.minedBalance + state.refBalance;
@@ -1152,7 +1201,7 @@
     });
 
     document.getElementById("copyRefBtn").addEventListener("click", () => {
-      playClickSound("tap");
+      playSound("tap");
       const txt = document.getElementById("refLinkBox").textContent;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(txt).catch(() => {});
@@ -1161,7 +1210,7 @@
     });
 
     document.getElementById("simInviteBtn").addEventListener("click", () => {
-      playClickSound("start");
+      playSound("start");
       state.refCount += 1;
       state.refBalance += 20;
       saveState();
@@ -1170,7 +1219,7 @@
     });
 
     document.getElementById("adminLoginBtn").addEventListener("click", () => {
-      playClickSound("tap");
+      playSound("tap");
       const u = document.getElementById("adminUserInput").value.trim();
       const p = document.getElementById("adminPassInput").value.trim();
       if (u === ADMIN_CREDENTIALS.username && p === ADMIN_CREDENTIALS.password) {
@@ -1179,28 +1228,28 @@
         document.getElementById("adminPassInput").value = "";
         saveState();
         render();
-        showToast("Admin login successful!");
+        showToast("Admin panel unlocked!");
       } else {
-        showToast("Invalid username or password!");
+        showToast("Wrong username or password! Use admin / 123");
       }
     });
 
     document.getElementById("adminLogoutBtn").addEventListener("click", () => {
-      playClickSound("tap");
+      playSound("tap");
       state.isAdminLoggedIn = false;
       saveState();
       render();
-      showToast("Logged out of Admin Panel.");
+      showToast("Logged out.");
     });
 
     document.getElementById("addTaskBtn").addEventListener("click", () => {
-      playClickSound("start");
+      playSound("start");
       const title = document.getElementById("newTaskTitle").value.trim();
       const url = document.getElementById("newTaskUrl").value.trim();
       const reward = parseFloat(document.getElementById("newTaskReward").value);
 
       if (!title || !reward || reward <= 0) {
-        showToast("Enter task title and valid US reward.");
+        showToast("Enter task title and reward.");
         return;
       }
 
@@ -1218,19 +1267,20 @@
       document.getElementById("newTaskReward").value = "";
 
       saveState();
+      renderAdminManageTasks();
       renderTasks();
-      showToast("New task published to Tasks tab!");
+      showToast("Task added! Check Tasks tab.");
     });
 
     document.getElementById("saveSettingsBtn").addEventListener("click", () => {
-      playClickSound("tap");
+      playSound("tap");
       const r = parseFloat(document.getElementById("adminRateInput").value);
       const b = document.getElementById("adminBannerInput").value.trim();
       if (r && r > 0) state.hourlyRate = Number(r.toFixed(2));
       if (b) state.bannerText = b;
       saveState();
       render();
-      showToast("Settings saved!");
+      showToast("Rate & banner saved!");
     });
 
     setInterval(() => {
