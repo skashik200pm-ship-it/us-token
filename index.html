@@ -7,23 +7,27 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial;padding-bottom:90px}
+body{background:#000;color:#fff;font-family:Arial;padding-bottom:95px}
 .top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #222}
 .top b{color:#E6FF00;font-size:26px}
 .left{display:flex;align-items:center;gap:6px}
 .tg{width:38px;height:38px;background:#2AABEE;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
-.us-flag{font-size:24px;line-height:1}
+.flag{font-size:24px}
 .balance{text-align:center;margin-top:14px}
-.balance b{font-size:42px;color:#E6FF00}
-.balance small{color:#888;font-size:13px}
-.balance small b{color:#E6FF00;font-size:13px}
+.balance b{font-size:42px;color:#E6FF00;text-shadow:0 0 20px #E6FF00}
+.balance small{color:#888}
+.balance small b{color:#E6FF00}
+/* এই ছবির মতো কয়েন - কালো ভিতর, সোনালি রিং, সোনালি US */
 .coin-wrap{margin:18px auto;width:220px;height:220px;text-align:center}
-.coin{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFE55C,#FFD700 45%,#B8860B);display:flex;align-items:center;justify-content:center;font-size:70px;font-weight:900;color:#E6FF00;border:5px solid #FFD700;box-shadow:0 0 50px rgba(255,215,0,.6);cursor:pointer}
-.coin:active{transform:scale(.94)}
-.mining{text-align:center;color:#E6FF00;font-weight:900;font-size:26px}
+.coin{width:100%;height:100%;border-radius:50%;background:#000;border:6px solid #FFD700;box-shadow:0 0 45px rgba(255,215,0,.7),inset 0 0 0 3px #000,inset 0 0 0 6px #FFD700;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.coin:active{transform:scale(.95)}
+.coin .stars{color:#FFD700;font-size:11px;letter-spacing:4px}
+.coin .us{font-size:68px;font-weight:900;color:#FFD700;font-style:italic;text-shadow:0 0 15px #FFD700,3px 3px 0 #7a5c00;transform:skewX(-8deg);line-height:1}
+.coin .lines{color:#FFD700;font-size:12px;letter-spacing:2px;margin-top:2px}
+.mining{text-align:center;color:#E6FF00;font-weight:900;font-size:26px;margin-top:8px}
 .energy{margin:14px 16px;border:1px solid #E6FF00;border-radius:14px;padding:13px}
 .bar{height:14px;background:#222;border-radius:10px;overflow:hidden;margin:10px 0 6px}
-.fill{height:100%;background:#E6FF00;width:100%}
+.fill{height:100%;background:#E6FF00;width:100%;box-shadow:0 0 10px #E6FF00}
 .tasks-title{padding:6px 16px;color:#E6FF00;font-size:20px;font-weight:900}
 .card{margin:10px 16px;border:1px solid #E6FF00;border-radius:14px;padding:14px;background:#0a0a0a}
 .task{display:flex;justify-content:space-between;align-items:center}
@@ -42,16 +46,19 @@ body{background:#000;color:#fff;font-family:Arial;padding-bottom:90px}
 <body>
 
 <div class="top">
-  <div class="left">
-    <div class="tg">✈️</div>
-    <span class="us-flag">🇺🇸</span>
-  </div>
+  <div class="left"><div class="tg">✈️</div><span class="flag">🇺🇸</span></div>
   <b>Blum Mining</b>
   <span style="color:#E6FF00;font-size:22px">•••</span>
 </div>
 
 <div class="balance"><b id="balance">12,456.78 US</b><br><small>Balance • <b>+123.4 US / hour</b></small></div>
-<div class="coin-wrap"><div class="coin" id="coin">US</div></div>
+
+<div class="coin-wrap"><div class="coin" id="coin">
+  <div class="stars">★ ★ ★</div>
+  <div class="us">US</div>
+  <div class="lines">▂▂▂▂ ★</div>
+</div></div>
+
 <div class="mining">MINING ACTIVE •••</div>
 
 <div class="energy">
@@ -65,39 +72,6 @@ body{background:#000;color:#fff;font-family:Arial;padding-bottom:90px}
 <div class="card"><div class="task"><div><b>🎯 Follow @Blum on Telegram</b><br><small>+100 US reward</small></div><button class="btn btn-y" onclick="doTask(this,100)">Claim</button></div></div>
 <div class="card"><div class="task"><div><b>👥 Invite 3 Friends</b><br><small>1/3 completed • +300 US reward</small></div><button class="btn btn-o">Go</button></div></div>
 
-<div class="count">
-  <div style="color:#888;font-size:11px">⏳ LISTING - 3 MONTHS COUNTDOWN</div>
-  <b id="countdown">90D : 00H : 00M : 00S</b>
-</div>
+<div class="count"><div style="color:#888;font-size:11px">⏳ LISTING - 3 MONTHS COUNTDOWN</div><b id="countdown">90D : 00H : 00M : 00S</b></div>
 
-<div class="nav">
-  <div class="active"><b>⛏️</b>Mine</div>
-  <div><b>☰</b>Tasks</div>
-  <div><b>💰</b>Earn</div>
-  <div><b>👛</b>Wallet</div>
-  <div><b>👤</b>Profile</div>
-</div>
-
-<script>
-let bal=12456.78, energy=1200;
-let start=localStorage.getItem('us_start');
-if(!start){start=Date.now();localStorage.setItem('us_start',start);}
-function update(){
-  document.getElementById('balance').innerText=bal.toLocaleString('en-US',{minimumFractionDigits:2})+' US';
-  document.getElementById('energyText').innerText=energy+' / 1200';
-  document.getElementById('energyFill').style.width=(energy/12)+'%';
-}
-document.getElementById('coin').addEventListener('click',()=>{
-  if(energy<=0)return; bal+=1; energy-=1; update();
-});
-function doTask(btn,amt){ bal+=amt; update(); btn.innerText='✓ Claimed'; btn.disabled=true; }
-setInterval(()=>{
-  bal+=123.4/3600; if(energy<1200)energy+=1; update();
-  let end=parseInt(start)+90*24*60*60*1000, diff=end-Date.now();
-  let d=Math.floor(diff/86400000), h=Math.floor(diff%86400000/3600000), m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
-  document.getElementById('countdown').innerText=d+'D : '+h+'H : '+m+'M : '+s+'S';
-},1000);
-update();
-</script>
-</body>
-</html>
+<div class="nav"><div class="active"><b>⛏️</b>Mine</div><div><b>☰</b>Tasks</div><div><b>💰</b>Earn</div>
