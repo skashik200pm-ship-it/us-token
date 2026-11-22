@@ -1,107 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>US TOKEN - Powered by Ethereum</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>US TOKEN - Mining</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{background:radial-gradient(circle at 50% 0%,#0a1a5e 0%,#050a2a 55%,#02051a 100%);color:#fff;min-height:100vh;padding:14px 14px 95px;overflow-x:hidden}
-.top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600}
-.live{color:#ff4d4d;animation:blink 1s infinite}
-@keyframes blink{50%{opacity:.3}}
-.count{background:rgba(10,20,70,.8);border:1px solid #2a4cff;padding:9px 14px;border-radius:999px;margin:14px 0;font-size:13px;font-weight:700;display:inline-block}
-.count b{color:#fff;margin-left:6px}
-.coin-box{text-align:center;position:relative;margin:8px 0 5px}
-.glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:260px;height:260px;background:radial-gradient(circle,rgba(255,215,0,.55),transparent 65%);filter:blur(20px)}
-.coin{width:215px;height:215px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff7b0,#ffe14d 25%,#f5c518 55%,#a67c00 85%,#7a5a00);border:7px solid #ffcf00;box-shadow:0 0 0 3px #b8860b,0 0 45px #ffd700, inset 0 -15px 25px rgba(0,0,0,.35), inset 0 12px 18px rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;position:relative;animation:float 3s ease-in-out infinite}
-@keyframes float{50%{transform:translateY(-8px) scale(1.02)}}
-.mining .coin{animation:spin 1.2s linear infinite}
-@keyframes spin{100%{transform:rotateY(360deg)}}
-.eth{width:0;height:0;border-left:55px solid transparent;border-right:55px solid transparent;border-bottom:95px solid #2563eb;position:relative;filter:drop-shadow(0 8px 10px rgba(0,0,0,.4))}
-.eth:after{content:'';position:absolute;left:-55px;top:95px;border-left:55px solid transparent;border-right:55px solid transparent;border-top:55px solid #1e40af}
-.badge{position:absolute;left:50%;bottom:48px;transform:translateX(-50%);background:#1e2f8a;border:2px solid #fff3;border-radius:999px;padding:6px 18px;font-weight:900;line-height:1.1;font-size:15px;box-shadow:0 8px 20px rgba(0,0,0,.5);z-index:2}
-.badge small{font-size:11px;letter-spacing:1px}
-h1{text-align:center;font-size:29px;line-height:1.2;margin-top:18px}
-.sub{text-align:center;color:#8fb4ff;letter-spacing:2.5px;font-size:14px;margin:10px 0 14px}
-.gold{background:linear-gradient(90deg,#ffd700,#fff59d,#ffd700);color:#000;text-align:center;padding:13px 8px;border-radius:999px;font-weight:900;font-size:14px;box-shadow:0 10px 25px rgba(255,215,0,.3)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
-.card{background:linear-gradient(180deg,#141f5c,#0d1545);border:1px solid #2b3f9e;border-radius:20px;padding:18px 10px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,.3)}
-.card small{color:#aab8ff;font-size:13px}
-.card b{display:block;font-size:20px;margin:8px 0 3px}
-.card p{font-size:12px;color:#8a9ac5}
-.panel{background:linear-gradient(180deg,#141f5c,#0d1545);border:1px solid #2b3f9e;border-radius:20px;padding:16px}
-.status{color:#34ff8a;font-weight:800;font-size:14px}
-.flex{display:flex;justify-content:space-between;text-align:center;margin:16px 0 12px}
-.flex small{color:#aab8ff}
-.flex b{display:block;margin-top:5px;font-size:16px}
-.bar{height:8px;background:#0a1233;border-radius:999px;overflow:hidden;margin:8px 0 14px}
-.fill{height:100%;width:0%;background:linear-gradient(90deg,#ffd700,#00ff88);transition:width .3s}
-button{width:100%;background:linear-gradient(90deg,#ffe14d,#ffb800);border:none;padding:17px;border-radius:14px;font-size:20px;font-weight:900;letter-spacing:.5px;box-shadow:0 12px 25px rgba(255,200,0,.4);cursor:pointer}
-button:active{transform:scale(.97)}
-.mining button{background:linear-gradient(90deg,#00e676,#00b894);color:#fff}
-.hash{text-align:center;font-size:12px;color:#8fb4ff;margin-top:10px}
-.fly{position:fixed;left:50%;top:45%;font-weight:900;color:#ffd700;font-size:18px;animation:fly 1.2s forwards;pointer-events:none;z-index:99}
-@keyframes fly{to{transform:translate(40px,-90px);opacity:0}}
-.foot{text-align:center;font-size:11px;color:#7d8cc9;margin-top:13px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#070e33;border-top:1px solid #1e2f6a;display:flex;justify-content:space-around;padding:13px 0 18px;font-size:26px;z-index:10}
-.nav span.active{transform:scale(1.25)}
-</style>
-</head>
-<body>
-<div class="top"><div><span class="live">⏰ LIVE •</span> <span id="clock">1:22:43 PM</span></div><div>🇺🇸 USA - Operated from United States</div></div>
-<div class="count">⏳ COUNTDOWN <b id="cd">28d 06:12:45</b></div>
-
-<div class="coin-box" id="coinBox"><div class="glow"></div><div class="coin"><div class="eth"></div><div class="badge">US<br><small>US TOKEN</small></div></div></div>
-
-<h1>US TOKEN - Powered by<br>Ethereum</h1>
-<p class="sub">DIGITAL TOKEN — LISTING SOON</p>
-<div class="gold">COMING SOON ON EXCHANGE • LISTING IN 1-2 MONTHS ✨</div>
-
-<div class="grid">
-<div class="card"><small>Balance</small><b id="bal">+0.000000 UST</b><p>USD ≈ $<span id="usd">0.00</span></p></div>
-<div class="card"><small>Session Reward</small><b id="sess" style="color:#ffd700">+0.000120 UST</b><p>Earned this session</p></div>
-</div>
-
-<div class="panel">
-<div class="status">● MINING STATUS — <span id="st">READY ✔️</span></div>
-<div class="flex"><div><small>Processing time</small><b id="time">00:00:00</b></div><div><small>Hash Rate</small><b id="hash">0 H/s</b></div><div><small>Mining period</small><b>30 Days</b></div></div>
-<div class="bar"><div class="fill" id="fill"></div></div>
-<button id="btn" onclick="start()">START MINING ⛏️</button>
-<div class="hash" id="hashText">Press START to begin mining • Free • No Investment</div>
-</div>
-<p class="foot">Token Name: US Token • Symbol: UST • Network: Ethereum ERC-20 • Listing: Exchange Soon</p>
-<div class="nav"><span>☰</span><span>▶️</span><span class="active">🚀</span><span>👛</span><span>🕒</span></div>
-
-<script>
-let bal=0, sess=0.00012, sec=0, on=false, prog=0;
-let end = Date.now() + (28*24*3600 + 6*3600 + 12*60 + 45)*1000;
-function fmt(n){return n.toFixed(6)}
-function start(){
- if(on) return; on=true;
- document.body.classList.add('mining');
- document.getElementById('st').innerText='MINING...';
- document.getElementById('st').style.color='#00ff88';
- let btn=document.getElementById('btn'); btn.innerText='⛏️ MINING... TAP TO BOOST 🚀'; btn.style.color='#fff';
- document.getElementById('hashText').innerText='Mining Active • You are earning every second';
- setInterval(()=>{
-   bal+=0.00001; sess+=0.00001; sec++; prog=(prog+0.2)%100;
-   document.getElementById('bal').innerText='+'+fmt(bal)+' UST';
-   document.getElementById('sess').innerText='+'+fmt(sess)+' UST';
-   document.getElementById('usd').innerText=(bal*0.12).toFixed(2);
-   document.getElementById('fill').style.width=prog+'%';
-   document.getElementById('hash').innerText=(125+Math.floor(Math.random()*40))+' H/s';
-   let h=String(Math.floor(sec/3600)).padStart(2,'0'), m=String(Math.floor(sec%3600/60)).padStart(2,'0'), s=String(sec%60).padStart(2,'0');
-   document.getElementById('time').innerText=h+':'+m+':'+s;
-   if(sec%5==0){ let f=document.createElement('div'); f.className='fly'; f.innerText='+0.000050 UST'; f.style.left=(45+Math.random()*10)+'%'; document.body.appendChild(f); setTimeout(()=>f.remove(),1200); }
- },1000);
-}
-document.getElementById('btn').addEventListener('click',()=>{ if(on){ bal+=0.00005; sess+=0.00005; }});
-setInterval(()=>{
- document.getElementById('clock').innerText=new Date().toLocaleTimeString();
- let d=end-Date.now(); if(d<0) d=0;
- let days=Math.floor(d/86400000), hh=Math.floor(d%86400000/3600000), mm=Math.floor(d%3600000/60000), ss=Math.floor(d%60000/1000);
- document.getElementById('cd').innerText=days+'d '+String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
-},1000);
-</script>
-</body>
-</html>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:center}
+.app{width:100%;max-width:420px;min-height:100vh;background:#050505;padding:14px 14px 20px;position:relative;overflow:hidden}
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;background:#0a0a0a;border-radius:16px;padding:12px}
+.left{display:flex;align-items:center;gap:8px}
+.flag{width:38px;height:38px;border-radius:50%;background:conic-gradient(#b31942 0 25%,#fff 0 50%,#0a3161 0 75%,#fff 0);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;border:1px solid #333}
+.flag span{font-size:22px}
+.header h1{font-size:22px;letter-spacing:.5px}
+.live{border:1px solid #ff2d2d;color:#ff2d2d;font-size:12px;font-weight:700;padding:5px 8px;border-radius:8px}
+.live b{color:#ff2d2d}
+.wallet-note{text-align:center;font-size:11px;color:#e8c87a;margin:12px 0 6px;letter-spacing:.2px}
+/* COIN - COFFEE GLOW BEHIND */
+.coin-wrap{position:relative;width:260px;height:260px;margin:10px auto 0;display:flex;align-items:center;justify-content:center}
+.coin-wrap::before{content:'';position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,#6f4e2e 0%,#4a2f16 35%,#2a1a0a 60%,transparent 72%);filter:blur(2px);z-index:0}
+.coin-wrap::after{content:'';position:absolute;width:230px;height:230px;border-radius:50%;border:2px solid rgba(255,180,80,.35);z-index:0}
+.coin{width:225px;height:225px;border-radius:50%;z-index:2;position:relative;background:radial-gradient(circle at 30% 25%,#fff3a0,#ffd700 30%,#b8860b 55%,#8b6500 75%,#ffd700);border:4px solid #e6b800;box-shadow:0 0 40px rgba(255,180,0,.55),inset 0 0 20px rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;flex-direction:column}
+.coin-inner{width:185px;height:185px;border-radius:50%;border:2px solid rgba(139,101,0,.6);display:flex;align-items:center;justify-content:center;position:relative}
+.eth{font-size:105px;line-height:1;filter:drop-shadow(0 6px 8px rgba(0,0,0,.4))}
+.eth svg{width:105px;height:115px}
+.us-badge{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);background:#123a8a;border:2px solid #ffd700;border-radius:12px;padding:4px 14px;font-weight:900;font-size:22px;letter-spacing:1px;box-shadow:0 4px 12px rgba(0,0,0,.6);z-index:3}
+.us-badge::before{content:'★ ★ ★';display:block;font-size:7px;text-align:center;color:#fff}
+.us-badge::after{content:'★ ★ ★';display:block;font-size:7px;text-align:center;color:#fff}
+.ribbon{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:150px;height:28px;background:linear-gradient(180deg,#ffe27a,#d4a017);z-index:1;border-radius:4px}
+.coin-title{text-align:center;margin-top:18px}
+.coin-title h2{color:#f5d67a;font-size:26px;letter-spacing:1px}
+.coin-title p{color:#c9b896;font-size:14px;margin-top:2px}
+/* EXCHANGE RIBBON */
+.exchange{margin:14px 0;background:linear-gradient(180deg,#ffe27a,#d4a017);color:#1a1a1a;text-align:center;font-weight:900;font-size:19px;padding:11px;border-radius:2px;position:relative;box-shadow:0 4px 0 #8b6500}
+.exchange::before,.exchange::after{content:'';position:absolute;top:0;width:18px;height:100%;background:#b8860b;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,40% 50%)}
+.exchange::before{left:-10px;transform:scaleX(-1)}
+.exchange::after{right:-10px}
+/* COUNTDOWN */
+.countdown{border:1px solid #4a3f1a;border-radius:10
