@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US TOKEN - Watch & Earn</title>
+<title>US Token Miner</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#050505;color:#fff;font-family:Arial,sans-serif;padding-bottom:95px}
+body{background:#050505;color:#fff;font-family:Arial;padding-bottom:120px}
 .top{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#0a0a0a}
 .top .logo{width:40px;height:40px;background:#FFD700;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
-.top b{font-size:20px;letter-spacing:.5px}
+.top b{font-size:20px}
 .top .user{margin-left:auto;background:#1a1a1a;border:1px solid #333;padding:6px 12px;border-radius:20px;font-size:13px}
-.hero{margin:14px 16px;background:linear-gradient(135deg,#FFD700,#FF8A00);color:#000;border-radius:18px;padding:18px;text-align:center}
-.hero small{font-weight:bold;opacity:.7}
+.page{display:none}
+.page.active{display:block}
+.hero{margin:14px 16px;background:linear-gradient(135deg,#FFE55C,#FF8A00);color:#000;border-radius:18px;padding:18px;text-align:center}
 .hero b{font-size:38px;display:block;margin:4px 0}
 .hero p{font-size:12px;opacity:.8}
 .hero .bar{height:8px;background:rgba(0,0,0,.2);border-radius:10px;margin-top:10px;overflow:hidden}
@@ -28,34 +29,80 @@ body{background:#050505;color:#fff;font-family:Arial,sans-serif;padding-bottom:9
 .big-btn{background:linear-gradient(180deg,#FFE55C,#FFD700);color:#000;border:none;width:100%;padding:16px;border-radius:12px;font-size:19px;font-weight:900;margin-top:12px}
 .big-btn:disabled{background:#333;color:#888}
 .task{display:flex;align-items:center;gap:10px;background:#0d0d0d;border:1px solid #222;border-radius:12px;padding:12px;margin-top:10px}
-.task .ic{width:42px;height:42px;background:#1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.task .ic{width:42px;height:42px;background:#1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .task b{font-size:14px}
 .task small{color:#888;font-size:11px}
-.task button{margin-left:auto;background:#FFD700;border:none;padding:8px 12px;border-radius:8px;font-weight:900;font-size:12px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;padding:10px 10px 16px;border-top:1px solid #222;z-index:10}
-.nav div{flex:1;text-align:center;font-size:11px;color:#888}
-.nav div.active{color:#FFD700}
-.nav b{font-size:22px;display:block}
+.task button{margin-left:auto;background:#FFD700;border:none;padding:10px 14px;border-radius:8px;font-weight:900;font-size:12px;flex-shrink:0;white-space:nowrap}
+.task button.done{background:#222;color:#00ff88}
+.input{width:100%;background:#0d0d0d;border:1px solid #333;color:#fff;padding:14px;border-radius:10px;margin-top:10px;font-size:14px;outline:none}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;padding:10px 6px 18px;border-top:1px solid #222;z-index:50}
+.nav button{flex:1;background:none;border:none;color:#888;font-size:11px}
+.nav button.active{color:#FFD700}
+.nav button span{font-size:24px;display:block}
 #adModal{display:none;position:fixed;inset:0;background:#000;z-index:99;padding:18px;text-align:center}
 #adModal .vid{width:100%;height:300px;border-radius:16px;background:linear-gradient(135deg,#1a3a8a,#FFD700);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-top:16px}
-#adModal .vid span{font-size:70px}
 #timer{font-size:44px;color:#FFD700;margin:16px 0;font-weight:900}
 #claimBtn{display:none;background:#FFD700;color:#000;border:none;width:100%;padding:16px;border-radius:12px;font-size:18px;font-weight:900}
 </style>
 </head>
 <body>
 <div class="top"><div class="logo">🇺🇸</div><b>US TOKEN</b><span class="user" id="userName">👤 Guest</span></div>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
 <div class="hero"><small>💰 YOUR TOTAL BALANCE</small><b id="bal">0.00 US</b><p>≈ $<span id="usd">0.00</span> USD • 1 US = $0.50</p><div class="bar"><i id="prog"></i></div><p id="adsLeft" style="margin-top:8px">Today: 0 / 20 Ads</p></div>
-<div class="stats"><div><small>🎬 TODAY EARNED</small><b id="todayEarn">0.00 US</b></div><div><small>👥 REFERRALS</small><b>0</b></div><div><small>🏆 LEVEL</small><b>Bronze</b></div></div>
-<div class="card"><h3>🎬 Watch Video Ad & Earn</h3><p>Watch full 15 sec video ad. No skip. Reward will be added instantly after video ends. You can watch 20 ads per day.</p><button class="big-btn" id="watchBtn" onclick="watchAd()">▶️ WATCH AD • EARN +5 US</button></div>
-<div class="card"><h3>🎁 Daily Tasks</h3>
-<div class="task"><div class="ic">📅</div><div><b>Daily Check-in</b><br><small>Claim every day</small></div><button onclick="doTask(this,10)">+10 US</button></div>
-<div class="task"><div class="ic">👥</div><div><b>Invite 1 Friend</b><br><small>Share your link</small></div><button onclick="invite()">+50 US</button></div>
-<div class="task"><div class="ic">📣</div><div><b>Join Channel</b><br><small>Join our Telegram</small></div><button onclick="doTask(this,20)">+20 US</button></div>
+<div class="stats"><div><small>🎬 TODAY EARNED</small><b id="todayEarn">0.00 US</b></div><div><small>👥 REFERRALS</small><b id="refCount">0</b></div><div><small>🏆 LEVEL</small><b>Bronze</b></div></div>
+<div class="card"><h3>🎬 Watch Video Ad & Earn</h3><p>Watch full 15 sec video ad. No skip. Reward added instantly. 20 ads per day.</p><button class="big-btn" id="watchBtn" onclick="watchAd()">▶️ WATCH AD • EARN +5 US</button></div>
+<div class="card"><h3>🎁 Daily Tasks - তুমি টাস্ক দিবা, ইউজার করবে</h3>
+<div class="task"><div class="ic">📅</div><div><b>Daily Check-in</b><br><small>Every day bonus</small></div><button onclick="doTask(this,10)">+10 US</button></div>
+<div class="task"><div class="ic">📣</div><div><b>Join Our Channel</b><br><small>Join Telegram Channel</small></div><button onclick="doTask(this,20)">+20 US</button></div>
+<div class="task"><div class="ic">⭐</div><div><b>Follow & Like Post</b><br><small>Like our latest post</small></div><button onclick="doTask(this,15)">+15 US</button></div>
 </div>
-<div class="card"><h3>💳 Withdraw</h3><p>Minimum withdraw: 1000 US = $500. Withdraw via USDT / bKash / Nagad. Withdraw request goes to admin.</p><button class="big-btn" style="background:#1a1a1a;color:#fff;border:1px solid #333" onclick="withdraw()">💸 REQUEST WITHDRAW</button></div>
-<div class="nav"><div class="active"><b>🏠</b>Home</div><div onclick="watchAd()"><b>🎬</b>Earn</div><div onclick="withdraw()"><b>👛</b>Wallet</div><div onclick="invite()"><b>👥</b>Refer</div><div><b>👤</b>Profile</div></div>
+</div>
+
+<!-- EARN -->
+<div id="page-earn" class="page">
+<div class="card"><h3>🎬 Earn Page</h3><p>এখানে শুধু এড দেখে ইনকাম। প্রতিটা এড ১৫ সেকেন্ড।</p><button class="big-btn" onclick="watchAd()">▶️ WATCH AD • +5 US</button><button class="big-btn" style="background:#1a1a1a;color:#fff;border:1px solid #333" onclick="watchAd()">▶️ WATCH AGAIN</button></div>
+<div class="card"><h3>📋 More Tasks From Admin</h3><p>এডমিন (তুমি) এইখানে নতুন টাস্ক যোগ করবা। ইউজার টাস্ক শেষ করলে টাকা পাবে।</p>
+<div class="task"><div class="ic">📝</div><div><b>Watch 5 Ads Today</b><br><small>Bonus task</small></div><button onclick="doTask(this,25)">+25 US</button></div>
+<div class="task"><div class="ic">🎥</div><div><b>Share App in 3 Groups</b><br><small>Screenshot send to admin</small></div><button onclick="doTask(this,30)">+30 US</button></div>
+</div>
+</div>
+
+<!-- WALLET -->
+<div id="page-wallet" class="page">
+<div class="card"><h3>👛 My Wallet</h3><p>Balance: <b id="bal2" style="color:#FFD700">0.00 US</b></p><p style="margin-top:8px">Withdraw Minimum: 1000 US<br>Withdraw Tax / Fee: 5% (তুমি পাবা)<br>Example: 1000 US Withdraw করলে ইউজার পাবে 950 US, তোমার ট্যাক্স 50 US</p><input class="input" id="wAmount" placeholder="Amount - ex: 1000" type="number"><input class="input" id="wMethod" placeholder="bKash / Nagad / USDT Address"><button class="big-btn" onclick="withdraw()">💸 REQUEST WITHDRAW</button><p id="wMsg" style="color:#00ff88;margin-top:10px"></p></div>
+</div>
+
+<!-- REFER -->
+<div id="page-refer" class="page">
+<div class="card"><h3>👥 Invite & Earn</h3><p>প্রতি বন্ধু = +50 US। বন্ধু এড দেখলে তুমিও 10% পাবা।</p><div style="background:#000;border:1px dashed #FFD700;padding:12px;border-radius:10px;margin-top:10px;word-break:break-all;font-size:13px" id="refLink">https://t.me/us_token_bot?start=12345</div><button class="big-btn" onclick="invite()">📤 COPY INVITE LINK</button></div>
+</div>
+
+<!-- PROFILE -->
+<div id="page-profile" class="page">
+<div class="card"><h3>👤 My Profile</h3><p>Name: <b id="pName">Guest</b></p><p style="margin-top:6px">ID: <span id="pId">-</span></p><p style="margin-top:6px">Total Earned: <b id="pTotal" style="color:#FFD700">0 US</b></p><p style="margin-top:6px">Status: Active ✅</p><button class="big-btn" style="background:#1a1a1a;color:#fff;border:1px solid #333" onclick="alert('Support: @us_token_admin')">💬 CONTACT ADMIN</button></div>
+</div>
+
+<div class="nav">
+<button class="active" onclick="go('home',this)"><span>🏠</span>Home</button>
+<button onclick="go('earn',this)"><span>🎬</span>Earn</button>
+<button onclick="go('wallet',this)"><span>👛</span>Wallet</button>
+<button onclick="go('refer',this)"><span>👥</span>Refer</button>
+<button onclick="go('profile',this)"><span>👤</span>Profile</button>
+</div>
 
 <div id="adModal">
 <div style="display:flex;justify-content:space-between"><b>📺 Sponsored Ad</b><span id="adCount">15s</span></div>
-<div class="vid"><span>🎬</span><h2 style="margin-top:10px">US TOKEN</h2><p style="color:#fff;
+<div class="vid"><span style="font-size:70px">🎬</span><h2>US TOKEN</h2><p>Coming Soon on Exchange!</p></div>
+<p style="color:#999;margin-top:12px">Please watch full video to get reward</p>
+<div id="timer">15</div>
+<button id="claimBtn" onclick="claim()">🎁 CLAIM +5 US</button>
+</div>
+
+<script>
+let bal=0, watched=0, today=0;
+try{ bal=parseFloat(localStorage.getItem('us_bal2')||'0'); watched=parseInt(localStorage.getItem('us_watched2')||'0'); today=parseFloat(localStorage.getItem('us_today2')||'0'); }catch(e){}
+function save(){ try{ localStorage.setItem('us_bal2',bal); localStorage.setItem('us_watched2',watched); localStorage.setItem('us_today2',today); }catch(e){} }
+function update(){
+document
