@@ -3,75 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blum Mining</title>
+<title>US TOKEN</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#fff;font-family:Arial;padding-bottom:95px}
-.top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #222}
-.top b{color:#E6FF00;font-size:26px}
-.left{display:flex;align-items:center;gap:6px}
-.tg{width:38px;height:38px;background:#2AABEE;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
-.flag{font-size:24px}
-.balance{text-align:center;margin-top:14px}
-.balance b{font-size:42px;color:#E6FF00;text-shadow:0 0 20px #E6FF00}
-.balance small{color:#888}
-.balance small b{color:#E6FF00}
-/* এই ছবির মতো কয়েন - কালো ভিতর, সোনালি রিং, সোনালি US */
-.coin-wrap{margin:18px auto;width:220px;height:220px;text-align:center}
-.coin{width:100%;height:100%;border-radius:50%;background:#000;border:6px solid #FFD700;box-shadow:0 0 45px rgba(255,215,0,.7),inset 0 0 0 3px #000,inset 0 0 0 6px #FFD700;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative}
-.coin:active{transform:scale(.95)}
-.coin .stars{color:#FFD700;font-size:11px;letter-spacing:4px}
-.coin .us{font-size:68px;font-weight:900;color:#FFD700;font-style:italic;text-shadow:0 0 15px #FFD700,3px 3px 0 #7a5c00;transform:skewX(-8deg);line-height:1}
-.coin .lines{color:#FFD700;font-size:12px;letter-spacing:2px;margin-top:2px}
-.mining{text-align:center;color:#E6FF00;font-weight:900;font-size:26px;margin-top:8px}
-.energy{margin:14px 16px;border:1px solid #E6FF00;border-radius:14px;padding:13px}
-.bar{height:14px;background:#222;border-radius:10px;overflow:hidden;margin:10px 0 6px}
-.fill{height:100%;background:#E6FF00;width:100%;box-shadow:0 0 10px #E6FF00}
-.tasks-title{padding:6px 16px;color:#E6FF00;font-size:20px;font-weight:900}
-.card{margin:10px 16px;border:1px solid #E6FF00;border-radius:14px;padding:14px;background:#0a0a0a}
-.task{display:flex;justify-content:space-between;align-items:center}
-.task small{color:#888}
-.btn{border:none;padding:9px 16px;border-radius:9px;font-weight:900}
-.btn-y{background:#E6FF00;color:#000}
-.btn-o{background:transparent;color:#E6FF00;border:1px solid #E6FF00}
-.count{margin:14px 16px;border:1px solid #E6FF00;border-radius:14px;padding:12px;text-align:center;background:#0a0a0a}
-.count b{font-size:24px;color:#E6FF00}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;padding:10px 0 16px;border-top:1px solid #222}
-.nav div{flex:1;text-align:center;font-size:12px;color:#888}
-.nav div.active{color:#E6FF00}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+.top-left{display:flex;align-items:center;gap:8px}
+.flag{width:36px;height:36px;border-radius:50%;background:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.top b{font-size:22px;letter-spacing:1px}
+.live{background:#2a0000;border:1px solid #ff3333;color:#ff3333;font-size:12px;font-weight:900;padding:5px 8px;border-radius:8px}
+.sub{text-align:center;color:#c9a86a;font-size:11px;margin-top:-4px}
+.coin-wrap{margin:16px auto;width:230px;height:230px;text-align:center;position:relative}
+.coin{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFE55C,#FFD700 40%,#B8860B);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(255,180,0,.5);border:5px solid #FFD700;cursor:pointer}
+.coin:active{transform:scale(.96)}
+.diamond{width:0;height:0;border-left:48px solid transparent;border-right:48px solid transparent;border-bottom:85px solid #1e6fd9;position:relative}
+.diamond:after{content:'';position:absolute;left:-48px;top:85px;border-left:48px solid transparent;border-right:48px solid transparent;border-top:45px solid #0a4aa8}
+.us-badge{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:linear-gradient(#1e6fd9,#0a3a7a);border:2px solid #FFD700;border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:18px;box-shadow:0 0 15px #FFD700}
+.us-text{text-align:center;color:#e8c87a;font-weight:900;font-size:20px;margin-top:2px;letter-spacing:2px}
+.ribbon{margin:12px 16px;background:linear-gradient(#FFE55C,#D4A017);color:#000;text-align:center;font-weight:900;padding:10px;border-radius:4px;font-size:17px;box-shadow:0 0 15px rgba(255,215,0,.4)}
+.box{margin:12px 16px;border:1px solid #333;border-radius:12px;padding:12px;text-align:center;background:#0a0a0a}
+.box b{color:#e8c87a;font-size:22px}
+.box small{color:#888}
+.two{display:flex;gap:10px;margin:12px 16px}
+.two .box{flex:1;margin:0}
+.two .box b{color:#fff;font-size:21px}
+.two .box small{color:#888}
+.start{margin:14px 16px;background:#FFD700;color:#000;border:none;width:calc(100% - 32px);padding:15px;border-radius:10px;font-weight:900;font-size:19px;cursor:pointer}
+.start:disabled{background:#555;color:#aaa}
+.mining-info{text-align:center;color:#555;font-size:12px;margin-top:-6px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;display:flex;padding:10px 0 16px;border-top:1px solid #222;border-radius:16px 16px 0 0}
+.nav div{flex:1;text-align:center;font-size:12px;color:#888;cursor:pointer}
+.nav div.active{color:#FFD700}
 .nav b{font-size:24px;display:block}
-</style>
-</head>
-<body>
-
-<div class="top">
-  <div class="left"><div class="tg">✈️</div><span class="flag">🇺🇸</span></div>
-  <b>Blum Mining</b>
-  <span style="color:#E6FF00;font-size:22px">•••</span>
-</div>
-
-<div class="balance"><b id="balance">12,456.78 US</b><br><small>Balance • <b>+123.4 US / hour</b></small></div>
-
-<div class="coin-wrap"><div class="coin" id="coin">
-  <div class="stars">★ ★ ★</div>
-  <div class="us">US</div>
-  <div class="lines">▂▂▂▂ ★</div>
-</div></div>
-
-<div class="mining">MINING ACTIVE •••</div>
-
-<div class="energy">
-  <div style="display:flex;justify-content:space-between;font-weight:bold"><span style="color:#E6FF00">Energy ⚡</span><span id="energyText">1200 / 1200</span></div>
-  <div class="bar"><div class="fill" id="energyFill"></div></div>
-  <small style="color:#888">Recharges in 02:14:33</small>
-</div>
-
-<div class="tasks-title">☰ TASKS</div>
-<div class="card"><div class="task"><div><b>✅ Daily Check-in</b><br><small>Claim 50 US reward</small></div><button class="btn btn-y" onclick="doTask(this,50)">✓ Claimed</button></div></div>
-<div class="card"><div class="task"><div><b>🎯 Follow @Blum on Telegram</b><br><small>+100 US reward</small></div><button class="btn btn-y" onclick="doTask(this,100)">Claim</button></div></div>
-<div class="card"><div class="task"><div><b>👥 Invite 3 Friends</b><br><small>1/3 completed • +300 US reward</small></div><button class="btn btn-o">Go</button></div></div>
-
-<div class="count"><div style="color:#888;font-size:11px">⏳ LISTING - 3 MONTHS COUNTDOWN</div><b id="countdown">90D : 00H : 00M : 00S</b></div>
-
-<div class="nav"><div class="active"><b>⛏️</b>Mine</div><div><b>☰</b>Tasks</div><div><b>💰</b>Earn</div>
+.tab{display:none}.tab.active{display:block}
+.card{margin:12px 16px;border:1px solid #333;border-radius:12px
