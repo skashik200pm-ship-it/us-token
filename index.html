@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>US TOKEN — Telegram Mini App</title>
+  <title>US Token Miner</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,7 +13,6 @@
       --bg-app: #07080b;
       --bg-card: #12151d;
       --bg-card-2: #181c27;
-      --bg-nav: #0c0e14;
       --gold-1: #fff0a6;
       --gold-2: #f4c430;
       --gold-3: #b88318;
@@ -24,8 +23,6 @@
       --border: rgba(255, 255, 255, 0.08);
       --border-gold: rgba(244, 196, 48, 0.35);
       --success: #22c55e;
-      --danger: #ef4444;
-      --live: #ef4444;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -66,104 +63,22 @@
       border-right: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    /* Top Header */
-    .top-header {
-      position: sticky;
-      top: 0;
-      z-index: 25;
-      background: rgba(7, 8, 11, 0.88);
-      backdrop-filter: blur(14px);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .back-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-main);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .flag-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 15px;
-      letter-spacing: 0.4px;
-    }
-
-    .flag-svg {
-      width: 24px;
-      height: 16px;
-      border-radius: 3px;
-      overflow: hidden;
-      flex-shrink: 0;
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
-    }
-
-    .live-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(239, 68, 68, 0.14);
-      border: 1px solid rgba(239, 68, 68, 0.36);
-      color: #fca5a5;
-      padding: 4px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      font-family: var(--font-mono);
-    }
-
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--live);
-      box-shadow: 0 0 8px var(--live);
-      animation: pulse 1.4s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.8); }
-    }
-
-    /* Banner */
     .notice-banner {
-      margin: 10px 16px 0;
-      padding: 8px 12px;
-      border-radius: 10px;
+      margin: 12px 16px 0;
+      padding: 9px 12px;
+      border-radius: 11px;
       background: rgba(244, 196, 48, 0.08);
       border: 1px solid rgba(244, 196, 48, 0.22);
       color: #fde68a;
-      font-size: 11.5px;
+      font-size: 12px;
       text-align: center;
       line-height: 1.4;
     }
 
-    /* Views */
     .view {
       display: none;
-      padding: 14px 16px 16px;
-      animation: fadeIn 0.2s ease;
+      padding: 12px 16px 18px;
+      animation: fadeIn 0.18s ease;
     }
 
     .view.active {
@@ -175,7 +90,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Hero Coin Section */
     .coin-hero {
       display: flex;
       flex-direction: column;
@@ -185,22 +99,22 @@
     }
 
     .coin-wrap {
-      width: 174px;
-      height: 174px;
+      width: 170px;
+      height: 170px;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 12px 28px rgba(244, 196, 48, 0.25));
+      filter: drop-shadow(0 12px 28px rgba(244, 196, 48, 0.24));
     }
 
-    .coin-wrap.mining-spin svg.coin-svg {
-      animation: softFloat 3.2s ease-in-out infinite;
+    .coin-wrap.mining-active-anim svg.coin-svg {
+      animation: pulseCoin 2.2s ease-in-out infinite;
     }
 
-    @keyframes softFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+    @keyframes pulseCoin {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.03) translateY(-4px); }
     }
 
     .coin-title {
@@ -221,11 +135,9 @@
       color: #1a1203;
       font-weight: 800;
       font-size: 12.5px;
-      letter-spacing: 0.3px;
       box-shadow: 0 6px 20px rgba(244, 196, 48, 0.25);
     }
 
-    /* Countdown Box */
     .countdown-card {
       margin-top: 14px;
       width: 100%;
@@ -241,7 +153,6 @@
       font-size: 19px;
       font-weight: 700;
       color: var(--gold-1);
-      letter-spacing: 0.6px;
     }
 
     .countdown-sub {
@@ -250,7 +161,6 @@
       color: var(--text-muted);
     }
 
-    /* Balance Grid */
     .balance-grid {
       margin-top: 12px;
       display: grid;
@@ -277,7 +187,7 @@
     .stat-value {
       margin-top: 6px;
       font-family: var(--font-mono);
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 700;
       color: var(--text-main);
     }
@@ -289,7 +199,6 @@
       color: #93c5fd;
     }
 
-    /* Primary Gold Button */
     .btn-gold {
       margin-top: 14px;
       width: 100%;
@@ -308,28 +217,28 @@
       gap: 8px;
       cursor: pointer;
       box-shadow: 0 8px 24px var(--gold-glow);
-      transition: transform 0.12s ease, filter 0.15s ease;
+      transition: transform 0.1s ease;
     }
 
     .btn-gold:active {
-      transform: scale(0.985);
+      transform: scale(0.98);
     }
 
-    .btn-gold.active-mining {
-      background: linear-gradient(180deg, #34d399, #10b981 70%, #059669);
+    .btn-gold.mining-on {
+      background: linear-gradient(180deg, #4ade80, #16a34a 75%, #15803d);
       color: #052e16;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.25);
     }
 
     .btn-secondary {
       width: 100%;
-      height: 42px;
-      border-radius: 11px;
+      height: 40px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--bg-card-2);
       color: var(--text-main);
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12.5px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -337,8 +246,12 @@
       gap: 6px;
     }
 
+    .btn-secondary:active, .btn-gold-sm:active {
+      transform: scale(0.97);
+    }
+
     .btn-gold-sm {
-      padding: 8px 14px;
+      padding: 8px 13px;
       border-radius: 10px;
       border: none;
       background: linear-gradient(180deg, #ffe270, #eab308);
@@ -371,18 +284,17 @@
       width: 100%;
       height: 7px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.08);
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--gold-2), #fde047);
-      transition: width 0.4s ease;
+      background: linear-gradient(90deg, var(--gold-2), #4ade80);
+      transition: width 0.35s ease;
     }
 
-    /* Section Cards & Lists */
     .section-title {
       font-size: 16px;
       font-weight: 800;
@@ -431,13 +343,13 @@
       width: 40px;
       height: 40px;
       border-radius: 11px;
-      background: rgba(244, 196, 48, 0.12);
+      background: rgba(244, 196, 48, 0.14);
       color: var(--gold-2);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 14px;
+      font-size: 13px;
       flex-shrink: 0;
     }
 
@@ -452,8 +364,17 @@
       color: var(--text-main);
     }
 
-    .task-reward {
+    .task-link {
+      font-size: 11px;
+      color: #60a5fa;
+      text-decoration: none;
+      display: inline-block;
       margin-top: 2px;
+      word-break: break-all;
+    }
+
+    .task-reward {
+      margin-top: 3px;
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--gold-2);
@@ -461,9 +382,9 @@
     }
 
     .badge-done {
-      padding: 6px 11px;
+      padding: 6px 10px;
       border-radius: 8px;
-      background: rgba(34, 197, 94, 0.14);
+      background: rgba(34, 197, 94, 0.15);
       color: #86efac;
       font-size: 11.5px;
       font-weight: 700;
@@ -482,20 +403,20 @@
     }
 
     .field-group {
-      margin-bottom: 11px;
+      margin-bottom: 10px;
     }
 
     .field-label {
       display: block;
       font-size: 11.5px;
       color: var(--text-muted);
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       font-weight: 600;
     }
 
     .input {
       width: 100%;
-      height: 40px;
+      height: 39px;
       border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--bg-app);
@@ -510,7 +431,6 @@
       border-color: var(--gold-2);
     }
 
-    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -519,7 +439,7 @@
       width: 100%;
       max-width: 440px;
       height: 68px;
-      background: rgba(12, 14, 20, 0.94);
+      background: rgba(12, 14, 20, 0.96);
       backdrop-filter: blur(14px);
       border-top: 1px solid var(--border);
       display: grid;
@@ -553,10 +473,9 @@
       stroke-width: 1.9;
     }
 
-    /* Toast */
     .toast {
       position: fixed;
-      top: 66px;
+      top: 16px;
       left: 50%;
       transform: translateX(-50%) translateY(-12px);
       background: #1e2433;
@@ -568,10 +487,10 @@
       font-weight: 600;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.22s ease;
+      transition: all 0.2s ease;
       z-index: 60;
       white-space: nowrap;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
 
     .toast.show {
@@ -579,7 +498,6 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    .mono { font-family: var(--font-mono); }
     .muted { color: var(--text-muted); font-size: 12px; }
     .mt-8 { margin-top: 8px; }
     .mt-12 { margin-top: 12px; }
@@ -587,39 +505,17 @@
 </head>
 <body>
   <div class="app-shell">
-    <!-- Top Header -->
-    <header class="top-header">
-      <div class="header-left">
-        <button class="back-btn" id="backBtn" title="Back" aria-label="Back">&lt;</button>
-        <div class="flag-badge">
-          <svg class="flag-svg" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
-            <rect width="60" height="40" fill="#b22234"/>
-            <path d="M0,3.08h60M0,9.23h60M0,15.38h60M0,21.54h60M0,27.69h60M0,33.85h60M0,40h60" stroke="#fff" stroke-width="3.08"/>
-            <rect width="26" height="21.54" fill="#3c3b6e"/>
-          </svg>
-          <span>US TOKEN</span>
-        </div>
-      </div>
-      <div class="live-pill">
-        <span class="live-dot"></span>
-        <span>LIVE</span>
-        <span id="liveTimer">02:14:36</span>
-      </div>
-    </header>
-
-    <!-- Announcement Banner -->
     <div class="notice-banner" id="announcementBanner">
       Wallet Connect will be available after 3 months - 22 Feb 2027
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <!-- 1. HOME VIEW -->
+    <!-- 1. HOME -->
     <section class="view active" id="view-home">
       <div class="coin-hero">
-        <div class="coin-wrap mining-spin" id="coinWrap">
-          <svg class="coin-svg" viewBox="0 0 220 220" width="174" height="174" xmlns="http://www.w3.org/2000/svg">
+        <div class="coin-wrap" id="coinWrap">
+          <svg class="coin-svg" viewBox="0 0 220 220" width="170" height="170" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="goldDisc" cx="38%" cy="32%" r="68%">
                 <stop offset="0%" stop-color="#fff3b0"/>
@@ -659,89 +555,89 @@
       </div>
 
       <div class="countdown-card">
-        <div class="countdown-clock" id="listingCountdown">90 days 00:00:00</div>
+        <div class="countdown-clock" id="listingCountdown">89 days 23:58:44</div>
         <div class="countdown-sub">starts today and runs for 3 months</div>
       </div>
 
       <div class="balance-grid">
         <div class="stat-box">
           <div class="stat-label">MINED BALANCE</div>
-          <div class="stat-value" id="minedBalanceText">1,245.78 US</div>
-          <div class="stat-usd" id="minedUsdText">≈ $623.90 USD</div>
+          <div class="stat-value" id="minedBalanceText">1,290.7800 US</div>
+          <div class="stat-usd" id="minedUsdText">≈ $645.39 USD</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">REFERRAL BONUS</div>
-          <div class="stat-value" id="refBalanceText">120.00 US</div>
-          <div class="stat-usd" id="refUsdText">≈ $60.00 USD</div>
+          <div class="stat-value" id="refBalanceText">200.00 US</div>
+          <div class="stat-usd" id="refUsdText">≈ $100.00 USD</div>
         </div>
       </div>
 
-      <button class="btn-gold" id="mainMiningBtn">
+      <button class="btn-gold" id="mainMiningBtn" type="button">
         <span>↗</span>
         <span id="mainMiningBtnLabel">START MINING</span>
       </button>
 
       <div class="mining-meta" id="miningStatusText">
-        Mining session ready • <strong id="hourlyRateLabel">+0.12 US/hour</strong>
+        Tap to start mining • <strong id="hourlyRateLabel">+1.20 US/hour</strong>
       </div>
       <div class="progress-track">
         <div class="progress-fill" id="sessionProgress"></div>
       </div>
     </section>
 
-    <!-- 2. MINE & BOOST VIEW -->
+    <!-- 2. MINE -->
     <section class="view" id="view-mine">
       <div class="section-title">Mining & Boosters</div>
-      <div class="section-sub">Increase your hourly US Token rate and claim daily rewards.</div>
+      <div class="section-sub">Control active mining, claim daily rewards, and upgrade mining speed.</div>
 
       <div class="card card-gold">
         <div class="row-between">
           <div>
-            <div class="muted">Current Mining Speed</div>
-            <div class="stat-value mt-8" id="mineSpeedDisplay">+0.12 US / hour</div>
+            <div class="muted">Hourly Mining Rate</div>
+            <div class="stat-value mt-8" id="mineSpeedDisplay">+1.20 US / hour</div>
           </div>
-          <button class="btn-gold-sm" id="boostMiningBtn">Toggle Mining</button>
+          <button class="btn-gold-sm" id="boostMiningBtn" type="button">Start / Stop</button>
         </div>
-        <div class="muted mt-12" id="sessionTimeLeft">Session window: 6h cycle</div>
+        <div class="muted mt-12" id="sessionRemainingText">Session status: Stopped</div>
       </div>
 
       <div class="card">
         <div class="row-between">
           <div>
-            <div class="task-name">Daily Check-In Reward</div>
-            <div class="task-reward">+15.00 US every 24 hours</div>
+            <div class="task-name">Daily Check-In Bonus</div>
+            <div class="task-reward">+25.00 US every 24h</div>
           </div>
-          <button class="btn-gold-sm" id="dailyCheckinBtn">Claim</button>
+          <button class="btn-gold-sm" id="dailyCheckinBtn" type="button">Claim</button>
         </div>
       </div>
 
       <div class="card">
         <div class="row-between">
           <div>
-            <div class="task-name">Turbo Rig Upgrade (Lv. <span id="rigLevelLabel">1</span>)</div>
-            <div class="task-reward">+0.08 US/hr • Cost: <span id="rigCostLabel">100</span> US</div>
+            <div class="task-name">Mining Speed Boost (Lv. <span id="rigLevelLabel">1</span>)</div>
+            <div class="task-reward">+0.50 US/hr • Cost: <span id="rigCostLabel">100</span> US</div>
           </div>
-          <button class="btn-gold-sm" id="upgradeRigBtn">Upgrade</button>
+          <button class="btn-gold-sm" id="upgradeRigBtn" type="button">Upgrade</button>
         </div>
       </div>
     </section>
 
-    <!-- 3. TASKS VIEW -->
+    <!-- 3. TASKS -->
     <section class="view" id="view-tasks">
-      <div class="section-title">Earn Tasks</div>
-      <div class="section-sub">Complete partner & community tasks to earn extra US tokens.</div>
+      <div class="section-title">Tasks</div>
+      <div class="section-sub">Complete tasks posted by Admin to earn US tokens.</div>
       <div id="tasksList"></div>
     </section>
 
-    <!-- 4. WALLET VIEW -->
+    <!-- 4. WALLET -->
     <section class="view" id="view-wallet">
-      <div class="section-title">US Wallet</div>
-      <div class="section-sub">Total balance, TON wallet connection, and token claim status.</div>
+      <div class="section-title">Wallet</div>
+      <div class="section-sub">Check total US balance, connect TON wallet, or request withdrawal.</div>
 
       <div class="card card-gold">
-        <div class="muted">Total Available Balance</div>
-        <div class="stat-value mt-8" style="font-size: 24px;" id="walletTotalUS">1,365.78 US</div>
-        <div class="stat-usd mt-8" id="walletTotalUSD">≈ $683.90 USD</div>
+        <div class="muted">Total Balance</div>
+        <div class="stat-value mt-8" style="font-size: 23px;" id="walletTotalUS">1,490.78 US</div>
+        <div class="stat-usd mt-8" id="walletTotalUSD">≈ $745.39 USD</div>
       </div>
 
       <div class="card">
@@ -750,105 +646,122 @@
             <div class="task-name">TON Wallet</div>
             <div class="muted mt-8" id="walletAddressText">Not connected</div>
           </div>
-          <button class="btn-gold-sm" id="connectWalletBtn">Connect TON</button>
+          <button class="btn-gold-sm" id="connectWalletBtn" type="button">Connect</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="task-name">Exchange Listing & Withdrawal</div>
-        <div class="muted mt-8">
-          Direct token withdrawals unlock after the 90-day pre-listing phase. You can log a queued withdrawal request below.
-        </div>
+        <div class="task-name">Withdraw Request</div>
         <div class="field-group mt-12">
           <label class="field-label" for="withdrawAmountInput">Amount (US)</label>
-          <input class="input" id="withdrawAmountInput" type="number" min="10" step="1" placeholder="e.g. 250" />
+          <input class="input" id="withdrawAmountInput" type="number" min="10" placeholder="Enter amount" />
         </div>
-        <button class="btn-secondary" id="submitWithdrawBtn">Queue Withdrawal Request</button>
-        <div class="muted mt-12" id="withdrawHistoryText">No withdrawal requests yet.</div>
+        <button class="btn-secondary" id="submitWithdrawBtn" type="button">Submit Request</button>
+        <div class="muted mt-12" id="withdrawHistoryText">No requests yet.</div>
       </div>
     </section>
 
-    <!-- 5. REFER & PROFILE / ADMIN VIEW -->
+    <!-- 5. REFER & ADMIN LOGIN / PANEL -->
     <section class="view" id="view-refer">
-      <div class="section-title">Invite & Earn</div>
-      <div class="section-sub">Share your referral link and earn bonus US tokens from friends.</div>
+      <div class="section-title">Referral & Admin</div>
+      <div class="section-sub">Invite users or sign in as Admin to post tasks and manage settings.</div>
 
       <div class="card card-gold">
         <div class="row-between">
           <div>
-            <div class="muted">Referral Bonus Earned</div>
-            <div class="stat-value mt-8" id="refTabBalance">120.00 US</div>
+            <div class="muted">Referral Bonus</div>
+            <div class="stat-value mt-8" id="refTabBalance">200.00 US</div>
           </div>
           <div>
-            <div class="muted">Invited Friends</div>
-            <div class="stat-value mt-8" id="refCountDisplay">6</div>
+            <div class="muted">Referrals</div>
+            <div class="stat-value mt-8" id="refCountDisplay">10</div>
           </div>
         </div>
-
         <div class="ref-box" id="refLinkBox">https://t.me/USTokenMinerBot?start=ref_884210</div>
         <div class="balance-grid" style="margin-top: 0;">
-          <button class="btn-gold-sm" id="copyRefBtn" style="height: 38px;">Copy Link</button>
-          <button class="btn-secondary" id="simInviteBtn" style="height: 38px;">Simulate +1 Friend</button>
+          <button class="btn-gold-sm" id="copyRefBtn" type="button" style="height: 38px;">Copy Link</button>
+          <button class="btn-secondary" id="simInviteBtn" type="button" style="height: 38px;">+1 Referral</button>
         </div>
       </div>
 
-      <!-- Profile & Admin Panel -->
-      <div class="card">
-        <div class="row-between">
-          <div>
-            <div class="task-name" id="profileNameLabel">Member Account</div>
-            <div class="muted mt-8" id="profileIdLabel">ID: @us_trader_01</div>
-          </div>
-          <button class="btn-gold-sm" id="toggleAdminBtn">Admin Panel</button>
+      <!-- Admin Login Box -->
+      <div class="card" id="adminLoginCard">
+        <div class="task-name" style="color: var(--gold-2); margin-bottom: 10px;">Admin Login</div>
+        <div class="field-group">
+          <label class="field-label" for="adminUserInput">Admin Username</label>
+          <input class="input" id="adminUserInput" type="text" placeholder="admin" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="adminPassInput">Admin Password</label>
+          <input class="input" id="adminPassInput" type="password" placeholder="••••••••" />
+        </div>
+        <button class="btn-gold" id="adminLoginBtn" type="button" style="height: 42px; margin-top: 6px;">
+          Login to Admin Panel
+        </button>
+      </div>
+
+      <!-- Admin Dashboard (Visible after login) -->
+      <div class="card card-gold" id="adminDashboardCard" style="display: none;">
+        <div class="row-between" style="margin-bottom: 12px;">
+          <div class="task-name" style="color: var(--gold-2);">Admin Panel (Active)</div>
+          <button class="btn-secondary" id="adminLogoutBtn" type="button" style="width: auto; height: 32px; padding: 0 10px; font-size: 11.5px;">
+            Logout
+          </button>
         </div>
 
-        <div id="adminPanel" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
-          <div class="task-name" style="color: var(--gold-2); margin-bottom: 10px;">Admin Control Panel</div>
-
-          <div class="field-group">
-            <label class="field-label" for="adminRateInput">Hourly Mining Rate (US / hour)</label>
-            <input class="input" id="adminRateInput" type="number" step="0.01" min="0.01" />
-          </div>
-
-          <div class="field-group">
-            <label class="field-label" for="adminBannerInput">Top Announcement Banner</label>
-            <input class="input" id="adminBannerInput" type="text" />
-          </div>
-
-          <div class="field-group">
-            <label class="field-label" for="adminNewTaskTitle">Add New Task Title</label>
-            <input class="input" id="adminNewTaskTitle" type="text" placeholder="e.g. Subscribe YouTube Channel" />
-          </div>
-
-          <div class="field-group">
-            <label class="field-label" for="adminNewTaskReward">New Task Reward (US)</label>
-            <input class="input" id="adminNewTaskReward" type="number" step="1" min="1" placeholder="e.g. 50" />
-          </div>
-
-          <button class="btn-gold" id="saveAdminBtn" style="height: 42px; margin-top: 4px;">Save Admin Settings</button>
+        <div class="field-group">
+          <label class="field-label" for="newTaskTitle">New Task Title</label>
+          <input class="input" id="newTaskTitle" type="text" placeholder="e.g. Join Telegram Group & Verify" />
         </div>
+
+        <div class="field-group">
+          <label class="field-label" for="newTaskUrl">Task Link (URL - Optional)</label>
+          <input class="input" id="newTaskUrl" type="url" placeholder="https://t.me/your_channel" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="newTaskReward">Task Reward (US)</label>
+          <input class="input" id="newTaskReward" type="number" min="1" step="0.5" placeholder="50" />
+        </div>
+
+        <button class="btn-gold-sm" id="addTaskBtn" type="button" style="width: 100%; height: 38px; margin-bottom: 14px;">
+          + Publish Task to Users
+        </button>
+
+        <div class="field-group">
+          <label class="field-label" for="adminRateInput">Hourly Mining Rate (US / hr)</label>
+          <input class="input" id="adminRateInput" type="number" step="0.1" min="0.01" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="adminBannerInput">Top Banner Text</label>
+          <input class="input" id="adminBannerInput" type="text" />
+        </div>
+
+        <button class="btn-secondary" id="saveSettingsBtn" type="button">Save Rate & Banner</button>
+
+        <div class="mt-12" id="adminWithdrawList"></div>
       </div>
     </section>
 
-    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-target="home">
+      <button class="nav-btn active" data-target="home" type="button">
         <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
         <span>Home</span>
       </button>
-      <button class="nav-btn" data-target="mine">
+      <button class="nav-btn" data-target="mine" type="button">
         <svg viewBox="0 0 24 24"><path d="M14.5 4.5l5 5-9.5 9.5-5-5 9.5-9.5zM4 20l4-1-3-3-1 4z"/></svg>
         <span>Mine</span>
       </button>
-      <button class="nav-btn" data-target="tasks">
+      <button class="nav-btn" data-target="tasks" type="button">
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         <span>Tasks</span>
       </button>
-      <button class="nav-btn" data-target="wallet">
+      <button class="nav-btn" data-target="wallet" type="button">
         <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zm14 5h4v4h-4a2 2 0 0 1 0-4z"/></svg>
         <span>Wallet</span>
       </button>
-      <button class="nav-btn" data-target="refer">
+      <button class="nav-btn" data-target="refer" type="button">
         <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm13 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span>Refer</span>
       </button>
@@ -856,9 +769,15 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "us_token_mini_app_v1";
-    const USD_RATE = 0.5; // 1 US = $0.50 USD display rate
-    const SESSION_DURATION_MS = 6 * 60 * 60 * 1000; // 6 hours per mining cycle
+    // Change these credentials before deploying publicly
+    const ADMIN_CREDENTIALS = {
+      username: "admin",
+      password: "123"
+    };
+
+    const STORAGE_KEY = "us_token_app_v2";
+    const USD_RATE = 0.5;
+    const SESSION_MS = 6 * 60 * 60 * 1000;
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
@@ -866,11 +785,42 @@
       tg.expand();
     }
 
+    // Gentle click sound via Web Audio API
+    let audioCtx = null;
+    function playClickSound(type = "tap") {
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        if (!audioCtx) audioCtx = new Ctx();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+
+        if (type === "start") {
+          osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.14);
+        } else {
+          osc.frequency.setValueAtTime(640, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(420, audioCtx.currentTime + 0.06);
+        }
+
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch {}
+    }
+
     const defaultState = {
-      minedBalance: 1245.78,
-      refBalance: 120.00,
-      refCount: 6,
-      hourlyRate: 0.12,
+      minedBalance: 1290.78,
+      refBalance: 200.00,
+      refCount: 10,
+      hourlyRate: 1.20,
       rigLevel: 1,
       miningActive: false,
       sessionStart: null,
@@ -880,11 +830,10 @@
       bannerText: "Wallet Connect will be available after 3 months - 22 Feb 2027",
       walletAddress: "",
       withdrawals: [],
+      isAdminLoggedIn: false,
       tasks: [
-        { id: "tg_join", title: "Join Official US Token Channel", reward: 25, completed: false, badge: "TG" },
-        { id: "x_follow", title: "Follow US Token on X", reward: 20, completed: false, badge: "X" },
-        { id: "ad_watch", title: "Watch Sponsored Partner Ad", reward: 15, completed: false, badge: "AD" },
-        { id: "daily_ret", title: "Share Listing Countdown Post", reward: 30, completed: false, badge: "SH" }
+        { id: "t1", title: "Join Official US Token Channel", url: "https://t.me/telegram", reward: 25, completed: false, badge: "TG" },
+        { id: "t2", title: "Share Bot With 1 Friend", url: "", reward: 20, completed: false, badge: "SH" }
       ]
     };
 
@@ -892,11 +841,12 @@
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return { ...defaultState };
-        const parsed = JSON.parse(raw);
+        const p = JSON.parse(raw);
         return {
           ...defaultState,
-          ...parsed,
-          tasks: Array.isArray(parsed.tasks) && parsed.tasks.length ? parsed.tasks : defaultState.tasks
+          ...p,
+          tasks: Array.isArray(p.tasks) ? p.tasks : defaultState.tasks,
+          withdrawals: Array.isArray(p.withdrawals) ? p.withdrawals : []
         };
       } catch {
         return { ...defaultState };
@@ -916,13 +866,13 @@
       el.textContent = msg;
       el.classList.add("show");
       clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => el.classList.remove("show"), 2200);
+      showToast._t = setTimeout(() => el.classList.remove("show"), 2000);
     }
 
-    function formatUS(val) {
+    function formatUS(val, decimals = 2) {
       return Number(val || 0).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
       }) + " US";
     }
 
@@ -934,315 +884,364 @@
     }
 
     function tickMining(now = Date.now()) {
-      const elapsedSec = Math.max(0, (now - state.lastTick) / 1000);
+      const dtSec = Math.max(0, (now - state.lastTick) / 1000);
       state.lastTick = now;
 
       if (state.miningActive && state.sessionStart) {
-        const sessionElapsed = now - state.sessionStart;
-        if (sessionElapsed >= SESSION_DURATION_MS) {
-          const validSec = Math.max(0, (state.sessionStart + SESSION_DURATION_MS - (now - elapsedSec * 1000)) / 1000);
+        const elapsed = now - state.sessionStart;
+        if (elapsed >= SESSION_MS) {
+          const validSec = Math.max(0, (state.sessionStart + SESSION_MS - (now - dtSec * 1000)) / 1000);
           state.minedBalance += (validSec / 3600) * state.hourlyRate;
           state.miningActive = false;
           state.sessionStart = null;
         } else {
-          state.minedBalance += (elapsedSec / 3600) * state.hourlyRate;
+          state.minedBalance += (dtSec / 3600) * state.hourlyRate;
         }
       }
     }
 
-    function startOrToggleMining() {
+    function toggleMining() {
+      playClickSound("start");
       tickMining();
       if (!state.miningActive) {
         state.miningActive = true;
         state.sessionStart = Date.now();
         state.lastTick = Date.now();
-        showToast("Mining session started!");
+        showToast("Mining started!");
       } else {
         state.miningActive = false;
         state.sessionStart = null;
-        showToast("Mining session paused.");
+        showToast("Mining stopped.");
       }
       saveState();
       render();
     }
 
     function switchView(target) {
+      playClickSound("tap");
       document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-
-      const viewEl = document.getElementById("view-" + target);
-      if (viewEl) viewEl.classList.add("active");
-
-      const navEl = document.querySelector(`.nav-btn[data-target="${target}"]`);
-      if (navEl) navEl.classList.add("active");
+      const el = document.getElementById("view-" + target);
+      if (el) el.classList.add("active");
+      const nav = document.querySelector(`.nav-btn[data-target="${target}"]`);
+      if (nav) nav.classList.add("active");
+      if (target === "tasks") renderTasks();
     }
 
     function renderTasks() {
-      const container = document.getElementById("tasksList");
-      container.innerHTML = "";
+      const box = document.getElementById("tasksList");
+      box.innerHTML = "";
+      if (!state.tasks.length) {
+        box.innerHTML = `<div class="card"><div class="muted">No tasks available right now. Admin can add tasks from the Refer/Admin tab.</div></div>`;
+        return;
+      }
+
       state.tasks.forEach(task => {
-        const div = document.createElement("div");
-        div.className = "task-item";
-        div.innerHTML = `
+        const item = document.createElement("div");
+        item.className = "task-item";
+        const linkHtml = task.url
+          ? `<a class="task-link" href="${task.url}" target="_blank" rel="noopener noreferrer">${task.url}</a>`
+          : "";
+        item.innerHTML = `
           <div class="task-icon">${task.badge || "US"}</div>
           <div class="task-info">
             <div class="task-name">${task.title}</div>
+            ${linkHtml}
             <div class="task-reward">+${Number(task.reward).toFixed(2)} US</div>
           </div>
           ${
             task.completed
-              ? `<span class="badge-done">Completed</span>`
-              : `<button class="btn-gold-sm" data-task-id="${task.id}">Claim</button>`
+              ? `<span class="badge-done">Done</span>`
+              : `<button class="btn-gold-sm" data-tid="${task.id}" type="button">Claim</button>`
           }
         `;
-        container.appendChild(div);
+        box.appendChild(item);
       });
 
-      container.querySelectorAll("button[data-task-id]").forEach(btn => {
+      box.querySelectorAll("button[data-tid]").forEach(btn => {
         btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-task-id");
-          const t = state.tasks.find(item => item.id === id);
+          playClickSound("start");
+          const id = btn.getAttribute("data-tid");
+          const t = state.tasks.find(x => x.id === id);
           if (t && !t.completed) {
             t.completed = true;
             state.minedBalance += Number(t.reward);
             saveState();
             render();
-            showToast(`Claimed +${Number(t.reward).toFixed(2)} US!`);
+            showToast(`+${Number(t.reward).toFixed(2)} US added!`);
           }
         });
       });
     }
 
+    function renderAdminWithdrawals() {
+      const el = document.getElementById("adminWithdrawList");
+      if (!state.withdrawals.length) {
+        el.innerHTML = `<div class="muted">No user withdrawal requests yet.</div>`;
+        return;
+      }
+      el.innerHTML = `<div class="task-name" style="margin-bottom:6px;">Withdrawal Requests (${state.withdrawals.length})</div>` +
+        state.withdrawals.slice(-5).reverse().map(w =>
+          `<div class="muted" style="margin-bottom:4px;">• ${Number(w.amount).toFixed(2)} US — ${w.status}</div>`
+        ).join("");
+    }
+
     function render() {
       const now = Date.now();
-
-      // Header & Banner
       document.getElementById("announcementBanner").textContent = state.bannerText;
 
-      // Countdown
       const rem = Math.max(0, state.listingEnd - now);
-      const days = Math.floor(rem / (24 * 3600 * 1000));
-      const hours = String(Math.floor((rem % (24 * 3600 * 1000)) / (3600 * 1000))).padStart(2, "0");
-      const mins = String(Math.floor((rem % (3600 * 1000)) / (60 * 1000))).padStart(2, "0");
-      const secs = String(Math.floor((rem % (60 * 1000)) / 1000)).padStart(2, "0");
-      document.getElementById("listingCountdown").textContent = `${days} days ${hours}:${mins}:${secs}`;
+      const d = Math.floor(rem / 86400000);
+      const h = String(Math.floor((rem % 86400000) / 3600000)).padStart(2, "0");
+      const m = String(Math.floor((rem % 3600000) / 60000)).padStart(2, "0");
+      const s = String(Math.floor((rem % 60000) / 1000)).padStart(2, "0");
+      document.getElementById("listingCountdown").textContent = `${d} days ${h}:${m}:${s}`;
 
-      // Home balances
-      document.getElementById("minedBalanceText").textContent = formatUS(state.minedBalance);
+      const decimals = state.miningActive ? 4 : 2;
+      document.getElementById("minedBalanceText").textContent = formatUS(state.minedBalance, decimals);
       document.getElementById("minedUsdText").textContent = formatUSD(state.minedBalance);
-      document.getElementById("refBalanceText").textContent = formatUS(state.refBalance);
+      document.getElementById("refBalanceText").textContent = formatUS(state.refBalance, 2);
       document.getElementById("refUsdText").textContent = formatUSD(state.refBalance);
 
-      // Mining button & status
-      const btn = document.getElementById("mainMiningBtn");
-      const btnLabel = document.getElementById("mainMiningBtnLabel");
+      const mainBtn = document.getElementById("mainMiningBtn");
+      const mainLabel = document.getElementById("mainMiningBtnLabel");
       const coinWrap = document.getElementById("coinWrap");
-      const statusText = document.getElementById("miningStatusText");
+      const statusEl = document.getElementById("miningStatusText");
       const progEl = document.getElementById("sessionProgress");
+      const rateStr = `+${Number(state.hourlyRate).toFixed(2)} US/hour`;
 
-      document.getElementById("hourlyRateLabel").textContent = `+${state.hourlyRate.toFixed(2)} US/hour`;
-      document.getElementById("mineSpeedDisplay").textContent = `+${state.hourlyRate.toFixed(2)} US / hour`;
+      document.getElementById("hourlyRateLabel").textContent = rateStr;
+      document.getElementById("mineSpeedDisplay").textContent = `+${Number(state.hourlyRate).toFixed(2)} US / hour`;
 
       if (state.miningActive && state.sessionStart) {
-        btn.classList.add("active-mining");
-        btnLabel.textContent = "MINING ACTIVE";
-        coinWrap.classList.add("mining-spin");
-        const elapsed = Math.min(SESSION_DURATION_MS, now - state.sessionStart);
-        const pct = Math.min(100, (elapsed / SESSION_DURATION_MS) * 100);
-        progEl.style.width = pct.toFixed(1) + "%";
-        statusText.innerHTML = `Mining session active • <strong>+${state.hourlyRate.toFixed(2)} US/hour</strong>`;
+        mainBtn.classList.add("mining-on");
+        mainLabel.textContent = "MINING ACTIVE (STOP)";
+        coinWrap.classList.add("mining-active-anim");
+        const elapsed = Math.min(SESSION_MS, now - state.sessionStart);
+        progEl.style.width = ((elapsed / SESSION_MS) * 100).toFixed(1) + "%";
+        statusEl.innerHTML = `Mining live • <strong>${rateStr}</strong>`;
+        document.getElementById("sessionRemainingText").textContent = "Session status: Mining live";
       } else {
-        btn.classList.remove("active-mining");
-        btnLabel.textContent = "START MINING";
-        coinWrap.classList.remove("mining-spin");
+        mainBtn.classList.remove("mining-on");
+        mainLabel.textContent = "START MINING";
+        coinWrap.classList.remove("mining-active-anim");
         progEl.style.width = "0%";
-        statusText.innerHTML = `Tap to start mining • <strong>+${state.hourlyRate.toFixed(2)} US/hour</strong>`;
+        statusEl.innerHTML = `Tap to start mining • <strong>${rateStr}</strong>`;
+        document.getElementById("sessionRemainingText").textContent = "Session status: Stopped";
       }
 
-      // Daily check-in
-      const checkinBtn = document.getElementById("dailyCheckinBtn");
-      const canCheckin = now - state.lastCheckin >= 24 * 3600 * 1000;
-      checkinBtn.disabled = !canCheckin;
-      checkinBtn.textContent = canCheckin ? "Claim" : "Claimed";
+      const canCheckin = now - state.lastCheckin >= 86400000;
+      const checkBtn = document.getElementById("dailyCheckinBtn");
+      checkBtn.disabled = !canCheckin;
+      checkBtn.textContent = canCheckin ? "Claim" : "Done";
 
-      // Rig upgrade
       const rigCost = state.rigLevel * 100;
       document.getElementById("rigLevelLabel").textContent = state.rigLevel;
       document.getElementById("rigCostLabel").textContent = rigCost;
 
-      // Wallet
       const totalUS = state.minedBalance + state.refBalance;
-      document.getElementById("walletTotalUS").textContent = formatUS(totalUS);
+      document.getElementById("walletTotalUS").textContent = formatUS(totalUS, 2);
       document.getElementById("walletTotalUSD").textContent = formatUSD(totalUS);
       document.getElementById("walletAddressText").textContent = state.walletAddress
         ? `Connected: ${state.walletAddress}`
         : "Not connected";
-      document.getElementById("connectWalletBtn").textContent = state.walletAddress ? "Disconnect" : "Connect TON";
+      document.getElementById("connectWalletBtn").textContent = state.walletAddress ? "Disconnect" : "Connect";
 
-      const whEl = document.getElementById("withdrawHistoryText");
+      const wHist = document.getElementById("withdrawHistoryText");
       if (state.withdrawals.length) {
         const last = state.withdrawals[state.withdrawals.length - 1];
-        whEl.textContent = `Latest queued request: ${Number(last.amount).toFixed(2)} US (${last.status})`;
+        wHist.textContent = `Last request: ${Number(last.amount).toFixed(2)} US (${last.status})`;
       } else {
-        whEl.textContent = "No withdrawal requests yet.";
+        wHist.textContent = "No requests yet.";
       }
 
-      // Refer & Profile
-      document.getElementById("refTabBalance").textContent = formatUS(state.refBalance);
+      document.getElementById("refTabBalance").textContent = formatUS(state.refBalance, 2);
       document.getElementById("refCountDisplay").textContent = state.refCount;
 
       const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-      if (tgUser) {
-        const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || "Telegram User";
-        document.getElementById("profileNameLabel").textContent = fullName;
-        document.getElementById("profileIdLabel").textContent = tgUser.username ? `@${tgUser.username}` : `ID: ${tgUser.id}`;
+      if (tgUser && tgUser.id) {
         document.getElementById("refLinkBox").textContent = `https://t.me/USTokenMinerBot?start=ref_${tgUser.id}`;
       }
 
-      renderTasks();
+      // Admin login / panel toggle
+      const loginCard = document.getElementById("adminLoginCard");
+      const dashCard = document.getElementById("adminDashboardCard");
+      if (state.isAdminLoggedIn) {
+        loginCard.style.display = "none";
+        dashCard.style.display = "block";
+        if (document.activeElement !== document.getElementById("adminRateInput")) {
+          document.getElementById("adminRateInput").value = state.hourlyRate;
+        }
+        if (document.activeElement !== document.getElementById("adminBannerInput")) {
+          document.getElementById("adminBannerInput").value = state.bannerText;
+        }
+        renderAdminWithdrawals();
+      } else {
+        loginCard.style.display = "block";
+        dashCard.style.display = "none";
+      }
     }
 
-    // Event Listeners
-    document.querySelectorAll(".nav-btn").forEach(btn => {
-      btn.addEventListener("click", () => switchView(btn.getAttribute("data-target")));
+    // Bindings
+    document.querySelectorAll(".nav-btn").forEach(b => {
+      b.addEventListener("click", () => switchView(b.getAttribute("data-target")));
     });
 
-    document.getElementById("backBtn").addEventListener("click", () => {
-      switchView("home");
-      showToast("Returned to Home");
-    });
-
-    document.getElementById("mainMiningBtn").addEventListener("click", startOrToggleMining);
-    document.getElementById("boostMiningBtn").addEventListener("click", startOrToggleMining);
+    document.getElementById("mainMiningBtn").addEventListener("click", toggleMining);
+    document.getElementById("boostMiningBtn").addEventListener("click", toggleMining);
 
     document.getElementById("dailyCheckinBtn").addEventListener("click", () => {
+      playClickSound("start");
       const now = Date.now();
-      if (now - state.lastCheckin < 24 * 3600 * 1000) {
-        showToast("Already claimed today!");
-        return;
-      }
+      if (now - state.lastCheckin < 86400000) return;
       state.lastCheckin = now;
-      state.minedBalance += 15;
+      state.minedBalance += 25;
       saveState();
       render();
-      showToast("Daily check-in +15.00 US added!");
+      showToast("+25.00 US daily bonus claimed!");
     });
 
     document.getElementById("upgradeRigBtn").addEventListener("click", () => {
+      playClickSound("tap");
       const cost = state.rigLevel * 100;
       const total = state.minedBalance + state.refBalance;
       if (total < cost) {
-        showToast(`Need ${cost} US balance to upgrade.`);
+        showToast(`Need ${cost} US to upgrade.`);
         return;
       }
       if (state.minedBalance >= cost) {
         state.minedBalance -= cost;
       } else {
-        const remCost = cost - state.minedBalance;
+        const rem = cost - state.minedBalance;
         state.minedBalance = 0;
-        state.refBalance = Math.max(0, state.refBalance - remCost);
+        state.refBalance = Math.max(0, state.refBalance - rem);
       }
       state.rigLevel += 1;
-      state.hourlyRate = Number((state.hourlyRate + 0.08).toFixed(2));
+      state.hourlyRate = Number((state.hourlyRate + 0.5).toFixed(2));
       saveState();
       render();
-      showToast(`Rig upgraded to Lv.${state.rigLevel}!`);
+      showToast(`Speed upgraded to Lv.${state.rigLevel}!`);
     });
 
     document.getElementById("connectWalletBtn").addEventListener("click", () => {
-      if (state.walletAddress) {
-        state.walletAddress = "";
-        showToast("TON Wallet disconnected.");
-      } else {
-        state.walletAddress = "UQBx9f...4k82M";
-        showToast("TON Wallet connected!");
-      }
+      playClickSound("tap");
+      state.walletAddress = state.walletAddress ? "" : "UQBx9f...4k82M";
       saveState();
       render();
+      showToast(state.walletAddress ? "TON Wallet connected!" : "Disconnected.");
     });
 
     document.getElementById("submitWithdrawBtn").addEventListener("click", () => {
-      const input = document.getElementById("withdrawAmountInput");
-      const amt = parseFloat(input.value);
+      playClickSound("tap");
+      const inp = document.getElementById("withdrawAmountInput");
+      const amt = parseFloat(inp.value);
       const total = state.minedBalance + state.refBalance;
       if (!amt || amt < 10) {
-        showToast("Minimum withdrawal is 10 US.");
+        showToast("Minimum 10 US required.");
         return;
       }
       if (amt > total) {
-        showToast("Insufficient US balance.");
+        showToast("Insufficient balance.");
         return;
       }
-      state.withdrawals.push({ amount: amt, status: "Queued (Post-Listing)", date: new Date().toISOString() });
-      input.value = "";
+      state.withdrawals.push({ amount: amt, status: "Pending", time: new Date().toLocaleTimeString() });
+      inp.value = "";
       saveState();
       render();
-      showToast("Withdrawal request queued.");
+      showToast("Withdrawal request submitted.");
     });
 
     document.getElementById("copyRefBtn").addEventListener("click", () => {
-      const text = document.getElementById("refLinkBox").textContent;
+      playClickSound("tap");
+      const txt = document.getElementById("refLinkBox").textContent;
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).catch(() => {});
+        navigator.clipboard.writeText(txt).catch(() => {});
       }
       showToast("Referral link copied!");
     });
 
     document.getElementById("simInviteBtn").addEventListener("click", () => {
+      playClickSound("start");
       state.refCount += 1;
       state.refBalance += 20;
       saveState();
       render();
-      showToast("Friend joined! +20.00 US referral bonus.");
+      showToast("+20.00 US referral bonus!");
     });
 
-    document.getElementById("toggleAdminBtn").addEventListener("click", () => {
-      const panel = document.getElementById("adminPanel");
-      const isOpen = panel.style.display === "block";
-      panel.style.display = isOpen ? "none" : "block";
-      if (!isOpen) {
-        document.getElementById("adminRateInput").value = state.hourlyRate;
-        document.getElementById("adminBannerInput").value = state.bannerText;
+    document.getElementById("adminLoginBtn").addEventListener("click", () => {
+      playClickSound("tap");
+      const u = document.getElementById("adminUserInput").value.trim();
+      const p = document.getElementById("adminPassInput").value.trim();
+      if (u === ADMIN_CREDENTIALS.username && p === ADMIN_CREDENTIALS.password) {
+        state.isAdminLoggedIn = true;
+        document.getElementById("adminUserInput").value = "";
+        document.getElementById("adminPassInput").value = "";
+        saveState();
+        render();
+        showToast("Admin login successful!");
+      } else {
+        showToast("Invalid username or password!");
       }
     });
 
-    document.getElementById("saveAdminBtn").addEventListener("click", () => {
-      const newRate = parseFloat(document.getElementById("adminRateInput").value);
-      const newBanner = document.getElementById("adminBannerInput").value.trim();
-      const newTaskTitle = document.getElementById("adminNewTaskTitle").value.trim();
-      const newTaskReward = parseFloat(document.getElementById("adminNewTaskReward").value);
-
-      if (newRate && newRate > 0) {
-        state.hourlyRate = Number(newRate.toFixed(2));
-      }
-      if (newBanner) {
-        state.bannerText = newBanner;
-      }
-      if (newTaskTitle && newTaskReward && newTaskReward > 0) {
-        state.tasks.push({
-          id: "custom_" + Date.now(),
-          title: newTaskTitle,
-          reward: newTaskReward,
-          completed: false,
-          badge: "NEW"
-        });
-        document.getElementById("adminNewTaskTitle").value = "";
-        document.getElementById("adminNewTaskReward").value = "";
-      }
-
+    document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+      playClickSound("tap");
+      state.isAdminLoggedIn = false;
       saveState();
       render();
-      showToast("Admin settings updated!");
+      showToast("Logged out of Admin Panel.");
     });
 
-    // Live loop
+    document.getElementById("addTaskBtn").addEventListener("click", () => {
+      playClickSound("start");
+      const title = document.getElementById("newTaskTitle").value.trim();
+      const url = document.getElementById("newTaskUrl").value.trim();
+      const reward = parseFloat(document.getElementById("newTaskReward").value);
+
+      if (!title || !reward || reward <= 0) {
+        showToast("Enter task title and valid US reward.");
+        return;
+      }
+
+      state.tasks.unshift({
+        id: "task_" + Date.now(),
+        title,
+        url,
+        reward,
+        completed: false,
+        badge: "TASK"
+      });
+
+      document.getElementById("newTaskTitle").value = "";
+      document.getElementById("newTaskUrl").value = "";
+      document.getElementById("newTaskReward").value = "";
+
+      saveState();
+      renderTasks();
+      showToast("New task published to Tasks tab!");
+    });
+
+    document.getElementById("saveSettingsBtn").addEventListener("click", () => {
+      playClickSound("tap");
+      const r = parseFloat(document.getElementById("adminRateInput").value);
+      const b = document.getElementById("adminBannerInput").value.trim();
+      if (r && r > 0) state.hourlyRate = Number(r.toFixed(2));
+      if (b) state.bannerText = b;
+      saveState();
+      render();
+      showToast("Settings saved!");
+    });
+
     setInterval(() => {
       tickMining();
       render();
+      if (state.miningActive) saveState();
     }, 1000);
 
     tickMining();
     render();
+    renderTasks();
   </script>
 </body>
 </html>
