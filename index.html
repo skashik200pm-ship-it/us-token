@@ -1,55 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US TOKEN</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial;padding-bottom:95px}
-.top{display:flex;align-items:center;gap:10px;padding:14px 16px}
-.top b{font-size:23px}
-.live{margin-left:auto;background:#200000;color:#ff3333;border:1px solid #ff3333;font-size:12px;padding:5px 8px;border-radius:8px;font-weight:bold}
-.note{text-align:center;color:#c9a86a;font-size:11px;padding:0 16px}
-.coin-wrap{text-align:center;margin:18px auto 2px;position:relative;width:250px;height:250px}
-.coin{width:230px;height:230px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 32% 30%,#FFF2A0,#FFD700 38%,#D4A017 62%,#8A6500);border:5px solid #E6C100;box-shadow:0 0 70px rgba(255,180,0,.55);display:flex;align-items:center;justify-content:center;position:relative}
-.diamond{width:85px;height:125px;background:#2A5BD7;clip-path:polygon(50% 0,100% 42%,50% 100%,0 42%)}
-.ribbon{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#FFD700;width:175px;height:30px}
-.badge{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);background:#0F2A7A;border:2px solid #FFD700;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:18px}
-.us-text{text-align:center;color:#E6C87A;font-weight:900;font-size:19px;margin-top:12px}
-.banner{margin:16px 20px;background:#FFD700;color:#000;text-align:center;font-weight:900;font-size:19px;padding:12px}
-.count-box{margin:12px 16px;border:1px solid #2a2a2a;background:#0B0B0B;border-radius:10px;padding:16px;text-align:center}
-.count-box b{font-size:24px;color:#E6C87A}
-.count-box small{color:#c9a86a}
-.two{display:flex;gap:10px;margin:12px 16px}
-.two .box{flex:1;border:1px solid #2a2a2a;background:#0B0B0B;border-radius:10px;padding:16px 8px;text-align:center}
-.two .box small{color:#4a6fa5;font-size:11px}
-.two .box b{font-size:20px}
-.two .box p{color:#c9a86a;font-size:12px;margin-top:6px}
-.start{margin:14px 16px;background:#FFD700;color:#000;border:none;width:calc(100% - 32px);padding:16px;border-radius:12px;font-size:21px;font-weight:900}
-.mining-note{text-align:center;color:#666;font-size:12px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;padding:10px 14px 16px;border-top:1px solid #222}
-.nav div{flex:1;text-align:center;font-size:12px;color:#888}
-.nav div.active{color:#E6C87A}
-.nav b{font-size:22px;display:block}
-</style>
-</head>
-<body>
-<div class="top"><span>‹</span><span>🇺🇸</span><b>US TOKEN</b><span class="live">● LIVE 02:14:36</span></div>
-<div class="note">Wallet Connect will be available after 3 months - 22 Feb 2027</div>
-<div class="coin-wrap"><div class="coin"><div class="diamond"></div><div class="ribbon"></div></div><div class="badge">US</div></div>
-<div class="us-text">US TOKEN</div>
-<div class="banner">✦ Coming Soon on Exchange ✦</div>
-<div class="count-box"><b id="countdown">90 days 00:00:00</b><br><small>starts today and runs for 3 months</small></div>
-<div class="two"><div class="box"><small>MINED BALANCE</small><br><b id="balance">1,245.78 US</b><p>≈ $623.90 USD</p></div><div class="box"><small>REFERRAL BONUS</small><br><b>120.00 US</b><p>≈ $60.00 USD</p></div></div>
-<button class="start" onclick="alert('Mining Started!')">⛏️ START MINING</button>
-<div class="mining-note">Mining session active • +0.12 US/hour</div>
-<div class="nav"><div class="active"><b>🏠</b>Home</div><div><b>⛏️</b>Mine</div><div><b>👛</b>Wallet</div><div><b>👥</b>Refer</div><div><b>👤</b>Profile</div></div>
-<script>
-var bal=1245.78;var st=Date.now();
-try{var s=localStorage.getItem('us3');if(s){st=parseInt(s)}else{localStorage.setItem('us3',st)}}catch(e){}
-function pad(n){return n<10?'0'+n:n}
-setInterval(function(){bal+=0.12/3600;document.getElementById('balance').innerText=bal.toFixed(2)+' US';var end=st+90*24*60*60*1000;var diff=end-Date.now();if(diff<0)diff=0;var d=Math.floor(diff/86400000);var h=Math.floor(diff%86400000/3600000);var m=Math.floor(diff%3600000/60000);var ss=Math.floor(diff%60000/1000);document.getElementById('countdown').innerText=d+' days '+pad(h)+':'+pad(m)+':'+pad(ss)},1000);
-</script>
-</body>
-</html>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>US TOKEN - Telegram Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-light: #ffe787;
+      --gold-main: #f6c945;
+      --gold-dark: #b6841c;
+      --bg-dark: #070a10;
+      --card-bg: rgba(16, 20, 29, 0.9);
+      --border-gold: rgba(246, 201, 69, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #040609;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(246, 201, 69, 0.14) 0%, rgba(11, 15, 24, 0.4) 45%, rgba(7, 10, 16, 1) 80%),
+        linear-gradient(180deg, #0b0f17 0%, #070a10 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 84px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Subtle Dark Marble Texture */
+    .app-container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 215, 100, 0.04) 1px, transparent 0);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .content-layer {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 16px 16px;
+    }
+
+    /* Gold Metallic Text */
+    .gold-text {
+      background: linear-gradient(180deg, #fff3b8 0%, #f6c945 50%, #c89116 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Gold Ribbon Banner */
+    .ribbon-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 4px auto 12px;
+      width: 92%;
+      height: 40px;
+    }
+
+    .ribbon-tail-left,
+    .ribbon-tail-right {
+      position: absolute;
+      top: 6px;
+      width: 24px;
+      height: 30px;
+      background: linear-gradient(180deg, #9c6e14 0%, #6e4a09 100%);
+      z-index: 1;
+    }
+
+    .ribbon-tail-left {
+      left: -8px;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 28% 50%);
+    }
+
+    .ribbon-tail-right {
+      right: -8px;
+      clip-path: polygon(0 0, 100% 0, 72% 50%, 100% 100%, 0 100%);
+    }
+
+    .ribbon-body {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #fce38a 0%, #e5b338 48%, #b98518 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+      border-top: 1px solid #fff2b2;
+      border-bottom: 1px solid #8a5e0b;
+    }
+
+    .ribbon-body span {
+      color: #1c1404;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
+    /* Cards */
+    .gold-card {
+      background: linear-gradient(180deg, rgba(22, 27, 38, 0.85) 0%, rgba(12, 15, 22, 0.95) 100%);
+      border: 1px solid rgba(246, 201, 69, 0.24);
+      border-radius: 10px;
+      box-shadow: inset 0 1px 0 rgba(255, 231, 135, 0.08), 0 4px 16px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Coin Pulse Animation */
+    @keyframes floatCoin {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 16px rgba(246, 201, 69, 0.35)); }
+      50% { filter: drop-shadow(0 0 28px rgba(246, 201, 69, 0.65)); }
+    }
+
+    .coin-active {
+      animation: floatCoin 3s ease-in-out infinite, pulseGlow 2.5s ease-in-out infinite;
+    }
+
+    .coin-idle {
+      filter: drop-shadow(0 0 14px rgba(246, 201, 69, 0.22));
+      transition: all 0.3s ease;
+    }
+
+    /* Start Mining Button */
+    .start-btn {
+      background: linear-gradient(180deg, #ffe169 0%, #f5c332 55%, #d99f14 100%);
+      color: #120d02;
+      font-weight: 800;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(245, 195, 50, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+      transition: transform 0.12s ease, box-shadow 0.2s ease;
+    }
+
+    .start-btn:active {
+      transform: scale(0.98);
+    }
+
+    .start-btn.mining-on {
+      background: linear-gradient(180deg, #34d399 0%, #10b981 55%, #059669 100%);
+      color: #031c12;
+      box-shadow: 0 4px 22px rgba(16, 185, 129, 0.38), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Live Dot Blink */
+    @keyframes blinkLive {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
+    }
+
+    .live-dot {
+      animation: blinkLive 1.4s infinite ease-in-out;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 430px;
+      height: 70px;
+      background: rgba(11, 15, 23, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 50;
+      padding-bottom: env(safe-area-inset-bottom, 4px);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4
