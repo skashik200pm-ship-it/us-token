@@ -1,342 +1,1248 @@
-import sqlite3
-from datetime import datetime
-
-DB_FILE = "us_token.db"
-
-
-def get_connection():
-    con = sqlite3.connect(DB_FILE)
-    con.row_factory = sqlite3.Row
-    return con
-
-
-def init_db():
-    con = get_connection()
-    cur = con.cursor()
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            user_id INTEGER PRIMARY KEY,
-            username TEXT,
-            full_name TEXT,
-            balance REAL DEFAULT 0,
-            total_earned REAL DEFAULT 0,
-            referral_code TEXT UNIQUE,
-            referrer_id INTEGER,
-            last_daily TEXT,
-            is_banned INTEGER DEFAULT 0,
-            created_at TEXT
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT,
-            link TEXT,
-            reward REAL,
-            is_active INTEGER DEFAULT 1,
-            created_at TEXT
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS task_completions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            task_id INTEGER,
-            completed_at TEXT,
-            UNIQUE(user_id, task_id)
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS withdrawals (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            amount REAL,
-            method TEXT,
-            account TEXT,
-            status TEXT DEFAULT 'pending',
-            created_at TEXT,
-            processed_at TEXT
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS settings (
-            key TEXT PRIMARY KEY,
-            value TEXT
-        )
-    """)
-
-    cur.execute(
-        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)",
-        ("daily_bonus", "1")
-    )
-
-    cur.execute(
-        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)",
-        ("referral_bonus", "0.50")
-    )
-
-    cur.execute(
-        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)",
-        ("min_withdraw", "10")
-    )
-
-    con.commit()
-    con.close()
-
-
-def now():
-    return datetime.utcnow().isoformat()
-
-
-def get_setting(key, default="0"):
-    con = get_connection()
-    row = con.execute(
-        "SELECT value FROM settings WHERE key=?", (key,)
-    ).fetchone()
-    con.close()
-    return float(row["value"]) if row else float(default)
-
-
-def set_setting(key, value):
-    con = get_connection()
-    con.execute(
-        """
-        INSERT INTO settings (key, value)
-        VALUES (?, ?)
-        ON CONFLICT(key) DO UPDATE SET value=excluded.value
-        """,
-        (key, str(value))
-    )
-    con.commit()
-    con.close()
-
-
-def create_user(user_id, username, full_name, referrer_id=None):
-    con = get_connection()
-    cur = con.cursor()
-
-    referral_code = f"UST{user_id}"
-
-    cur.execute(
-        """
-        INSERT OR IGNORE INTO users
-        (user_id, username, full_name, referral_code, referrer_id, created_at)
-        VALUES (?, ?, ?, ?, ?, ?)
-        """,
-        (user_id, username, full_name, referral_code, referrer_id, now())
-    )
-
-    con.commit()
-    con.close()
-
-
-def get_user(user_id):
-    con = get_connection()
-    user = con.execute(
-        "SELECT * FROM users WHERE user_id=?", (user_id,)
-    ).fetchone()
-    con.close()
-    return user
-
-
-def get_user_by_referral_code(code):
-    con = get_connection()
-    user = con.execute(
-        "SELECT * FROM users WHERE referral_code=?", (code,)
-    ).fetchone()
-    con.close()
-    return user
-
-
-def add_balance(user_id, amount, count_as_earned=True):
-    con = get_connection()
-    con.execute(
-        """
-        UPDATE users
-        SET balance = balance + ?,
-            total_earned = total_earned + ?
-        WHERE user_id=?
-        """,
-        (amount, amount if count_as_earned else 0, user_id)
-    )
-    con.commit()
-    con.close()
-
-
-def deduct_balance(user_id, amount):
-    con = get_connection()
-    con.execute(
-        "UPDATE users SET balance = balance - ? WHERE user_id=?",
-        (amount, user_id)
-    )
-    con.commit()
-    con.close()
-
-
-def set_daily_claimed(user_id):
-    con = get_connection()
-    con.execute(
-        "UPDATE users SET last_daily=? WHERE user_id=?",
-        (datetime.utcnow().date().isoformat(), user_id)
-    )
-    con.commit()
-    con.close()
-
-
-def create_withdrawal(user_id, amount, method, account):
-    con = get_connection()
-    cur = con.cursor()
-    cur.execute(
-        """
-        INSERT INTO withdrawals
-        (user_id, amount, method, account, created_at)
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        (user_id, amount, method, account, now())
-    )
-    withdrawal_id = cur.lastrowid
-    con.commit()
-    con.close()
-    return withdrawal_id
-
-
-def get_withdrawal(withdrawal_id):
-    con = get_connection()
-    row = con.execute(
-        "SELECT * FROM withdrawals WHERE id=?", (withdrawal_id,)
-    ).fetchone()
-    con.close()
-    return row
-
-
-def update_withdrawal_status(withdrawal_id, status):
-    con = get_connection()
-    con.execute(
-        "UPDATE withdrawals SET status=?, processed_at=? WHERE id=?",
-        (status, now(), withdrawal_id)
-    )
-    con.commit()
-    con.close()
-
-
-def get_pending_withdrawals():
-    con = get_connection()
-    rows = con.execute(
-        """
-        SELECT w.*, u.username, u.full_name
-        FROM withdrawals w
-        JOIN users u ON u.user_id = w.user_id
-        WHERE w.status='pending'
-        ORDER BY w.id DESC
-        """
-    ).fetchall()
-    con.close()
-    return rows
-
-
-def get_all_users():
-    con = get_connection()
-    rows = con.execute(
-        "SELECT * FROM users ORDER BY total_earned DESC"
-    ).fetchall()
-    con.close()
-    return rows
-
-
-def get_active_tasks():
-    con = get_connection()
-    rows = con.execute(
-        "SELECT * FROM tasks WHERE is_active=1 ORDER BY id DESC"
-    ).fetchall()
-    con.close()
-    return rows
-
-
-def get_all_tasks():
-    con = get_connection()
-    rows = con.execute(
-        "SELECT * FROM tasks ORDER BY id DESC"
-    ).fetchall()
-    con.close()
-    return rows
-
-
-def create_task(title, link, reward):
-    con = get_connection()
-    con.execute(
-        "INSERT INTO tasks (title, link, reward, created_at) VALUES (?, ?, ?, ?)",
-        (title, link, reward, now())
-    )
-    con.commit()
-    con.close()
-
-
-def complete_task(user_id, task_id):
-    con = get_connection()
-    cur = con.cursor()
-
-    task = cur.execute(
-        "SELECT * FROM tasks WHERE id=? AND is_active=1", (task_id,)
-    ).fetchone()
-
-    if not task:
-        con.close()
-        return None
-
-    already = cur.execute(
-        "SELECT 1 FROM task_completions WHERE user_id=? AND task_id=?",
-        (user_id, task_id)
-    ).fetchone()
-
-    if already:
-        con.close()
-        return "already"
-
-    cur.execute(
-        "INSERT INTO task_completions (user_id, task_id, completed_at) VALUES (?, ?, ?)",
-        (user_id, task_id, now())
-    )
-
-    con.execute(
-        """
-        UPDATE users
-        SET balance = balance + ?,
-            total_earned = total_earned + ?
-        WHERE user_id=?
-        """,
-        (task["reward"], task["reward"], user_id)
-    )
-
-    con.commit()
-    con.close()
-    return task["reward"]
-
-
-def get_stats():
-    con = get_connection()
-    total_users = con.execute("SELECT COUNT(*) c FROM users").fetchone()["c"]
-    total_balance = con.execute(
-        "SELECT COALESCE(SUM(balance), 0) s FROM users"
-    ).fetchone()["s"]
-    total_earned = con.execute(
-        "SELECT COALESCE(SUM(total_earned), 0) s FROM users"
-    ).fetchone()["s"]
-    pending = con.execute(
-        "SELECT COUNT(*) c FROM withdrawals WHERE status='pending'"
-    ).fetchone()["c"]
-    con.close()
-
-    return {
-        "total_users": total_users,
-        "total_balance": total_balance,
-        "total_earned": total_earned,
-        "pending_withdrawals": pending,
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>US TOKEN — Telegram Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-app: #07080b;
+      --bg-card: #12151d;
+      --bg-card-2: #181c27;
+      --bg-nav: #0c0e14;
+      --gold-1: #fff0a6;
+      --gold-2: #f4c430;
+      --gold-3: #b88318;
+      --gold-glow: rgba(244, 196, 48, 0.24);
+      --text-main: #f5f7fb;
+      --text-muted: #8f98ad;
+      --text-dim: #5e6678;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-gold: rgba(244, 196, 48, 0.35);
+      --success: #22c55e;
+      --danger: #ef4444;
+      --live: #ef4444;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-init_db()
+    html, body {
+      background: var(--bg-app);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(244, 196, 48, 0.12), transparent 45%),
+        radial-gradient(circle at 15% 85%, rgba(59, 130, 246, 0.06), transparent 40%);
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      background: var(--bg-app);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 84px;
+      border-left: 1px solid rgba(255, 255, 255, 0.04);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    /* Top Header */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 25;
+      background: rgba(7, 8, 11, 0.88);
+      backdrop-filter: blur(14px);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .flag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.4px;
+    }
+
+    .flag-svg {
+      width: 24px;
+      height: 16px;
+      border-radius: 3px;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.36);
+      color: #fca5a5;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--live);
+      box-shadow: 0 0 8px var(--live);
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.8); }
+    }
+
+    /* Banner */
+    .notice-banner {
+      margin: 10px 16px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(244, 196, 48, 0.08);
+      border: 1px solid rgba(244, 196, 48, 0.22);
+      color: #fde68a;
+      font-size: 11.5px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Views */
+    .view {
+      display: none;
+      padding: 14px 16px 16px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero Coin Section */
+    .coin-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .coin-wrap {
+      width: 174px;
+      height: 174px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 12px 28px rgba(244, 196, 48, 0.25));
+    }
+
+    .coin-wrap.mining-spin svg.coin-svg {
+      animation: softFloat 3.2s ease-in-out infinite;
+    }
+
+    @keyframes softFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .coin-title {
+      margin-top: 6px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      background: linear-gradient(180deg, var(--gold-1), var(--gold-2), var(--gold-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .exchange-ribbon {
+      margin-top: 8px;
+      padding: 7px 18px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #8b5a00, #f4c430 25%, #fff0a6 50%, #f4c430 75%, #8b5a00);
+      color: #1a1203;
+      font-weight: 800;
+      font-size: 12.5px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 6px 20px rgba(244, 196, 48, 0.25);
+    }
+
+    /* Countdown Box */
+    .countdown-card {
+      margin-top: 14px;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .countdown-clock {
+      font-family: var(--font-mono);
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--gold-1);
+      letter-spacing: 0.6px;
+    }
+
+    .countdown-sub {
+      margin-top: 3px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* Balance Grid */
+    .balance-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .stat-usd {
+      margin-top: 3px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #93c5fd;
+    }
+
+    /* Primary Gold Button */
+    .btn-gold {
+      margin-top: 14px;
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: 13px;
+      background: linear-gradient(180deg, #ffe270, #f4c430 60%, #d89e18);
+      color: #161004;
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px var(--gold-glow);
+      transition: transform 0.12s ease, filter 0.15s ease;
+    }
+
+    .btn-gold:active {
+      transform: scale(0.985);
+    }
+
+    .btn-gold.active-mining {
+      background: linear-gradient(180deg, #34d399, #10b981 70%, #059669);
+      color: #052e16;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      height: 42px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: var(--bg-card-2);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-gold-sm {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(180deg, #ffe270, #eab308);
+      color: #171103;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-gold-sm:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .mining-meta {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .mining-meta strong {
+      color: var(--gold-2);
+      font-family: var(--font-mono);
+    }
+
+    .progress-track {
+      margin-top: 8px;
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-2), #fde047);
+      transition: width 0.4s ease;
+    }
+
+    /* Section Cards & Lists */
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .card-gold {
+      border-color: var(--border-gold);
+      background: linear-gradient(180deg, rgba(244, 196, 48, 0.07), var(--bg-card));
+    }
+
+    .row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .task-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: rgba(244, 196, 48, 0.12);
+      color: var(--gold-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .task-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .task-reward {
+      margin-top: 2px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--gold-2);
+      font-weight: 600;
+    }
+
+    .badge-done {
+      padding: 6px 11px;
+      border-radius: 8px;
+      background: rgba(34, 197, 94, 0.14);
+      color: #86efac;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .ref-box {
+      background: var(--bg-app);
+      border: 1px dashed var(--border-gold);
+      border-radius: 10px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--gold-1);
+      word-break: break-all;
+      margin: 10px 0;
+    }
+
+    .field-group {
+      margin-bottom: 11px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .input {
+      width: 100%;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-app);
+      color: var(--text-main);
+      padding: 0 11px;
+      font-size: 13px;
+      font-family: var(--font-sans);
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--gold-2);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      height: 68px;
+      background: rgba(12, 14, 20, 0.94);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 30;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: var(--gold-2);
+    }
+
+    .nav-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 66px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-12px);
+      background: #1e2433;
+      color: var(--text-main);
+      border: 1px solid var(--border-gold);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s ease;
+      z-index: 60;
+      white-space: nowrap;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .mono { font-family: var(--font-mono); }
+    .muted { color: var(--text-muted); font-size: 12px; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="back-btn" id="backBtn" title="Back" aria-label="Back">&lt;</button>
+        <div class="flag-badge">
+          <svg class="flag-svg" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+            <rect width="60" height="40" fill="#b22234"/>
+            <path d="M0,3.08h60M0,9.23h60M0,15.38h60M0,21.54h60M0,27.69h60M0,33.85h60M0,40h60" stroke="#fff" stroke-width="3.08"/>
+            <rect width="26" height="21.54" fill="#3c3b6e"/>
+          </svg>
+          <span>US TOKEN</span>
+        </div>
+      </div>
+      <div class="live-pill">
+        <span class="live-dot"></span>
+        <span>LIVE</span>
+        <span id="liveTimer">02:14:36</span>
+      </div>
+    </header>
+
+    <!-- Announcement Banner -->
+    <div class="notice-banner" id="announcementBanner">
+      Wallet Connect will be available after 3 months - 22 Feb 2027
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 1. HOME VIEW -->
+    <section class="view active" id="view-home">
+      <div class="coin-hero">
+        <div class="coin-wrap mining-spin" id="coinWrap">
+          <svg class="coin-svg" viewBox="0 0 220 220" width="174" height="174" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="goldDisc" cx="38%" cy="32%" r="68%">
+                <stop offset="0%" stop-color="#fff3b0"/>
+                <stop offset="45%" stop-color="#f4c430"/>
+                <stop offset="85%" stop-color="#b88114"/>
+                <stop offset="100%" stop-color="#6b4706"/>
+              </radialGradient>
+              <linearGradient id="ethTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#93c5fd"/>
+                <stop offset="100%" stop-color="#2563eb"/>
+              </linearGradient>
+              <linearGradient id="ethBot" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1d4ed8"/>
+                <stop offset="100%" stop-color="#1e3a8a"/>
+              </linearGradient>
+              <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#92600a"/>
+                <stop offset="50%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#92600a"/>
+              </linearGradient>
+            </defs>
+            <circle cx="110" cy="110" r="96" fill="url(#goldDisc)" stroke="#fde68a" stroke-width="3"/>
+            <circle cx="110" cy="110" r="84" fill="none" stroke="rgba(120,76,8,0.45)" stroke-width="2" stroke-dasharray="5 5"/>
+            <polygon points="110,36 74,104 110,124" fill="url(#ethTop)"/>
+            <polygon points="110,36 146,104 110,124" fill="#60a5fa"/>
+            <polygon points="110,134 74,113 110,164" fill="url(#ethBot)"/>
+            <polygon points="110,134 146,113 110,164" fill="#1e40af"/>
+            <path d="M42,146 Q110,174 178,146 L186,166 Q110,194 34,166 Z" fill="url(#ribbonGrad)" stroke="#5c3c05" stroke-width="1.5"/>
+            <path d="M90,116 H130 V142 Q130,158 110,166 Q90,158 90,142 Z" fill="#1e3a8a" stroke="#f4c430" stroke-width="2.5"/>
+            <rect x="92" y="118" width="36" height="10" fill="#dc2626"/>
+            <text x="110" y="147" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-weight="800" font-size="15">US</text>
+          </svg>
+        </div>
+
+        <div class="coin-title">US TOKEN</div>
+        <div class="exchange-ribbon">Coming Soon on Exchange</div>
+      </div>
+
+      <div class="countdown-card">
+        <div class="countdown-clock" id="listingCountdown">90 days 00:00:00</div>
+        <div class="countdown-sub">starts today and runs for 3 months</div>
+      </div>
+
+      <div class="balance-grid">
+        <div class="stat-box">
+          <div class="stat-label">MINED BALANCE</div>
+          <div class="stat-value" id="minedBalanceText">1,245.78 US</div>
+          <div class="stat-usd" id="minedUsdText">≈ $623.90 USD</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">REFERRAL BONUS</div>
+          <div class="stat-value" id="refBalanceText">120.00 US</div>
+          <div class="stat-usd" id="refUsdText">≈ $60.00 USD</div>
+        </div>
+      </div>
+
+      <button class="btn-gold" id="mainMiningBtn">
+        <span>↗</span>
+        <span id="mainMiningBtnLabel">START MINING</span>
+      </button>
+
+      <div class="mining-meta" id="miningStatusText">
+        Mining session ready • <strong id="hourlyRateLabel">+0.12 US/hour</strong>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="sessionProgress"></div>
+      </div>
+    </section>
+
+    <!-- 2. MINE & BOOST VIEW -->
+    <section class="view" id="view-mine">
+      <div class="section-title">Mining & Boosters</div>
+      <div class="section-sub">Increase your hourly US Token rate and claim daily rewards.</div>
+
+      <div class="card card-gold">
+        <div class="row-between">
+          <div>
+            <div class="muted">Current Mining Speed</div>
+            <div class="stat-value mt-8" id="mineSpeedDisplay">+0.12 US / hour</div>
+          </div>
+          <button class="btn-gold-sm" id="boostMiningBtn">Toggle Mining</button>
+        </div>
+        <div class="muted mt-12" id="sessionTimeLeft">Session window: 6h cycle</div>
+      </div>
+
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <div class="task-name">Daily Check-In Reward</div>
+            <div class="task-reward">+15.00 US every 24 hours</div>
+          </div>
+          <button class="btn-gold-sm" id="dailyCheckinBtn">Claim</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <div class="task-name">Turbo Rig Upgrade (Lv. <span id="rigLevelLabel">1</span>)</div>
+            <div class="task-reward">+0.08 US/hr • Cost: <span id="rigCostLabel">100</span> US</div>
+          </div>
+          <button class="btn-gold-sm" id="upgradeRigBtn">Upgrade</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. TASKS VIEW -->
+    <section class="view" id="view-tasks">
+      <div class="section-title">Earn Tasks</div>
+      <div class="section-sub">Complete partner & community tasks to earn extra US tokens.</div>
+      <div id="tasksList"></div>
+    </section>
+
+    <!-- 4. WALLET VIEW -->
+    <section class="view" id="view-wallet">
+      <div class="section-title">US Wallet</div>
+      <div class="section-sub">Total balance, TON wallet connection, and token claim status.</div>
+
+      <div class="card card-gold">
+        <div class="muted">Total Available Balance</div>
+        <div class="stat-value mt-8" style="font-size: 24px;" id="walletTotalUS">1,365.78 US</div>
+        <div class="stat-usd mt-8" id="walletTotalUSD">≈ $683.90 USD</div>
+      </div>
+
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <div class="task-name">TON Wallet</div>
+            <div class="muted mt-8" id="walletAddressText">Not connected</div>
+          </div>
+          <button class="btn-gold-sm" id="connectWalletBtn">Connect TON</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="task-name">Exchange Listing & Withdrawal</div>
+        <div class="muted mt-8">
+          Direct token withdrawals unlock after the 90-day pre-listing phase. You can log a queued withdrawal request below.
+        </div>
+        <div class="field-group mt-12">
+          <label class="field-label" for="withdrawAmountInput">Amount (US)</label>
+          <input class="input" id="withdrawAmountInput" type="number" min="10" step="1" placeholder="e.g. 250" />
+        </div>
+        <button class="btn-secondary" id="submitWithdrawBtn">Queue Withdrawal Request</button>
+        <div class="muted mt-12" id="withdrawHistoryText">No withdrawal requests yet.</div>
+      </div>
+    </section>
+
+    <!-- 5. REFER & PROFILE / ADMIN VIEW -->
+    <section class="view" id="view-refer">
+      <div class="section-title">Invite & Earn</div>
+      <div class="section-sub">Share your referral link and earn bonus US tokens from friends.</div>
+
+      <div class="card card-gold">
+        <div class="row-between">
+          <div>
+            <div class="muted">Referral Bonus Earned</div>
+            <div class="stat-value mt-8" id="refTabBalance">120.00 US</div>
+          </div>
+          <div>
+            <div class="muted">Invited Friends</div>
+            <div class="stat-value mt-8" id="refCountDisplay">6</div>
+          </div>
+        </div>
+
+        <div class="ref-box" id="refLinkBox">https://t.me/USTokenMinerBot?start=ref_884210</div>
+        <div class="balance-grid" style="margin-top: 0;">
+          <button class="btn-gold-sm" id="copyRefBtn" style="height: 38px;">Copy Link</button>
+          <button class="btn-secondary" id="simInviteBtn" style="height: 38px;">Simulate +1 Friend</button>
+        </div>
+      </div>
+
+      <!-- Profile & Admin Panel -->
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <div class="task-name" id="profileNameLabel">Member Account</div>
+            <div class="muted mt-8" id="profileIdLabel">ID: @us_trader_01</div>
+          </div>
+          <button class="btn-gold-sm" id="toggleAdminBtn">Admin Panel</button>
+        </div>
+
+        <div id="adminPanel" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+          <div class="task-name" style="color: var(--gold-2); margin-bottom: 10px;">Admin Control Panel</div>
+
+          <div class="field-group">
+            <label class="field-label" for="adminRateInput">Hourly Mining Rate (US / hour)</label>
+            <input class="input" id="adminRateInput" type="number" step="0.01" min="0.01" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="adminBannerInput">Top Announcement Banner</label>
+            <input class="input" id="adminBannerInput" type="text" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="adminNewTaskTitle">Add New Task Title</label>
+            <input class="input" id="adminNewTaskTitle" type="text" placeholder="e.g. Subscribe YouTube Channel" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="adminNewTaskReward">New Task Reward (US)</label>
+            <input class="input" id="adminNewTaskReward" type="number" step="1" min="1" placeholder="e.g. 50" />
+          </div>
+
+          <button class="btn-gold" id="saveAdminBtn" style="height: 42px; margin-top: 4px;">Save Admin Settings</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-target="home">
+        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-target="mine">
+        <svg viewBox="0 0 24 24"><path d="M14.5 4.5l5 5-9.5 9.5-5-5 9.5-9.5zM4 20l4-1-3-3-1 4z"/></svg>
+        <span>Mine</span>
+      </button>
+      <button class="nav-btn" data-target="tasks">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Tasks</span>
+      </button>
+      <button class="nav-btn" data-target="wallet">
+        <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zm14 5h4v4h-4a2 2 0 0 1 0-4z"/></svg>
+        <span>Wallet</span>
+      </button>
+      <button class="nav-btn" data-target="refer">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm13 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Refer</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "us_token_mini_app_v1";
+    const USD_RATE = 0.5; // 1 US = $0.50 USD display rate
+    const SESSION_DURATION_MS = 6 * 60 * 60 * 1000; // 6 hours per mining cycle
+
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    const defaultState = {
+      minedBalance: 1245.78,
+      refBalance: 120.00,
+      refCount: 6,
+      hourlyRate: 0.12,
+      rigLevel: 1,
+      miningActive: false,
+      sessionStart: null,
+      lastTick: Date.now(),
+      lastCheckin: 0,
+      listingEnd: Date.now() + 90 * 24 * 60 * 60 * 1000,
+      bannerText: "Wallet Connect will be available after 3 months - 22 Feb 2027",
+      walletAddress: "",
+      withdrawals: [],
+      tasks: [
+        { id: "tg_join", title: "Join Official US Token Channel", reward: 25, completed: false, badge: "TG" },
+        { id: "x_follow", title: "Follow US Token on X", reward: 20, completed: false, badge: "X" },
+        { id: "ad_watch", title: "Watch Sponsored Partner Ad", reward: 15, completed: false, badge: "AD" },
+        { id: "daily_ret", title: "Share Listing Countdown Post", reward: 30, completed: false, badge: "SH" }
+      ]
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...defaultState };
+        const parsed = JSON.parse(raw);
+        return {
+          ...defaultState,
+          ...parsed,
+          tasks: Array.isArray(parsed.tasks) && parsed.tasks.length ? parsed.tasks : defaultState.tasks
+        };
+      } catch {
+        return { ...defaultState };
+      }
+    }
+
+    let state = loadState();
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {}
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    function formatUS(val) {
+      return Number(val || 0).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " US";
+    }
+
+    function formatUSD(val) {
+      return "≈ $" + (Number(val || 0) * USD_RATE).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " USD";
+    }
+
+    function tickMining(now = Date.now()) {
+      const elapsedSec = Math.max(0, (now - state.lastTick) / 1000);
+      state.lastTick = now;
+
+      if (state.miningActive && state.sessionStart) {
+        const sessionElapsed = now - state.sessionStart;
+        if (sessionElapsed >= SESSION_DURATION_MS) {
+          const validSec = Math.max(0, (state.sessionStart + SESSION_DURATION_MS - (now - elapsedSec * 1000)) / 1000);
+          state.minedBalance += (validSec / 3600) * state.hourlyRate;
+          state.miningActive = false;
+          state.sessionStart = null;
+        } else {
+          state.minedBalance += (elapsedSec / 3600) * state.hourlyRate;
+        }
+      }
+    }
+
+    function startOrToggleMining() {
+      tickMining();
+      if (!state.miningActive) {
+        state.miningActive = true;
+        state.sessionStart = Date.now();
+        state.lastTick = Date.now();
+        showToast("Mining session started!");
+      } else {
+        state.miningActive = false;
+        state.sessionStart = null;
+        showToast("Mining session paused.");
+      }
+      saveState();
+      render();
+    }
+
+    function switchView(target) {
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+
+      const viewEl = document.getElementById("view-" + target);
+      if (viewEl) viewEl.classList.add("active");
+
+      const navEl = document.querySelector(`.nav-btn[data-target="${target}"]`);
+      if (navEl) navEl.classList.add("active");
+    }
+
+    function renderTasks() {
+      const container = document.getElementById("tasksList");
+      container.innerHTML = "";
+      state.tasks.forEach(task => {
+        const div = document.createElement("div");
+        div.className = "task-item";
+        div.innerHTML = `
+          <div class="task-icon">${task.badge || "US"}</div>
+          <div class="task-info">
+            <div class="task-name">${task.title}</div>
+            <div class="task-reward">+${Number(task.reward).toFixed(2)} US</div>
+          </div>
+          ${
+            task.completed
+              ? `<span class="badge-done">Completed</span>`
+              : `<button class="btn-gold-sm" data-task-id="${task.id}">Claim</button>`
+          }
+        `;
+        container.appendChild(div);
+      });
+
+      container.querySelectorAll("button[data-task-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-task-id");
+          const t = state.tasks.find(item => item.id === id);
+          if (t && !t.completed) {
+            t.completed = true;
+            state.minedBalance += Number(t.reward);
+            saveState();
+            render();
+            showToast(`Claimed +${Number(t.reward).toFixed(2)} US!`);
+          }
+        });
+      });
+    }
+
+    function render() {
+      const now = Date.now();
+
+      // Header & Banner
+      document.getElementById("announcementBanner").textContent = state.bannerText;
+
+      // Countdown
+      const rem = Math.max(0, state.listingEnd - now);
+      const days = Math.floor(rem / (24 * 3600 * 1000));
+      const hours = String(Math.floor((rem % (24 * 3600 * 1000)) / (3600 * 1000))).padStart(2, "0");
+      const mins = String(Math.floor((rem % (3600 * 1000)) / (60 * 1000))).padStart(2, "0");
+      const secs = String(Math.floor((rem % (60 * 1000)) / 1000)).padStart(2, "0");
+      document.getElementById("listingCountdown").textContent = `${days} days ${hours}:${mins}:${secs}`;
+
+      // Home balances
+      document.getElementById("minedBalanceText").textContent = formatUS(state.minedBalance);
+      document.getElementById("minedUsdText").textContent = formatUSD(state.minedBalance);
+      document.getElementById("refBalanceText").textContent = formatUS(state.refBalance);
+      document.getElementById("refUsdText").textContent = formatUSD(state.refBalance);
+
+      // Mining button & status
+      const btn = document.getElementById("mainMiningBtn");
+      const btnLabel = document.getElementById("mainMiningBtnLabel");
+      const coinWrap = document.getElementById("coinWrap");
+      const statusText = document.getElementById("miningStatusText");
+      const progEl = document.getElementById("sessionProgress");
+
+      document.getElementById("hourlyRateLabel").textContent = `+${state.hourlyRate.toFixed(2)} US/hour`;
+      document.getElementById("mineSpeedDisplay").textContent = `+${state.hourlyRate.toFixed(2)} US / hour`;
+
+      if (state.miningActive && state.sessionStart) {
+        btn.classList.add("active-mining");
+        btnLabel.textContent = "MINING ACTIVE";
+        coinWrap.classList.add("mining-spin");
+        const elapsed = Math.min(SESSION_DURATION_MS, now - state.sessionStart);
+        const pct = Math.min(100, (elapsed / SESSION_DURATION_MS) * 100);
+        progEl.style.width = pct.toFixed(1) + "%";
+        statusText.innerHTML = `Mining session active • <strong>+${state.hourlyRate.toFixed(2)} US/hour</strong>`;
+      } else {
+        btn.classList.remove("active-mining");
+        btnLabel.textContent = "START MINING";
+        coinWrap.classList.remove("mining-spin");
+        progEl.style.width = "0%";
+        statusText.innerHTML = `Tap to start mining • <strong>+${state.hourlyRate.toFixed(2)} US/hour</strong>`;
+      }
+
+      // Daily check-in
+      const checkinBtn = document.getElementById("dailyCheckinBtn");
+      const canCheckin = now - state.lastCheckin >= 24 * 3600 * 1000;
+      checkinBtn.disabled = !canCheckin;
+      checkinBtn.textContent = canCheckin ? "Claim" : "Claimed";
+
+      // Rig upgrade
+      const rigCost = state.rigLevel * 100;
+      document.getElementById("rigLevelLabel").textContent = state.rigLevel;
+      document.getElementById("rigCostLabel").textContent = rigCost;
+
+      // Wallet
+      const totalUS = state.minedBalance + state.refBalance;
+      document.getElementById("walletTotalUS").textContent = formatUS(totalUS);
+      document.getElementById("walletTotalUSD").textContent = formatUSD(totalUS);
+      document.getElementById("walletAddressText").textContent = state.walletAddress
+        ? `Connected: ${state.walletAddress}`
+        : "Not connected";
+      document.getElementById("connectWalletBtn").textContent = state.walletAddress ? "Disconnect" : "Connect TON";
+
+      const whEl = document.getElementById("withdrawHistoryText");
+      if (state.withdrawals.length) {
+        const last = state.withdrawals[state.withdrawals.length - 1];
+        whEl.textContent = `Latest queued request: ${Number(last.amount).toFixed(2)} US (${last.status})`;
+      } else {
+        whEl.textContent = "No withdrawal requests yet.";
+      }
+
+      // Refer & Profile
+      document.getElementById("refTabBalance").textContent = formatUS(state.refBalance);
+      document.getElementById("refCountDisplay").textContent = state.refCount;
+
+      const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+      if (tgUser) {
+        const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || "Telegram User";
+        document.getElementById("profileNameLabel").textContent = fullName;
+        document.getElementById("profileIdLabel").textContent = tgUser.username ? `@${tgUser.username}` : `ID: ${tgUser.id}`;
+        document.getElementById("refLinkBox").textContent = `https://t.me/USTokenMinerBot?start=ref_${tgUser.id}`;
+      }
+
+      renderTasks();
+    }
+
+    // Event Listeners
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => switchView(btn.getAttribute("data-target")));
+    });
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      switchView("home");
+      showToast("Returned to Home");
+    });
+
+    document.getElementById("mainMiningBtn").addEventListener("click", startOrToggleMining);
+    document.getElementById("boostMiningBtn").addEventListener("click", startOrToggleMining);
+
+    document.getElementById("dailyCheckinBtn").addEventListener("click", () => {
+      const now = Date.now();
+      if (now - state.lastCheckin < 24 * 3600 * 1000) {
+        showToast("Already claimed today!");
+        return;
+      }
+      state.lastCheckin = now;
+      state.minedBalance += 15;
+      saveState();
+      render();
+      showToast("Daily check-in +15.00 US added!");
+    });
+
+    document.getElementById("upgradeRigBtn").addEventListener("click", () => {
+      const cost = state.rigLevel * 100;
+      const total = state.minedBalance + state.refBalance;
+      if (total < cost) {
+        showToast(`Need ${cost} US balance to upgrade.`);
+        return;
+      }
+      if (state.minedBalance >= cost) {
+        state.minedBalance -= cost;
+      } else {
+        const remCost = cost - state.minedBalance;
+        state.minedBalance = 0;
+        state.refBalance = Math.max(0, state.refBalance - remCost);
+      }
+      state.rigLevel += 1;
+      state.hourlyRate = Number((state.hourlyRate + 0.08).toFixed(2));
+      saveState();
+      render();
+      showToast(`Rig upgraded to Lv.${state.rigLevel}!`);
+    });
+
+    document.getElementById("connectWalletBtn").addEventListener("click", () => {
+      if (state.walletAddress) {
+        state.walletAddress = "";
+        showToast("TON Wallet disconnected.");
+      } else {
+        state.walletAddress = "UQBx9f...4k82M";
+        showToast("TON Wallet connected!");
+      }
+      saveState();
+      render();
+    });
+
+    document.getElementById("submitWithdrawBtn").addEventListener("click", () => {
+      const input = document.getElementById("withdrawAmountInput");
+      const amt = parseFloat(input.value);
+      const total = state.minedBalance + state.refBalance;
+      if (!amt || amt < 10) {
+        showToast("Minimum withdrawal is 10 US.");
+        return;
+      }
+      if (amt > total) {
+        showToast("Insufficient US balance.");
+        return;
+      }
+      state.withdrawals.push({ amount: amt, status: "Queued (Post-Listing)", date: new Date().toISOString() });
+      input.value = "";
+      saveState();
+      render();
+      showToast("Withdrawal request queued.");
+    });
+
+    document.getElementById("copyRefBtn").addEventListener("click", () => {
+      const text = document.getElementById("refLinkBox").textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+      showToast("Referral link copied!");
+    });
+
+    document.getElementById("simInviteBtn").addEventListener("click", () => {
+      state.refCount += 1;
+      state.refBalance += 20;
+      saveState();
+      render();
+      showToast("Friend joined! +20.00 US referral bonus.");
+    });
+
+    document.getElementById("toggleAdminBtn").addEventListener("click", () => {
+      const panel = document.getElementById("adminPanel");
+      const isOpen = panel.style.display === "block";
+      panel.style.display = isOpen ? "none" : "block";
+      if (!isOpen) {
+        document.getElementById("adminRateInput").value = state.hourlyRate;
+        document.getElementById("adminBannerInput").value = state.bannerText;
+      }
+    });
+
+    document.getElementById("saveAdminBtn").addEventListener("click", () => {
+      const newRate = parseFloat(document.getElementById("adminRateInput").value);
+      const newBanner = document.getElementById("adminBannerInput").value.trim();
+      const newTaskTitle = document.getElementById("adminNewTaskTitle").value.trim();
+      const newTaskReward = parseFloat(document.getElementById("adminNewTaskReward").value);
+
+      if (newRate && newRate > 0) {
+        state.hourlyRate = Number(newRate.toFixed(2));
+      }
+      if (newBanner) {
+        state.bannerText = newBanner;
+      }
+      if (newTaskTitle && newTaskReward && newTaskReward > 0) {
+        state.tasks.push({
+          id: "custom_" + Date.now(),
+          title: newTaskTitle,
+          reward: newTaskReward,
+          completed: false,
+          badge: "NEW"
+        });
+        document.getElementById("adminNewTaskTitle").value = "";
+        document.getElementById("adminNewTaskReward").value = "";
+      }
+
+      saveState();
+      render();
+      showToast("Admin settings updated!");
+    });
+
+    // Live loop
+    setInterval(() => {
+      tickMining();
+      render();
+    }, 1000);
+
+    tickMining();
+    render();
+  </script>
+</body>
+</html>
