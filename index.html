@@ -3,40 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>US TOKEN - Mining</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>US TOKEN</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:center}
-.app{width:100%;max-width:420px;min-height:100vh;background:#050505;padding:14px 14px 20px;position:relative;overflow:hidden}
+.app{width:100%;max-width:420px;background:#000;padding:12px 16px 20px;position:relative;overflow:hidden}
 /* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;background:#0a0a0a;border-radius:16px;padding:12px}
+.top{display:flex;align-items:center;justify-content:space-between;background:#0a0a0a;border-radius:16px;padding:10px 12px}
 .left{display:flex;align-items:center;gap:8px}
-.flag{width:38px;height:38px;border-radius:50%;background:conic-gradient(#b31942 0 25%,#fff 0 50%,#0a3161 0 75%,#fff 0);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;border:1px solid #333}
-.flag span{font-size:22px}
-.header h1{font-size:22px;letter-spacing:.5px}
-.live{border:1px solid #ff2d2d;color:#ff2d2d;font-size:12px;font-weight:700;padding:5px 8px;border-radius:8px}
-.live b{color:#ff2d2d}
-.wallet-note{text-align:center;font-size:11px;color:#e8c87a;margin:12px 0 6px;letter-spacing:.2px}
-/* COIN - COFFEE GLOW BEHIND */
-.coin-wrap{position:relative;width:260px;height:260px;margin:10px auto 0;display:flex;align-items:center;justify-content:center}
-.coin-wrap::before{content:'';position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,#6f4e2e 0%,#4a2f16 35%,#2a1a0a 60%,transparent 72%);filter:blur(2px);z-index:0}
-.coin-wrap::after{content:'';position:absolute;width:230px;height:230px;border-radius:50%;border:2px solid rgba(255,180,80,.35);z-index:0}
-.coin{width:225px;height:225px;border-radius:50%;z-index:2;position:relative;background:radial-gradient(circle at 30% 25%,#fff3a0,#ffd700 30%,#b8860b 55%,#8b6500 75%,#ffd700);border:4px solid #e6b800;box-shadow:0 0 40px rgba(255,180,0,.55),inset 0 0 20px rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;flex-direction:column}
-.coin-inner{width:185px;height:185px;border-radius:50%;border:2px solid rgba(139,101,0,.6);display:flex;align-items:center;justify-content:center;position:relative}
-.eth{font-size:105px;line-height:1;filter:drop-shadow(0 6px 8px rgba(0,0,0,.4))}
-.eth svg{width:105px;height:115px}
-.us-badge{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);background:#123a8a;border:2px solid #ffd700;border-radius:12px;padding:4px 14px;font-weight:900;font-size:22px;letter-spacing:1px;box-shadow:0 4px 12px rgba(0,0,0,.6);z-index:3}
-.us-badge::before{content:'★ ★ ★';display:block;font-size:7px;text-align:center;color:#fff}
-.us-badge::after{content:'★ ★ ★';display:block;font-size:7px;text-align:center;color:#fff}
-.ribbon{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:150px;height:28px;background:linear-gradient(180deg,#ffe27a,#d4a017);z-index:1;border-radius:4px}
+.flag{width:38px;height:38px;border-radius:50%;background:linear-gradient(#ff4d4d,#fff,#2a5dff);display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid #333}
+.top h1{font-size:22px;letter-spacing:1px}
+.live{color:#ff3b3b;border:1px solid #ff3b3b;border-radius:20px;padding:4px 8px;font-size:12px;font-weight:700}
+.live span{color:#ff3b3b}
+/* WALLET TEXT - উপরের ছোট লেখা */
+.wallet-note{text-align:center;color:#d8b96a;font-size:11px;margin:12px 0 8px;line-height:1.4}
+/* COIN - কফি কালার ব্যাকগ্রাউন্ড */
+.coin-wrap{position:relative;width:280px;height:280px;margin:10px auto 0;display:flex;align-items:center;justify-content:center}
+.coin-wrap::before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,#6f4e2e 0%,#3d2712 45%,#000 75%);filter:blur(2px)}
+.coin-wrap::after{content:"";position:absolute;width:310px;height:310px;border-radius:50%;border:1px solid rgba(255,180,80,.25)}
+.coin{position:relative;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff3a0,#ffd700 30%,#c99600 60%,#8a5a00);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(255,180,0,.6), inset 0 0 0 6px #e6b800, inset 0 0 0 10px #a67c00}
+.eth{font-size:110px;line-height:1;filter:drop-shadow(0 5px 10px rgba(0,0,0,.4))}
+.us-badge{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);background:#0a2a8a;border:3px solid #ffd700;border-radius:14px;padding:2px 14px;font-weight:900;font-size:20px;letter-spacing:1px;box-shadow:0 4px 15px rgba(0,0,0,.6)}
+.us-badge small{display:block;text-align:center;font-size:9px;color:#ffd700;letter-spacing:3px}
 .coin-title{text-align:center;margin-top:18px}
-.coin-title h2{color:#f5d67a;font-size:26px;letter-spacing:1px}
-.coin-title p{color:#c9b896;font-size:14px;margin-top:2px}
-/* EXCHANGE RIBBON */
-.exchange{margin:14px 0;background:linear-gradient(180deg,#ffe27a,#d4a017);color:#1a1a1a;text-align:center;font-weight:900;font-size:19px;padding:11px;border-radius:2px;position:relative;box-shadow:0 4px 0 #8b6500}
-.exchange::before,.exchange::after{content:'';position:absolute;top:0;width:18px;height:100%;background:#b8860b;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,40% 50%)}
-.exchange::before{left:-10px;transform:scaleX(-1)}
-.exchange::after{right:-10px}
+.coin-title h2{font-size:28px;color:#f5d67a;letter-spacing:1px}
+.coin-title p{color:#aaa;font-size:14px;margin-top:2px}
+/* RIBBON */
+.ribbon{background:linear-gradient(180deg,#ffe27a,#f5c518);color:#000;text-align:center;font-weight:900;font-size:20px;padding:10px;border-radius:4px;margin:14px 0;box-shadow:0 4px 0 #a67c00}
 /* COUNTDOWN */
-.countdown{border:1px solid #4a3f1a;border-radius:10
+.count{background:#080808;border:1px solid #333;border-radius:10px;text-align:center;padding:12px}
+.count b{font-size:24px;color:#f5d67a}
+.count p{font-size:12px;color:#d8b96a;margin-top:4px}
+/* CARDS */
+.cards{display:flex;gap:10px;margin:12px 0}
+.card{flex:1;background:#0a0a0a;border:1px solid #222;border-radius:12px;padding:14px 8px;text-align:center}
+.card small{color:#7a9cc6;font-size:11px;letter-spacing:1px}
+.card h3{font-size:21px;margin:8px 0 4px}
+.card span{font-size:12px;color:#ddd}
+/* BUTTON */
+#startBtn{width:100%;background:#ffd82e;color:#000;border:none;border-radius:12px;padding:16px;font-size:20px;font-weight:900;cursor:pointer}
+#startBtn:disabled{background:#777;color:#ddd}
+.mining-info{text-align:center;font-size:12px;color:#8aa0c0;margin:10px 0 14px}
+/* NAV */
+.nav{display:flex;justify-content:space-between;background:#0a0a0a;border:1px solid #222;border-radius:18px;padding:12px 16px 8px}
+.nav button{background:none;border:none;color:#8aa0c0;font-size:11px;cursor:pointer}
+.nav button.active{color:#ffd82e}
+.nav .icon{font-size:22px;display:block;margin-bottom:4px}
+.lock-msg{text-align:center;color:#ff6b6b;font-size:12px;margin-top:8px;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="left"><span style="color:#5aa2ff;font-size:20px">‹</span><div class="flag">🇺🇸</div><h1>US TOKEN</h1></div>
+    <div class="live">● LIVE <span id="liveTime">02:14:36</span></div>
+  </div>
+
+  <div class="wallet-note">Wallet Connect will be available after 3 months - 22 Feb 2027</div>
+
+  <div class="coin-wrap">
+    <div class="coin"><div class="eth">◆</div><div class="us-badge"><small>★★★</small>US<small>★★★</small></div></div>
+  </div>
+
+  <div class="coin-title"><h2>US TOKEN</h2><p>Powered by Ethereum</p></div>
+  <div class="ribbon">✦ Coming Soon on Exchange ✦</div>
+
+  <div class="count"><b id="countdown">90 days 00:00:00</b><p>starts today and runs for 3 months</p></div>
+
+  <div class="cards">
+    <div class="card"><small>MINED BALANCE</small><h3><span id="balance">1,245.78</span> US</h3><span>≈ $<span id="usd">623.90</span> USD</span></div>
+    <div class="card"><small>REFERRAL BONUS</small><h3>120.00 US</h3><span>≈ $60.00 USD</span></div>
+  </div>
+
+  <button id="startBtn">⛏ START MINING</button>
+  <div class="mining-info" id="miningInfo">Mining session active • +0.12 US/hour</div>
+  <div class="lock-msg" id="lockMsg">🔒 Wallet is Locked - Opens on 22 Feb 2027</div>
+
+  <div class="nav">
+    <button class="active"><span class="icon">🏠</span>Home</button>
+    <button onclick="alert('Mining Page')"><span class="icon">⛏️</span>Mine</button>
+    <button id="walletBtn"><span class="icon">👛</span>Wallet</button>
+    <button onclick="alert('Refer Page')"><span class="icon">👤</span>Refer</button>
+    <button onclick="alert('Profile Page')"><span class="icon">👤</span>Profile</button>
+  </div>
+</div>
+
+<script>
+// LIVE CLOCK
+let sec = 2*3600 + 14*60 + 36;
+setInterval(()=>{ sec++; let h=String(Math.floor(sec/3600)).padStart(2,'0'), m=String(Math.floor(sec%3600/60)).padStart(2,'0'), s=String(sec%60).padStart(2,'0'); document.getElementById('liveTime').textContent=h+':'+m+':'+s; },1000);
+
+// 3 MONTH COUNTDOWN - REAL
+const END = new Date('2027-02-22T00:00:00').getTime();
+const START_KEY='us_start';
+if(!localStorage.getItem(START_KEY)) localStorage.setItem(START_KEY, Date.now());
+
+function tick(){
+  let diff = END - Date.now();
+  if(diff<=0){ document.getElementById('countdown').textContent='Mining Finished - Wallet Open!'; document.getElementById('startBtn').textContent='CONNECT WALLET'; document.getElementById('startBtn').disabled=false; return; }
+  let d=Math.floor(diff/(1000*60*60*24));
+  let h=String(Math.floor(diff%(1000*60*60*24)/(1000*60*60))).padStart(2,'0');
+  let m=String(Math.floor(diff%(1000*60*60)/(1000*60))).padStart(2,'0');
+  let s=String(Math.floor(diff%(1000*60)/1000)).padStart(2,'0');
+  document.getElementById('countdown').textContent=d+' days '+h+':'+m+':'+s;
+}
+setInterval(tick,1000); tick();
+
+// MINING - BALANCE BARBE
+let bal = parseFloat(localStorage.getItem('us_bal')||'1245.78');
+let mining = localStorage.getItem('us_mining')==='1';
+const btn=document.getElementById('startBtn');
+function renderBal(){ document.getElementById('balance').textContent=bal.toFixed(2); document.getElementById('usd').textContent=(bal*0.5).toFixed(2); }
+renderBal();
+if(mining){ btn.textContent='⛏ MINING... CLICK TO STOP'; btn.style.background='#ff9f00'; }
+setInterval(()=>{ if(mining){ bal+=0.12/3600; localStorage.setItem('us_bal',bal); renderBal(); } },1000);
+
+btn.onclick=()=>{
+  if(Date.now()>=END){ alert('Wallet Connect is now Open!'); return; }
+  mining=!mining; localStorage.setItem('us_mining',mining?'1':'0');
+  btn.textContent=mining?'⛏ MINING... CLICK TO STOP':'⛏ START MINING';
+  btn.style.background=mining?'#ff9f00':'#ffd82e';
+};
+
+// WALLET LOCKED - 3 MASH PORJONTO
+document.getElementById('walletBtn').onclick=()=>{
+  if(Date.now()<END){ document.getElementById('lockMsg').style.display='block'; alert('Wallet Connect will be available after 3 months - 22 Feb 2027'); }
+  else{ alert('Wallet Connect Open!'); }
+};
+</script>
+</body>
+</html>
