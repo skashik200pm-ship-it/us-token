@@ -1,369 +1,173 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>EarnBD Mini App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--tg-theme-bg-color, #0f172a);
-      color: var(--tg-theme-text-color, #ffffff);
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #1e293b;
-      border-top: 1px solid #334155;
-      z-index: 50;
-    }
-    .nav-item.active { color: #22c55e; }
-    .card {
-      background: #1e293b;
-      border-radius: 16px;
-      border: 1px solid #334155;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-    }
-    .progress-bar {
-      height: 6px;
-      background: #334155;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: #22c55e;
-      transition: width 0.3s;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US TOKEN</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#000;color:#fff}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
+.top b{font-size:20px}
+.live{color:#ff3b30;border:1px solid #ff3b30;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.notice{text-align:center;color:#d4af37;font-size:12px}
+.coin-wrap{text-align:center;margin:16px 0 6px;position:relative}
+.coin{width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,#ffe27a,#d4af37 55%,#8a6d00);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 60px #d4af37aa;border:8px solid #a88600}
+.coin span{font-size:110px}
+.us-badge{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);background:#0a2a7a;padding:4px 14px;border-radius:20px;border:2px solid gold;font-weight:bold}
+.ribbon{background:linear-gradient(90deg,#b8860b,#ffd700,#b8860b);color:#000;text-align:center;font-weight:900;padding:10px;margin:14px 16px;border-radius:6px}
+.timer{background:#111;border:1px solid #333;text-align:center;padding:12px;margin:0 16px;border-radius:10px}
+.timer b{color:#ffd700;font-size:24px}.timer p{color:#aaa;font-size:12px}
+.cards{display:flex;gap:10px;padding:12px 16px}
+.card{flex:1;background:#111;border:1px solid #333;border-radius:12px;padding:14px;text-align:center}
+.card small{color:#888}.card b{font-size:22px;display:block;margin-top:6px}.card span{color:#888;font-size:11px}
+.btn{background:#ffd700;color:#000;border:none;width:calc(100% - 32px);margin:4px 16px;padding:16px;border-radius:12px;font-size:20px;font-weight:900;cursor:pointer}
+.info{text-align:center;color:#888;font-size:13px;margin:8px 0 20px}
+.page{display:none;padding:0 16px 90px}.page.active{display:block}
+.task{background:#151515;border:1px solid #333;padding:14px;border-radius:12px;margin:12px 0;display:flex;justify-content:space-between;align-items:center}
+.task button{background:#ffd700;border:none;padding:8px 14px;border-radius:20px;font-weight:bold}
+.task button.done{background:#22c55e;color:#fff}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;justify-content:space-around;padding:10px 0 18px;border-top:1px solid #333}
+.bottom div{text-align:center;color:#888;font-size:12px}.bottom div.active{color:#ffd700}.bottom span{font-size:22px;display:block}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;margin:8px 0}
+.warn{background:#2a1500;border:1px solid #ff9800;color:#ffcc80;padding:10px;border-radius:10px;font-size:12px;margin:12px 0;line-height:1.5}
+</style>
 </head>
-<body class="pb-24">
+<body>
 
-  <!-- Header -->
-  <div class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-700 px-4 py-3">
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-lg font-bold text-green-400">EarnBD</h1>
-        <p class="text-xs text-slate-400">Watch • Earn • Withdraw</p>
-      </div>
-      <div class="text-right">
-        <p class="text-xs text-slate-400">ব্যালেন্স</p>
-        <p class="text-xl font-bold text-green-400" id="balance">০.০০ ৳</p>
-      </div>
-    </div>
+<div class="top"><div>🇺🇸 <b>US TOKEN</b></div><div class="live">● LIVE <span id="live">02:14:36</span></div></div>
+<p class="notice">Wallet Connect will be available after 3 months - 22 Feb 2027</p>
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="coin-wrap"><div class="coin"><span>◆</span></div><div class="us-badge">★ US ★</div></div>
+  <p style="text-align:center;font-weight:bold;letter-spacing:2px">US TOKEN</p>
+  <div class="ribbon">✦ Coming Soon on Exchange ✦</div>
+  <div class="timer"><b id="countdown">90 days 00:00:00</b><p>starts today and runs for 3 months</p></div>
+  <div class="cards">
+    <div class="card"><small>MINED BALANCE</small><b id="bal">0.00 US</b><span>US Points</span></div>
+    <div class="card"><small>REFERRAL BONUS</small><b id="refBal">0.00 US</b><span>Invite friends</span></div>
   </div>
+  <button class="btn" id="startBtn" onclick="clickStart()">⛏ START MINING</button>
+  <p class="info" id="status">Balance is 0.00 - Complete task to start mining</p>
+  <div class="warn">⚠️ US Points are community points. They have no money value yet. Do not pay anyone.</div>
+</div>
 
-  <!-- Main Content -->
-  <div class="px-4 pt-4">
+<!-- TASKS -->
+<div id="tasks" class="page">
+  <h2 style="margin:16px 0">Complete Task To Start Mining</h2>
+  <p style="color:#aaa;font-size:14px">Step 1: Follow our Facebook Page<br>Step 2: Come back & press VERIFY</p>
 
-    <!-- HOME TAB -->
-    <div id="home" class="tab-content active space-y-4">
-      <!-- Stats -->
-      <div class="grid grid-cols-2 gap-3">
-        <div class="card p-4 text-center">
-          <p class="text-2xl font-bold text-green-400" id="totalEarned">০</p>
-          <p class="text-xs text-slate-400 mt-1">মোট আয়</p>
-        </div>
-        <div class="card p-4 text-center">
-          <p class="text-2xl font-bold text-blue-400" id="totalRefs">০</p>
-          <p class="text-xs text-slate-400 mt-1">রেফারেল</p>
-        </div>
-      </div>
+  <div class="task"><div><b>1. Follow Facebook Page</b><br><small>Real Drama Official</small></div><button id="b1" onclick="openTask()">Follow</button></div>
 
-      <!-- Watch Ad Card -->
-      <div class="card p-5">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="font-semibold text-lg">ভিডিও অ্যাড দেখুন</h2>
-          <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full">+১ ৳</span>
-        </div>
-        <p class="text-sm text-slate-400 mb-4">৫ সেকেন্ডের অ্যাড দেখে ১ টাকা উপার্জন করুন</p>
-        
-        <div id="adContainer" class="bg-black rounded-xl overflow-hidden mb-4 relative" style="aspect-ratio: 16/9;">
-          <div class="absolute inset-0 flex items-center justify-center" id="adPlaceholder">
-            <div class="text-center">
-              <i class="fas fa-play-circle text-5xl text-green-400 mb-2"></i>
-              <p class="text-sm text-slate-300">অ্যাড দেখতে ক্লিক করুন</p>
-            </div>
-          </div>
-          <video id="adVideo" class="w-full h-full object-cover hidden" playsinline></video>
-          <div id="adTimer" class="absolute bottom-3 right-3 bg-black/70 text-white text-sm px-3 py-1 rounded-full hidden">৫</div>
-        </div>
+  <button class="btn" onclick="verifyAll()">VERIFY & START MINING</button>
+  <p style="text-align:center;color:#888;font-size:13px;margin-top:10px">Follow kore fire eshe VERIFY chap daw.</p>
+</div>
 
-        <button onclick="startAd()" id="watchBtn" class="btn-primary w-full py-3 rounded-xl font-semibold text-white">
-          <i class="fas fa-play mr-2"></i> অ্যাড দেখুন
-        </button>
-      </div>
+<!-- MINE -->
+<div id="mine" class="page">
+  <h2 style="margin:16px 0">Mining</h2>
+  <div class="coin-wrap"><div class="coin"><span>◆</span></div></div>
+  <p style="text-align:center">Balance: <b id="bal2" style="color:#ffd700">0.00 US</b></p>
+  <p style="text-align:center;color:#aaa;margin-top:8px">Rate: +0.12 US / hour</p>
+  <button class="btn" onclick="claim()">CLAIM +0.12 US</button>
+</div>
 
-      <!-- Quick Tasks -->
-      <div class="card p-5">
-        <h2 class="font-semibold text-lg mb-3">আজকের টাস্ক</h2>
-        <div class="space-y-3" id="taskList">
-          <!-- Tasks will load here -->
-        </div>
-      </div>
-    </div>
+<!-- WALLET -->
+<div id="wallet" class="page">
+  <h2 style="margin:16px 0">Wallet</h2>
+  <div class="card" style="text-align:left"><small>TOTAL BALANCE</small><b id="bal3" style="font-size:28px;color:#ffd700">0.00 US</b><p style="color:#888;font-size:13px;margin-top:6px">Wallet unlocks on 22 Feb 2027</p></div>
+</div>
 
-    <!-- TASKS TAB -->
-    <div id="tasks" class="tab-content space-y-4">
-      <div class="card p-5">
-        <h2 class="font-semibold text-lg mb-4">সব টাস্ক</h2>
-        <div class="space-y-3" id="allTasks">
-          <div class="flex items-center justify-between p-3 bg-slate-800 rounded-xl">
-            <div>
-              <p class="font-medium">চ্যানেল জয়েন করুন</p>
-              <p class="text-xs text-slate-400">আমাদের অফিসিয়াল চ্যানেল</p>
-            </div>
-            <button class="bg-green-500 text-white text-sm px-4 py-2 rounded-lg">+২ ৳</button>
-          </div>
-          <div class="flex items-center justify-between p-3 bg-slate-800 rounded-xl">
-            <div>
-              <p class="font-medium">লিংক শেয়ার করুন</p>
-              <p class="text-xs text-slate-400">৩ জনকে শেয়ার করুন</p>
-            </div>
-            <button class="bg-green-500 text-white text-sm px-4 py-2 rounded-lg">+৩ ৳</button>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- REFER -->
+<div id="refer" class="page">
+  <h2 style="margin:16px 0">Refer & Earn</h2>
+  <p style="color:#aaa;font-size:14px">Get +10 US for each active friend.</p>
+  <input id="refLink" readonly value="https://t.me/YourBot?start=123">
+  <button class="btn" style="font-size:16px" onclick="copyRef()">COPY REFERRAL LINK</button>
+  <p style="margin-top:12px">Total Invites: <b>0</b></p>
+</div>
 
-    <!-- REFER TAB -->
-    <div id="refer" class="tab-content space-y-4">
-      <div class="card p-5 text-center">
-        <i class="fas fa-users text-4xl text-green-400 mb-3"></i>
-        <h2 class="font-semibold text-lg mb-2">রেফার করে আয় করুন</h2>
-        <p class="text-sm text-slate-400 mb-4">প্রতি রেফারে আপনি পাবেন বোনাস</p>
-        
-        <div class="bg-slate-800 rounded-xl p-4 mb-4">
-          <p class="text-xs text-slate-400 mb-1">আপনার রেফার কোড</p>
-          <p class="text-2xl font-bold tracking-widest" id="refCode">LOADING</p>
-        </div>
+<!-- PROFILE -->
+<div id="profile" class="page">
+  <h2 style="margin:16px 0">Profile</h2>
+  <div class="card" style="text-align:left"><b id="uName">Guest User</b><p style="color:#888;font-size:13px" id="uId">ID: -</p><p style="color:#ffd700;margin-top:8px">Status: <span id="uStatus">Not Started</span></p></div>
+</div>
 
-        <button onclick="copyRef()" class="btn-primary w-full py-3 rounded-xl font-semibold text-white mb-3">
-          <i class="fas fa-copy mr-2"></i> কোড কপি করুন
-        </button>
-        <button onclick="shareRef()" class="w-full py-3 rounded-xl font-semibold bg-slate-700 text-white">
-          <i class="fas fa-share-alt mr-2"></i> শেয়ার করুন
-        </button>
-      </div>
-    </div>
+<div class="bottom">
+  <div class="active" onclick="show('home',this)"><span>🏠</span>Home</div>
+  <div onclick="show('mine',this)"><span>⛏️</span>Mine</div>
+  <div onclick="show('wallet',this)"><span>👛</span>Wallet</div>
+  <div onclick="show('refer',this)"><span>👥</span>Refer</div>
+  <div onclick="show('profile',this)"><span>👤</span>Profile</div>
+</div>
 
-    <!-- WITHDRAW TAB -->
-    <div id="withdraw" class="tab-content space-y-4">
-      <div class="card p-5">
-        <h2 class="font-semibold text-lg mb-4">উইথড্র করুন</h2>
-        
-        <div class="mb-4">
-          <label class="text-sm text-slate-400">পরিমাণ (মিনিমাম ৫০ ৳)</label>
-          <input type="number" id="withdrawAmount" placeholder="পরিমাণ লিখুন" 
-                 class="w-full mt-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white outline-none focus:border-green-500">
-        </div>
+<script>
+let tg = window.Telegram?.WebApp; if(tg){tg.ready(); tg.expand();}
+const FB_LINK = "https://www.facebook.com/share/1B8nsFBYTi/";
+let balance = 0;
+let mining = false;
+let fbDone = false;
 
-        <div class="mb-4">
-          <label class="text-sm text-slate-400">পেমেন্ট মেথড</label>
-          <div class="grid grid-cols-2 gap-3 mt-1">
-            <button onclick="selectMethod('bkash')" id="btn-bkash" class="py-3 rounded-xl border border-slate-600 bg-slate-800">
-              বিকাশ
-            </button>
-            <button onclick="selectMethod('nagad')" id="btn-nagad" class="py-3 rounded-xl border border-slate-600 bg-slate-800">
-              নগদ
-            </button>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="text-sm text-slate-400">অ্যাকাউন্ট নম্বর</label>
-          <input type="text" id="accountNumber" placeholder="01XXXXXXXXX" 
-                 class="w-full mt-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white outline-none focus:border-green-500">
-        </div>
-
-        <button onclick="requestWithdraw()" class="btn-primary w-full py-3 rounded-xl font-semibold text-white">
-          উইথড্র রিকোয়েস্ট পাঠান
-        </button>
-      </div>
-    </div>
-
-    <!-- NEWS TAB -->
-    <div id="news" class="tab-content space-y-4">
-      <div class="card p-5">
-        <h2 class="font-semibold text-lg mb-4">নিউজ ও আপডেট</h2>
-        <div class="space-y-3" id="newsList">
-          <div class="p-3 bg-slate-800 rounded-xl">
-            <p class="font-medium text-sm">নতুন ভিডিও অ্যাড যোগ করা হয়েছে</p>
-            <p class="text-xs text-slate-400 mt-1">২ ঘণ্টা আগে</p>
-          </div>
-          <div class="p-3 bg-slate-800 rounded-xl">
-            <p class="font-medium text-sm">রেফারেল বোনাস দ্বিগুণ করা হয়েছে</p>
-            <p class="text-xs text-slate-400 mt-1">১ দিন আগে</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <div class="flex justify-around py-2">
-      <button onclick="showTab('home')" class="nav-item active flex flex-col items-center text-xs py-1" id="nav-home">
-        <i class="fas fa-home text-lg mb-1"></i>
-        হোম
-      </button>
-      <button onclick="showTab('tasks')" class="nav-item flex flex-col items-center text-xs py-1 text-slate-400" id="nav-tasks">
-        <i class="fas fa-tasks text-lg mb-1"></i>
-        টাস্ক
-      </button>
-      <button onclick="showTab('refer')" class="nav-item flex flex-col items-center text-xs py-1 text-slate-400" id="nav-refer">
-        <i class="fas fa-users text-lg mb-1"></i>
-        রেফার
-      </button>
-      <button onclick="showTab('withdraw')" class="nav-item flex flex-col items-center text-xs py-1 text-slate-400" id="nav-withdraw">
-        <i class="fas fa-wallet text-lg mb-1"></i>
-        উইথড্র
-      </button>
-      <button onclick="showTab('news')" class="nav-item flex flex-col items-center text-xs py-1 text-slate-400" id="nav-news">
-        <i class="fas fa-newspaper text-lg mb-1"></i>
-        নিউজ
-      </button>
-    </div>
-  </div>
-
-  <script>
-    // Telegram WebApp Init
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-
-    // Demo Data
-    let balance = 0;
-    let selectedMethod = null;
-    let adWatching = false;
-
-    // Tab Switching
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => {
-        el.classList.remove('active');
-        el.classList.add('text-slate-400');
-      });
-
-      document.getElementById(tabId).classList.add('active');
-      const nav = document.getElementById('nav-' + tabId);
-      nav.classList.add('active');
-      nav.classList.remove('text-slate-400');
-    }
-
-    // Start Ad
-    function startAd() {
-      if (adWatching) return;
-      adWatching = true;
-
-      const btn = document.getElementById('watchBtn');
-      const placeholder = document.getElementById('adPlaceholder');
-      const timer = document.getElementById('adTimer');
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> চলছে...';
-      placeholder.classList.add('hidden');
-      timer.classList.remove('hidden');
-
-      let timeLeft = 5;
-      timer.innerText = timeLeft;
-
-      const interval = setInterval(() => {
-        timeLeft--;
-        timer.innerText = timeLeft;
-
-        if (timeLeft <= 0) {
-          clearInterval(interval);
-          finishAd();
-        }
-      }, 1000);
-    }
-
-    function finishAd() {
-      adWatching = false;
-      balance += 1;
-      updateBalance();
-
-      document.getElementById('watchBtn').disabled = false;
-      document.getElementById('watchBtn').innerHTML = '<i class="fas fa-play mr-2"></i> আবার দেখুন';
-      document.getElementById('adPlaceholder').classList.remove('hidden');
-      document.getElementById('adTimer').classList.add('hidden');
-
-      tg.showAlert('অভিনন্দন! আপনি ১ টাকা পেয়েছেন');
-    }
-
-    function updateBalance() {
-      document.getElementById('balance').innerText = balance.toFixed(2) + ' ৳';
-      document.getElementById('totalEarned').innerText = balance.toFixed(0);
-    }
-
-    // Referral
-    function copyRef() {
-      const code = document.getElementById('refCode').innerText;
-      navigator.clipboard.writeText(code);
-      tg.showAlert('রেফার কোড কপি হয়েছে!');
-    }
-
-    function shareRef() {
-      const code = document.getElementById('refCode').innerText;
-      tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/YourBot?start=${code}&text=EarnBD তে জয়েন করে আয় করুন!`);
-    }
-
-    // Withdraw
-    function selectMethod(method) {
-      selectedMethod = method;
-      document.getElementById('btn-bkash').className = method === 'bkash' 
-        ? 'py-3 rounded-xl border-2 border-green-500 bg-green-500/20' 
-        : 'py-3 rounded-xl border border-slate-600 bg-slate-800';
-      document.getElementById('btn-nagad').className = method === 'nagad' 
-        ? 'py-3 rounded-xl border-2 border-green-500 bg-green-500/20' 
-        : 'py-3 rounded-xl border border-slate-600 bg-slate-800';
-    }
-
-    function requestWithdraw() {
-      const amount = parseFloat(document.getElementById('withdrawAmount').value);
-      const account = document.getElementById('accountNumber').value;
-
-      if (!amount || amount < 50) {
-        return tg.showAlert('মিনিমাম উইথড্র ৫০ টাকা');
-      }
-      if (amount > balance) {
-        return tg.showAlert('পর্যাপ্ত ব্যালেন্স নেই');
-      }
-      if (!selectedMethod) {
-        return tg.showAlert('পেমেন্ট মেথড সিলেক্ট করুন');
-      }
-      if (!account || account.length < 11) {
-        return tg.showAlert('সঠিক অ্যাকাউন্ট নম্বর দিন');
-      }
-
-      tg.showAlert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে। অ্যাডমিন রিভিউ করবেন।');
-      document.getElementById('withdrawAmount').value = '';
-      document.getElementById('accountNumber').value = '';
-    }
-
-    // Init
-    document.addEventListener('DOMContentLoaded', () => {
-      // Generate demo referral code
-      const user = tg.initDataUnsafe?.user;
-      const code = user ? 'EB' + user.id.toString().slice(-6) : 'EB' + Math.floor(Math.random() * 1000000);
-      document.getElementById('refCode').innerText = code;
-
-      updateBalance();
-    });
-  </script>
+function show(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.bottom div').forEach(d=>d.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+function update(){
+  document.getElementById('bal').innerText = balance.toFixed(2)+' US';
+  document.getElementById('bal2').innerText = balance.toFixed(2)+' US';
+  document.getElementById('bal3').innerText = balance.toFixed(2)+' US';
+  if(mining){
+    document.getElementById('startBtn').innerText = '⛏ MINING ACTIVE';
+    document.getElementById('status').innerText = 'Mining session active • +0.12 US/hour';
+    document.getElementById('uStatus').innerText = 'Mining Active';
+  }
+}
+function clickStart(){
+  if(mining){ show('mine',null); return; }
+  show('tasks',null);
+}
+function openTask(){
+  if(tg) tg.openLink(FB_LINK); else window.open(FB_LINK,'_blank');
+  setTimeout(()=>{
+    fbDone = true;
+    let btn=document.getElementById('b1');
+    btn.innerText='Visited ✓'; btn.classList.add('done');
+  },1500);
+}
+function verifyAll(){
+  if(fbDone){
+    mining=true; update();
+    alert('Congratulations! Facebook Task Completed. Mining Started!');
+    show('home',null);
+  } else {
+    alert('Please Follow Facebook Page first, then press VERIFY');
+  }
+}
+function claim(){
+  if(!mining){ alert('First complete task!'); show('tasks',null); return; }
+  balance += 0.12; update(); alert('Claimed +0.12 US');
+}
+function copyRef(){
+  let i=document.getElementById('refLink'); i.select(); document.execCommand('copy'); alert('Link Copied!');
+}
+setInterval(()=>{ if(mining){ balance += 0.00033; update(); } },10000);
+let end = Date.now() + 90*24*3600*1000;
+setInterval(()=>{
+  let d=end-Date.now();
+  let days=Math.floor(d/86400000), h=Math.floor(d%86400000/3600000), m=Math.floor(d%3600000/60000), s=Math.floor(d%60000/1000);
+  document.getElementById('countdown').innerText = days+' days '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('live').innerText = new Date().toLocaleTimeString();
+},1000);
+if(tg?.initDataUnsafe?.user){
+  document.getElementById('uName').innerText = tg.initDataUnsafe.user.first_name;
+  document.getElementById('uId').innerText = 'ID: '+tg.initDataUnsafe.user.id;
+  document.getElementById('refLink').value = 'https://t.me/YourBot?start='+tg.initDataUnsafe.user.id;
+}
+update();
+</script>
 </body>
 </html>
