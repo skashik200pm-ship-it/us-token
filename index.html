@@ -7,31 +7,40 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#000;color:#fff}
-.top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
+body{background:#000;color:#fff;padding-bottom:90px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px}
 .top b{font-size:20px}
-.live{color:#ff3b30;border:1px solid #ff3b30;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold}
-.notice{text-align:center;color:#d4af37;font-size:12px}
-.coin-wrap{text-align:center;margin:16px 0 6px;position:relative}
-.coin{width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,#ffe27a,#d4af37 55%,#8a6d00);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 60px #d4af37aa;border:8px solid #a88600}
-.coin span{font-size:110px}
-.us-badge{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);background:#0a2a7a;padding:4px 14px;border-radius:20px;border:2px solid gold;font-weight:bold}
-.ribbon{background:linear-gradient(90deg,#b8860b,#ffd700,#b8860b);color:#000;text-align:center;font-weight:900;padding:10px;margin:14px 16px;border-radius:6px}
-.timer{background:#111;border:1px solid #333;text-align:center;padding:12px;margin:0 16px;border-radius:10px}
-.timer b{color:#ffd700;font-size:24px}.timer p{color:#aaa;font-size:12px}
+.live{color:#ff4d4d;border:1.5px solid #ff4d4d;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.notice{text-align:center;color:#d4af37;font-size:11px;padding:0 10px}
+/* HU BHU SCREENSHOT ER COIN */
+.coin-wrap{text-align:center;margin:14px 0 0;position:relative}
+.coin{width:230px;height:230px;border-radius:50%;margin:0 auto;position:relative;
+background:radial-gradient(circle at 35% 30%, #fff2a8, #ffd700 30%, #b8860b 65%, #7a5c00);
+border:6px solid #c9a227;box-shadow:0 0 50px #d4af37aa, inset 0 0 30px #fff8 inset 0 0 30px #fff8c0;
+display:flex;align-items:center;justify-content:center}
+.coin::before{content:"";position:absolute;inset:14px;border:2px solid #8a6d00;border-radius:50%;opacity:.6}
+.coin::after{content:"";position:absolute;inset:24px;border:1px dashed #8a6d00;border-radius:50%;opacity:.4}
+.diamond{width:0;height:0;border-left:52px solid transparent;border-right:52px solid transparent;border-bottom:72px solid #1e5eff;position:relative;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+.diamond::after{content:"";position:absolute;left:-52px;top:72px;border-left:52px solid transparent;border-right:52px solid transparent;border-top:42px solid #0a3db5}
+.us-badge{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);background:#0a2a7a;color:#fff;padding:5px 16px;border-radius:20px;border:2px solid #ffd700;font-weight:900;z-index:5;box-shadow:0 4px 10px #000}
+.ribbon{margin:14px 16px;background:linear-gradient(90deg,#8a6d00,#ffd700,#fff2a8,#ffd700,#8a6d00);color:#000;text-align:center;font-weight:900;padding:11px;position:relative;clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,4% 50%)}
+.timer{background:#0d0d0d;border:1px solid #333;text-align:center;padding:14px;margin:0 16px;border-radius:10px}
+.timer b{color:#ffd700;font-size:26px}.timer p{color:#999;font-size:12px;margin-top:2px}
 .cards{display:flex;gap:10px;padding:12px 16px}
 .card{flex:1;background:#111;border:1px solid #333;border-radius:12px;padding:14px;text-align:center}
-.card small{color:#888}.card b{font-size:22px;display:block;margin-top:6px}.card span{color:#888;font-size:11px}
-.btn{background:#ffd700;color:#000;border:none;width:calc(100% - 32px);margin:4px 16px;padding:16px;border-radius:12px;font-size:20px;font-weight:900;cursor:pointer}
-.info{text-align:center;color:#888;font-size:13px;margin:8px 0 20px}
-.page{display:none;padding:0 16px 90px}.page.active{display:block}
-.task{background:#151515;border:1px solid #333;padding:14px;border-radius:12px;margin:12px 0;display:flex;justify-content:space-between;align-items:center}
-.task button{background:#ffd700;border:none;padding:8px 14px;border-radius:20px;font-weight:bold}
+.card small{color:#888;font-size:11px}.card b{font-size:21px;display:block;margin-top:6px}.card span{color:#888;font-size:11px}
+.btn{background:#ffd700;color:#000;border:none;width:calc(100% - 32px);margin:4px 16px;padding:16px;border-radius:10px;font-size:20px;font-weight:900;cursor:pointer}
+.btn:disabled{background:#333;color:#777}
+.info{text-align:center;color:#888;font-size:13px;margin:8px 0 16px}
+.page{display:none;padding:0 0 20px}.page.active{display:block}
+.task{background:#151515;border:1px solid #333;padding:14px;border-radius:12px;margin:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.task button{background:#ffd700;border:none;padding:8px 16px;border-radius:20px;font-weight:bold}
 .task button.done{background:#22c55e;color:#fff}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;justify-content:space-around;padding:10px 0 18px;border-top:1px solid #333}
+.checkbox-wrap{background:#111;border:1px solid #333;border-radius:10px;margin:12px 16px;padding:12px;display:flex;gap:10px;align-items:center;font-size:14px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;justify-content:space-around;padding:10px 0 16px;border-top:1px solid #333}
 .bottom div{text-align:center;color:#888;font-size:12px}.bottom div.active{color:#ffd700}.bottom span{font-size:22px;display:block}
-input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;margin:8px 0}
-.warn{background:#2a1500;border:1px solid #ff9800;color:#ffcc80;padding:10px;border-radius:10px;font-size:12px;margin:12px 0;line-height:1.5}
+.warn{background:#2a1500;border:1px solid #ff9800;color:#ffcc80;padding:10px;border-radius:10px;font-size:12px;margin:12px 16px;line-height:1.5}
+input{width:calc(100% - 32px);margin:8px 16px;padding:12px;border-radius:10px;border:1px solid #333;background:#111;color:#fff}
 </style>
 </head>
 <body>
@@ -39,61 +48,41 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;backgroun
 <div class="top"><div>🇺🇸 <b>US TOKEN</b></div><div class="live">● LIVE <span id="live">02:14:36</span></div></div>
 <p class="notice">Wallet Connect will be available after 3 months - 22 Feb 2027</p>
 
-<!-- HOME -->
 <div id="home" class="page active">
-  <div class="coin-wrap"><div class="coin"><span>◆</span></div><div class="us-badge">★ US ★</div></div>
-  <p style="text-align:center;font-weight:bold;letter-spacing:2px">US TOKEN</p>
+  <div class="coin-wrap"><div class="coin"><div class="diamond"></div></div><div class="us-badge">★ US ★</div></div>
+  <p style="text-align:center;font-weight:bold;letter-spacing:2px;margin-top:10px">US TOKEN</p>
   <div class="ribbon">✦ Coming Soon on Exchange ✦</div>
   <div class="timer"><b id="countdown">90 days 00:00:00</b><p>starts today and runs for 3 months</p></div>
   <div class="cards">
     <div class="card"><small>MINED BALANCE</small><b id="bal">0.00 US</b><span>US Points</span></div>
-    <div class="card"><small>REFERRAL BONUS</small><b id="refBal">0.00 US</b><span>Invite friends</span></div>
+    <div class="card"><small>REFERRAL BONUS</small><b>0.00 US</b><span>Invite friends</span></div>
   </div>
   <button class="btn" id="startBtn" onclick="clickStart()">⛏ START MINING</button>
-  <p class="info" id="status">Balance is 0.00 - Complete task to start mining</p>
-  <div class="warn">⚠️ US Points are community points. They have no money value yet. Do not pay anyone.</div>
+  <p class="info" id="status">Complete Facebook task to start mining</p>
+  <div class="warn">⚠️ US Points are community points. No money value yet. Do not pay anyone.</div>
 </div>
 
-<!-- TASKS -->
 <div id="tasks" class="page">
-  <h2 style="margin:16px 0">Complete Task To Start Mining</h2>
-  <p style="color:#aaa;font-size:14px">Step 1: Follow our Facebook Page<br>Step 2: Come back & press VERIFY</p>
-
+  <h2 style="margin:16px">Complete Task To Start Mining</h2>
+  <p style="color:#aaa;font-size:14px;padding:0 16px">You must Follow Facebook Page first. Mining will NOT start before that.</p>
   <div class="task"><div><b>1. Follow Facebook Page</b><br><small>Real Drama Official</small></div><button id="b1" onclick="openTask()">Follow</button></div>
-
-  <button class="btn" onclick="verifyAll()">VERIFY & START MINING</button>
-  <p style="text-align:center;color:#888;font-size:13px;margin-top:10px">Follow kore fire eshe VERIFY chap daw.</p>
+  <p style="text-align:center;color:#888;font-size:13px" id="waitMsg"></p>
+  <label class="checkbox-wrap"><input type="checkbox" id="confirmCheck" disabled onchange="checkEnable()" style="width:20px;margin:0"> I have Followed the Facebook Page</label>
+  <button class="btn" id="verifyBtn" disabled onclick="verifyAll()">VERIFY & START MINING</button>
+  <p style="text-align:center;color:#888;font-size:13px;margin-top:8px">Follow -> Wait 15 sec -> Tick checkbox -> VERIFY</p>
 </div>
 
-<!-- MINE -->
 <div id="mine" class="page">
-  <h2 style="margin:16px 0">Mining</h2>
-  <div class="coin-wrap"><div class="coin"><span>◆</span></div></div>
-  <p style="text-align:center">Balance: <b id="bal2" style="color:#ffd700">0.00 US</b></p>
+  <h2 style="margin:16px">Mining</h2>
+  <div class="coin-wrap"><div class="coin"><div class="diamond"></div></div></div>
+  <p style="text-align:center;margin-top:12px">Balance: <b id="bal2" style="color:#ffd700">0.00 US</b></p>
   <p style="text-align:center;color:#aaa;margin-top:8px">Rate: +0.12 US / hour</p>
   <button class="btn" onclick="claim()">CLAIM +0.12 US</button>
 </div>
 
-<!-- WALLET -->
-<div id="wallet" class="page">
-  <h2 style="margin:16px 0">Wallet</h2>
-  <div class="card" style="text-align:left"><small>TOTAL BALANCE</small><b id="bal3" style="font-size:28px;color:#ffd700">0.00 US</b><p style="color:#888;font-size:13px;margin-top:6px">Wallet unlocks on 22 Feb 2027</p></div>
-</div>
-
-<!-- REFER -->
-<div id="refer" class="page">
-  <h2 style="margin:16px 0">Refer & Earn</h2>
-  <p style="color:#aaa;font-size:14px">Get +10 US for each active friend.</p>
-  <input id="refLink" readonly value="https://t.me/YourBot?start=123">
-  <button class="btn" style="font-size:16px" onclick="copyRef()">COPY REFERRAL LINK</button>
-  <p style="margin-top:12px">Total Invites: <b>0</b></p>
-</div>
-
-<!-- PROFILE -->
-<div id="profile" class="page">
-  <h2 style="margin:16px 0">Profile</h2>
-  <div class="card" style="text-align:left"><b id="uName">Guest User</b><p style="color:#888;font-size:13px" id="uId">ID: -</p><p style="color:#ffd700;margin-top:8px">Status: <span id="uStatus">Not Started</span></p></div>
-</div>
+<div id="wallet" class="page"><h2 style="margin:16px">Wallet</h2><div class="card" style="margin:0 16px;text-align:left"><small>TOTAL BALANCE</small><b id="bal3" style="font-size:28px;color:#ffd700">0.00 US</b><p style="color:#888;font-size:13px;margin-top:6px">Wallet unlocks on 22 Feb 2027</p></div></div>
+<div id="refer" class="page"><h2 style="margin:16px">Refer & Earn</h2><p style="color:#aaa;padding:0 16px;font-size:14px">Get +10 US for each active friend.</p><input id="refLink" readonly value="https://t.me/YourBot?start=123"><button class="btn" style="font-size:16px" onclick="copyRef()">COPY REFERRAL LINK</button></div>
+<div id="profile" class="page"><h2 style="margin:16px">Profile</h2><div class="card" style="margin:0 16px;text-align:left"><b id="uName">Guest User</b><p style="color:#888" id="uId">ID: -</p><p style="color:#ffd700;margin-top:8px">Status: <span id="uStatus">Not Started</span></p></div></div>
 
 <div class="bottom">
   <div class="active" onclick="show('home',this)"><span>🏠</span>Home</div>
@@ -106,67 +95,38 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;backgroun
 <script>
 let tg = window.Telegram?.WebApp; if(tg){tg.ready(); tg.expand();}
 const FB_LINK = "https://www.facebook.com/share/1B8nsFBYTi/";
-let balance = 0;
-let mining = false;
-let fbDone = false;
-
-function show(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.bottom div').forEach(d=>d.classList.remove('active'));
-  if(el) el.classList.add('active');
-}
-function update(){
-  document.getElementById('bal').innerText = balance.toFixed(2)+' US';
-  document.getElementById('bal2').innerText = balance.toFixed(2)+' US';
-  document.getElementById('bal3').innerText = balance.toFixed(2)+' US';
-  if(mining){
-    document.getElementById('startBtn').innerText = '⛏ MINING ACTIVE';
-    document.getElementById('status').innerText = 'Mining session active • +0.12 US/hour';
-    document.getElementById('uStatus').innerText = 'Mining Active';
-  }
-}
-function clickStart(){
-  if(mining){ show('mine',null); return; }
-  show('tasks',null);
-}
+let balance = 0, mining=false, fbClicked=false, waitDone=false;
+function show(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.bottom div').forEach(d=>d.classList.remove('active'));if(el)el.classList.add('active');}
+function update(){document.getElementById('bal').innerText=balance.toFixed(2)+' US';document.getElementById('bal2').innerText=balance.toFixed(2)+' US';document.getElementById('bal3').innerText=balance.toFixed(2)+' US';if(mining){document.getElementById('startBtn').innerText='⛏ MINING ACTIVE';document.getElementById('status').innerText='Mining session active • +0.12 US/hour';document.getElementById('uStatus').innerText='Mining Active';}}
+function clickStart(){if(mining){show('mine',null);return;}show('tasks',null);}
 function openTask(){
   if(tg) tg.openLink(FB_LINK); else window.open(FB_LINK,'_blank');
-  setTimeout(()=>{
-    fbDone = true;
-    let btn=document.getElementById('b1');
-    btn.innerText='Visited ✓'; btn.classList.add('done');
-  },1500);
+  fbClicked=true;
+  document.getElementById('b1').innerText='Opened ✓';document.getElementById('b1').classList.add('done');
+  // 15 SEC WAIT - age verify hobe na
+  let sec=15; document.getElementById('waitMsg').innerText='Please wait '+sec+' sec... Go and Follow the Page';
+  let iv=setInterval(()=>{
+    sec--; document.getElementById('waitMsg').innerText='Please wait '+sec+' sec... Go and Follow the Page';
+    if(sec<=0){clearInterval(iv); waitDone=true; document.getElementById('waitMsg').innerText='Now tick the checkbox below'; document.getElementById('confirmCheck').disabled=false;}
+  },1000);
+}
+function checkEnable(){
+  let checked=document.getElementById('confirmCheck').checked;
+  document.getElementById('verifyBtn').disabled = !(fbClicked && waitDone && checked);
 }
 function verifyAll(){
-  if(fbDone){
-    mining=true; update();
-    alert('Congratulations! Facebook Task Completed. Mining Started!');
-    show('home',null);
-  } else {
-    alert('Please Follow Facebook Page first, then press VERIFY');
-  }
+  // FINAL CHECK - 3 ta condition na mille mining chalu hobe na
+  if(!fbClicked){alert('Please click Follow first');return;}
+  if(!waitDone){alert('Please wait 15 seconds');return;}
+  if(!document.getElementById('confirmCheck').checked){alert('Please tick - I have Followed');return;}
+  mining=true; update(); alert('Congratulations! Task Completed. Mining Started!'); show('home',null);
 }
-function claim(){
-  if(!mining){ alert('First complete task!'); show('tasks',null); return; }
-  balance += 0.12; update(); alert('Claimed +0.12 US');
-}
-function copyRef(){
-  let i=document.getElementById('refLink'); i.select(); document.execCommand('copy'); alert('Link Copied!');
-}
-setInterval(()=>{ if(mining){ balance += 0.00033; update(); } },10000);
-let end = Date.now() + 90*24*3600*1000;
-setInterval(()=>{
-  let d=end-Date.now();
-  let days=Math.floor(d/86400000), h=Math.floor(d%86400000/3600000), m=Math.floor(d%3600000/60000), s=Math.floor(d%60000/1000);
-  document.getElementById('countdown').innerText = days+' days '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  document.getElementById('live').innerText = new Date().toLocaleTimeString();
-},1000);
-if(tg?.initDataUnsafe?.user){
-  document.getElementById('uName').innerText = tg.initDataUnsafe.user.first_name;
-  document.getElementById('uId').innerText = 'ID: '+tg.initDataUnsafe.user.id;
-  document.getElementById('refLink').value = 'https://t.me/YourBot?start='+tg.initDataUnsafe.user.id;
-}
+function claim(){if(!mining){alert('First complete task!');show('tasks',null);return;}balance+=0.12;update();alert('Claimed +0.12 US');}
+function copyRef(){let i=document.getElementById('refLink');i.select();document.execCommand('copy');alert('Link Copied!');}
+setInterval(()=>{if(mining){balance+=0.00033;update();}},10000);
+let end=Date.now()+90*24*3600*1000;
+setInterval(()=>{let d=end-Date.now();let days=Math.floor(d/86400000),h=Math.floor(d%86400000/3600000),m=Math.floor(d%3600000/60000),s=Math.floor(d%60000/1000);document.getElementById('countdown').innerText=days+' days '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');document.getElementById('live').innerText=new Date().toLocaleTimeString();},1000);
+if(tg?.initDataUnsafe?.user){document.getElementById('uName').innerText=tg.initDataUnsafe.user.first_name;document.getElementById('uId').innerText='ID: '+tg.initDataUnsafe.user.id;document.getElementById('refLink').value='https://t.me/YourBot?start='+tg.initDataUnsafe.user.id;}
 update();
 </script>
 </body>
