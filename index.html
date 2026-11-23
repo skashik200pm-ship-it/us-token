@@ -3,63 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>US TOKEN</title>
+<title>US TOKEN - Official Mini App</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:#000;color:#fff;padding-bottom:95px}
-.header{padding:14px 16px 6px;display:flex;justify-content:space-between;align-items:center}
+body{background:radial-gradient(ellipse at top,#0a1a3a 0%,#050818 55%,#000 100%);color:#fff;min-height:100vh;padding:14px 14px 115px}
+.top{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:12px 14px;border-radius:16px}
 .logo{display:flex;align-items:center;gap:10px}
-.flag{width:36px;height:36px;border-radius:50%;background:linear-gradient(180deg,#fff 0 15%,#b22234 15% 30%,#fff 30% 45%,#b22234 45% 60%,#fff 60% 75%,#b22234 75%);display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;overflow:hidden;border:1px solid #333}
-.flag::after{content:"★";position:absolute;left:2px;top:1px;color:#fff;background:#3c3b6e;padding:1px 3px;font-size:7px}
-.logo b{font-size:22px;letter-spacing:.5px}
-.live{background:#ff3b30;color:#000;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:900;text-align:center;line-height:1.2}
-.live small{font-size:11px;font-weight:800}
-.sub{text-align:center;color:#e8c85a;font-size:11px;margin-top:6px}
-.hero{text-align:center;padding:16px 0 0;position:relative}
-.coin-outer{width:235px;height:235px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 32% 28%, #fff7ae 0%, #ffe95e 18%, #f5c518 38%, #a67c00 68%, #6b4e00 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px #c19a1a, 0 0 60px rgba(245,197,24,.45), inset 0 -12px 24px rgba(0,0,0,.3);position:relative}
-.coin-inner{width:200px;height:200px;border-radius:50%;border:2px solid rgba(122,92,0,.6);display:flex;align-items:center;justify-content:center;position:relative}
-.coin-inner::before{content:"";position:absolute;inset:8px;border:1px dashed rgba(122,92,0,.4);border-radius:50%}
-.diamond{width:0;height:0;border-left:50px solid transparent;border-right:50px solid transparent;border-bottom:70px solid #2b6cff;position:relative;z-index:2;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4))}
-.diamond::after{content:"";position:absolute;left:-50px;top:70px;border-left:50px solid transparent;border-right:50px solid transparent;border-top:40px solid #0b3fc0}
-.diamond::before{content:"";position:absolute;left:-14px;top:10px;width:28px;height:28px;background:rgba(255,255,255,.6);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
-.us-pill{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);background:#0a5cad;border:2px solid #ffd700;color:#fff;padding:6px 18px;border-radius:10px 10px 14px 14px;font-weight:900;font-size:18px;z-index:5;box-shadow:0 6px 14px rgba(0,0,0,.5)}
-.hero h1{margin-top:18px;font-size:24px;letter-spacing:2px}
-.ribbon{margin:18px 16px;background:linear-gradient(90deg,#b8860b,#ffd700,#fff2a8,#ffd700,#b8860b);color:#111;text-align:center;font-weight:900;padding:13px 10px;font-size:17px;clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,4% 50%)}
-.box{margin:0 16px;background:#0f0f0f;border:1px solid #262626;border-radius:14px;padding:18px 14px;text-align:center}
-.box small{color:#c9b98a;font-size:12px}
-.box p{color:#c9b98a;font-size:12px;margin-top:4px}
-.box b{color:#ffd700;font-size:30px;display:block;margin-top:4px}
-.grid{display:flex;gap:10px;margin:12px 16px}
-.mini{flex:1;background:#111;border:1px solid #262626;border-radius:14px;padding:18px 10px;text-align:center}
-.mini small{color:#999;font-size:11px;letter-spacing:.5px}
-.mini b{font-size:24px;display:block;margin-top:10px}
-.mini span{color:#777;font-size:11px}
-.btn{margin:6px 16px;width:calc(100% - 32px);background:linear-gradient(180deg,#ffe95e,#f5c518);color:#111;border:none;padding:17px;border-radius:12px;font-size:20px;font-weight:900;cursor:pointer}
-.btn:disabled{background:#222;color:#777}
-.hint{text-align:center;color:#888;font-size:13px;margin:10px 0 6px}
-.note{margin:12px 16px;background:#1a1200;border:1px solid #3a2c00;color:#ffcf7a;padding:12px;border-radius:12px;font-size:12px;line-height:1.6}
+.flag{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid #d4af37}
+.logo b{font-size:20px;letter-spacing:1px}
+.pill{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.45);border:1px solid #d4af37;padding:7px 12px;border-radius:999px;font-size:12px}
+.pill b{color:#ffd700}
+.hero{text-align:center;padding:26px 0 0}
+.coin{width:172px;height:172px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff6a8,#ffd700 32%,#b8860b 68%,#6b4e00);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(0,150,255,.45),0 0 80px rgba(255,215,0,.4),inset 0 -10px 20px rgba(0,0,0,.3);animation:float 3s ease-in-out infinite;position:relative}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+.coin span{font-size:72px;color:#7a5c00;font-weight:900;text-shadow:0 2px 0 #fff8}
+.gem{position:absolute;width:44px;height:44px;background:#2b6cff;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 22px #2b6cff}
+.big{font-size:74px;font-weight:900;line-height:1;margin-top:18px}
+.big-sub{font-size:22px;letter-spacing:5px;font-weight:800}
+.gold-small{color:#d4af37;font-size:11px;letter-spacing:1px;margin-top:10px}
+.ring{width:80px;height:80px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top:3px solid #ffd700;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:18px auto 0}
+.ring b{font-size:20px}.ring span{font-size:10px;color:#7aa2ff}
+.btn{width:100%;background:linear-gradient(180deg,#ffe97a,#f5c518);color:#111;border:none;padding:18px;border-radius:999px;font-size:18px;font-weight:900;margin-top:20px;box-shadow:0 12px 30px rgba(245,197,24,.35);cursor:pointer}
+.btn:disabled{background:#222;color:#777;box-shadow:none}
+.stats{display:flex;gap:10px;margin-top:18px}
+.stat{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.25);border-radius:16px;padding:16px 8px;text-align:center}
+.stat span{font-size:24px}.stat small{color:#d4af37;font-size:11px;display:block;margin-top:8px}.stat b{font-size:16px;display:block;margin-top:4px}
+.note{margin-top:14px;background:rgba(255,180,0,.08);border:1px solid rgba(255,180,0,.3);color:#ffcf7a;padding:12px;border-radius:12px;font-size:12px;line-height:1.6}
 .page{display:none}.page.active{display:block}
-.task-page{padding:16px}.task-page h2{font-size:22px}.task-page p{color:#aaa;font-size:14px;margin-top:8px;line-height:1.6}
-.task-card{margin-top:16px;background:#151515;border:1px solid #2a2a2a;border-radius:14px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.task-card button{background:#ffd700;border:none;padding:10px 16px;border-radius:999px;font-weight:800}
-.task-card button.done{background:#16a34a;color:#fff}
-.wait{margin-top:12px;text-align:center;color:#f5c518;font-size:13px;font-weight:600;min-height:20px}
-.check{margin-top:12px;background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:14px;display:flex;gap:10px;align-items:center;font-size:14px}
-.check input{width:22px;height:22px;accent-color:#f5c518}
-.section{padding:16px}.big-bal{font-size:32px;color:#ffd700;font-weight:900}
-.field{width:100%;padding:13px;border-radius:12px;border:1px solid #2a2a2a;background:#111;color:#fff;margin-top:10px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#0f0f0f;border-top:1px solid #222;display:flex;padding:10px 0 18px;z-index:99}
-.nav div{flex:1;text-align:center;color:#777;font-size:11px;cursor:pointer}.nav div.active{color:#ffd700}.nav span{font-size:22px;display:block;margin-bottom:2px}
+.box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px;margin-top:16px}
+.task-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08);gap:10px}
+.task-row button{background:#ffd700;border:none;padding:9px 16px;border-radius:999px;font-weight:800;white-space:nowrap}
+.task-row button.done{background:#16a34a;color:#fff}
+.wait{margin-top:12px;text-align:center;color:#ffd700;font-size:13px;font-weight:600;min-height:20px}
+.check{display:flex;gap:10px;align-items:center;background:rgba(0,0,0,.3);padding:13px;border-radius:12px;margin-top:12px;font-size:14px}
+.check input{width:22px;height:22px;accent-color:#ffd700}
+.field{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#111;color:#fff;margin-top:10px}
+.ref-box{display:flex;gap:8px;background:#111;border:1px solid #333;border-radius:12px;padding:10px;margin-top:12px;align-items:center}
+.ref-box input{flex:1;background:transparent;border:none;color:#fff;outline:none;font-size:14px}
+.ref-box button{background:#333;color:#fff;border:none;padding:8px 10px;border-radius:8px}
+.nav{position:fixed;bottom:14px;left:14px;right:14px;background:rgba(20,25,50,.95);border:1px solid rgba(255,215,0,.3);display:flex;padding:8px;border-radius:20px;z-index:99}
+.nav div{flex:1;text-align:center;color:#888;font-size:11px;padding:8px 0;border-radius:14px;cursor:pointer}
+.nav div.active{background:linear-gradient(180deg,#ffe97a,#f5c518);color:#111;font-weight:800}
+.nav span{font-size:22px;display:block}
+.timer-box{text-align:center;padding:18px}
+.timer-box b{font-size:26px;color:#ffd700}
 </style>
 </head>
 <body>
 
-<div class="header"><div class="logo"><div class="flag">🇺🇸</div><b>US TOKEN</b></div><div class="live">LIVE<br><small>⏱ <span id="liveTime">00:14:22</span></small></div></div>
-<p class="sub">Wallet Connect will be available after 3 months.</p>
+<div class="top"><div class="logo"><div class="flag">🇺🇸</div><b>US TOKEN</b></div><div class="pill">🪙 Balance: <b id="topBal">0.00 US</b></div></div>
 
 <!-- HOME -->
 <div id="home" class="page active">
-  <div class="hero"><div class="coin-outer"><div class="coin-inner"><div class="diamond"></div></div><div class="us-pill">US</div></div><h1>US TOKEN</h1></div>
-  <div class="ribbon">✦ Coming Soon on Exchange ✦</div>
-  <div class="box"><small
+  <div class="hero">
+    <div class="coin"><span>$</span><div class="gem"></div></div>
+    <div class="big" id="bal">0.00</div>
+    <div class="big-sub">US</div>
+    <div class="gold-small" id="status">EARNING BALANCE • NOT CLAIMED YET</div>
+    <div class="ring"><b id="prog">0%</b><span>Mining Progress</span></div>
+  </div>
+  <button class="btn" id="startBtn" onclick="clickStart()">⚡ CLAIM / START MINING</button>
+  <div class="stats">
+    <div class="stat"><span>⚡</span><small>Mining Speed</small><b>12.5 US/h</b></div>
+    <div class="stat"><span>👥</span><small>Friends</small><b id="friendCount">0</b></div>
+    <div class="stat"><span>🏆</span><small>Rank</small><b>—</b></div>
+  </div>
+  <div class="note">⚠️ US Points are community points. No money value yet. Never pay anyone for US Token. Official updates only in this app.</div>
+</div>
+
+<!-- TASK -->
+<div id="tasks" class="page">
+  <h2 style="margin-top:8px;text-align:center;font-size:28px">Unlock Mining</h2>
+  <p style="color:#aaa;font-size:14px;margin-top:8px;line-height:1.6;text-align:center">Complete the task to start mining US TOKEN</p>
+  <div class="box">
+    <div style="color:#d4af37;font-size:12px">Task 1 • Required</div>
+    <div class="task-row"><div><b>Follow Facebook Page</b><br><small style="color:#999">Real Drama Official • Required</small></div><button id="fbBtn" onclick="openFB()">Follow</button></div>
+    <div class="timer-box"><div class="ring" style="margin:10px auto"><b id="waitNum">15s</b><span>Waiting...</span></div></div>
+    <div class="wait" id="waitMsg">Click Follow first</div>
+    <label class="check"><input type="checkbox" id="confirmCheck" disabled onchange="onCheck()"> I have Followed the Facebook Page</label>
+    <button class="btn" id="verifyBtn" disabled onclick="verifyNow()">VERIFY & START MINING</button>
+  </div>
+</div>
+
+<!-- EARN -->
+<div id="earn" class="page">
+  <h2 style="margin-top:8px">Earn</h2>
+  <div class="box"><p style="color:#aaa;line-height:1.6">Daily mining bonus. Claim every hour to keep your progress.</p><button class="btn" onclick="claim()">CLAIM +0.12 US</button></div>
+  <div class="box timer-box"><b>⏳ Mining Countdown</b><br><b id="countdown" style="margin-top:8px;display:block">90 days 00:00:00</b><p style="color:#999;font-size:12px;margin-top:6px">Wallet Connect unlocks on 22 Feb 2027</p></div>
+  <div class="box"><b>🔥 Daily Task</b><p style="color:#aaa;margin-top:8px;line-height:1.6">Come back daily & claim to increase your mining speed.</p><button class="btn" onclick="claim()">DAILY CHECK-IN +0.12 US</button></div>
+</div>
+
+<!-- FRIENDS -->
+<div id="friends" class="page">
+  <h2 style="margin-top:8px;text-align:center">Friends</h2>
+  <p style="color:#aaa;margin-top:8px;line-height:1.6;text-align:center">Invite friends get +10 US for each active friend.</p>
+  <div class="box">
+    <p style="color:#999;font-size:13px;text-align:center">Your referral link</p>
+    <div class="ref-box"><input id="refLink" readonly value="https://t.me/YourBot?start=123"><button onclick="copyRef()">📋</button></div>
+    <p style="margin-top:12px"><b>Total Invites: 0</b></p>
+    <p style="color:#888;font-size:13px;margin-top:10px;text-align:center">No friends yet<br>When your friends join using your link, they'll appear here.</p>
+    <button class="btn" onclick="copyRef()">COPY REFERRAL LINK</button>
+  </div>
+</div>
+
+<!-- WALLET -->
+<div id="wallet" class="page">
+  <h2 style="margin-top:8px;text-align:center">Wallet</h2>
+  <div class="box timer-box"><small style="color:#999">Total Balance</small><div style="font-size:48px;color:#ffd700;font-weight:900;margin-top:8px" id="bal3">0.00 US</div><p style="color:#aaa;font-size:13px;margin-top:8px">Wallet Connect unlocks on 22 Feb 2027</p></div>
+  <button class="btn" style="opacity:.6">Connect Wallet 🔒 locked</button>
+  <p style="text-align:center;color:#888;font-size:13px;margin-top:10px">Keep mining daily.</p>
+  <div class="note">Wallet will be connected after 3 months. Keep mining daily. Never share your seed phrase with anyone.</div>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="page">
+  <h2 style="margin-top:8px">Profile</h2>
+  <div class="box"><b id="uName" style="font-size:18px">Guest User</b><p style="color:#888;font-size:13px;margin-top:4px" id="uId">ID: -</p><p style="color:#ffd700;margin-top:12px">Status: <span id="uStatus">Not Started</span></p><p style="color:#aaa;font-size:13px;margin-top:8px">Mining Speed: 12.5 US/h • Rank: —</p></div>
+  <div class="box"><b>⚙️ Settings</b><p style="color:#aaa;margin-top:8px;line-height:1.8">• Language: English<br>• Notifications: On<br>• Version: 1.0 - US TOKEN Brand</p></div>
+</div>
+
+<div class="nav">
+  <div class="active" onclick="showPage('home',this)"><span>🏠</span>Home</div>
+  <div onclick="showPage('earn',this)"><span>⚡</span>Earn</div>
+  <div onclick="showPage('friends',this)"><span>👥</span>Friends</div>
+  <div onclick="showPage('wallet',this)"><span>👛</span>Wallet</div>
+  <div onclick="showPage('profile',this)"><span>👤</span>Profile</div>
+</div>
+
+<script>
+let tg=window.Telegram?.WebApp; if(tg){tg.ready();tg.expand();}
+const FB_LINK="https://www.facebook.com/share/1B8nsFBYTi/";
+let balance=parseFloat(localStorage.getItem('us_bal')||'0');
+let mining=localStorage.getItem('us_mining')==='1';
+let fbClicked=false,waitDone=false;
+function showPage(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav div').forEach(d=>d.classList.remove('active'));if(el)el.classList.add('active');}
+function save(){localStorage.setItem('us_bal',balance);localStorage.setItem('us_mining',mining?'1':'0');}
+function update(){document.getElementById('bal').innerText=balance.toFixed(2);document.getElementById('topBal').innerText=balance.toFixed(2)+' US';document.getElementById('bal3').innerText=balance.toFixed(2)+' US';document.getElementById('prog').innerText=Math.min(100,Math.floor(balance))+'%';if(mining){document.getElementById('startBtn').innerText='⚡ CLAIM +0.12 US';document.getElementById('status').innerText='MINING ACTIVE • +12.5 US / HOUR';document.getElementById('uStatus').innerText='Mining Active';}}
+function clickStart(){if(mining){claim();return;}showPage('tasks',null);}
+function openFB(){if(tg)tg.openLink(FB_LINK);else window.open(FB_LINK,'_blank');fbClicked=true;let b=document.getElementById('fbBtn');b.innerText='Opened ✓';b.classList.add('done');let sec=15;document.getElementById('waitMsg').innerText='Please wait '+sec+' sec... Go and Follow';document.getElementById('waitNum').innerText=sec+'s';let iv=setInterval(()=>{sec--;document.getElementById('waitMsg').innerText='Please wait '+sec+' sec... Go and Follow';document.getElementById('waitNum').innerText=sec+'s';if(sec<=0){clearInterval(iv);waitDone=true;document.getElementById('waitMsg').innerText='Now tick the checkbox';document.getElementById('waitNum').innerText='Done ✓';document.getElementById('confirmCheck').disabled=false;}},1000);}
+function onCheck(){document.getElementById('verifyBtn').disabled=!(fbClicked&&waitDone&&document.getElementById('confirmCheck').checked);}
+function verifyNow(){if(!fbClicked||!waitDone||!document.getElementById('confirmCheck').checked){alert('Please complete all steps');return;}mining=true;save();update();alert('Congratulations! Mining Started!');showPage('home',null);}
+function claim(){if(!mining){alert('First complete task!');showPage('tasks',null);return;}balance+=0.12;save();update();alert('Claimed +0.12 US');}
+function copyRef(){let i=document.getElementById('refLink');i.select();document.execCommand('copy');alert('Link Copied!');}
+setInterval(()=>{if(mining){balance+=0.00033;save();update();}},10000);
+let end=Date.now()+90*24*3600*1000;
+setInterval(()=>{let d=end-Date.now();let days=Math.floor(d/86400000),h=Math.floor(d%86400000/3600000),m=Math.floor(d%3600000/60000),s=Math.floor(d%60000/1000);let t=days+' days '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');let el=document.getElementById('countdown');if(el)el.innerText=t;},1000);
+if(tg?.initDataUnsafe?.user){document.getElementById('uName').innerText=tg.initDataUnsafe.user.first_name;document.getElementById('uId').innerText='ID: '+tg.initDataUnsafe.user.id;document.getElementById('refLink').value='https://t.me/YourBot?start='+tg.initDataUnsafe.user.id;}
+update();
+</script>
+</body>
+</html>
