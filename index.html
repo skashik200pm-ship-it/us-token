@@ -9,12 +9,12 @@
     :root {
       --bg-main: #060911;
       --bg-card: #0e1422;
-      --bg-card-2: #141c2f;
       --border-line: #1e293b;
       --gold: #facc15;
       --gold-soft: #fde047;
       --blue-btn: #0098ea;
       --green: #22c55e;
+      --red: #ef4444;
       --text-main: #ffffff;
       --text-muted: #94a3b8;
     }
@@ -32,17 +32,21 @@
       background: radial-gradient(circle at 50% 0%, #172038 0%, var(--bg-main) 65%);
       color: var(--text-main);
       min-height: 100vh;
-      padding-bottom: 95px;
+      padding-bottom: 96px;
       overflow-x: hidden;
     }
 
-    /* Top App Bar with Flag, ELON & Language */
+    button, select, input {
+      touch-action: manipulation;
+    }
+
+    /* Top Header */
     .app-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 10px 14px;
-      background: rgba(8, 12, 22, 0.95);
+      background: rgba(8, 12, 22, 0.96);
       border-bottom: 1px solid var(--border-line);
       position: sticky;
       top: 0;
@@ -130,7 +134,7 @@
       outline: none;
     }
 
-    /* User Strip (Matches Screenshot 1-4 Top Profile Bar) */
+    /* User Strip */
     .user-strip {
       display: flex;
       align-items: center;
@@ -218,7 +222,6 @@
       cursor: pointer;
     }
 
-    /* Sections */
     .section-view {
       display: none;
       padding: 12px 14px;
@@ -228,7 +231,6 @@
       display: block;
     }
 
-    /* Slow Rotating Coin */
     .coin-box {
       display: flex;
       flex-direction: column;
@@ -288,7 +290,6 @@
       margin: 10px 0;
     }
 
-    /* Cards & Controls (Matches Screenshot 1, 2, 3) */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-line);
@@ -395,7 +396,6 @@
       cursor: pointer;
     }
 
-    /* Miners Grid (Screenshot 4) */
     .pill-bar {
       display: flex;
       gap: 6px;
@@ -471,11 +471,11 @@
       outline: none;
     }
 
-    /* TON Connect Modal */
+    /* Wallet Deep-Link Modal */
     .modal-bg {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.82);
       z-index: 1500;
       display: none;
       align-items: flex-end;
@@ -497,7 +497,7 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
       text-align: center;
-      margin: 12px 0 16px;
+      margin: 12px 0 14px;
     }
 
     .w-icon {
@@ -510,6 +510,60 @@
       justify-content: center;
       font-weight: 900;
       font-size: 18px;
+    }
+
+    .confirm-wallet-box {
+      background: #0b0f17;
+      border: 1px solid #2a374f;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Price Prediction Chart Box at Bottom of Profile */
+    .prediction-card {
+      background: linear-gradient(160deg, #0d1629, #090e1a);
+      border: 1px solid #1e3a5f;
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .pred-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .pred-tag-up {
+      background: rgba(34, 197, 94, 0.16);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    .pred-tag-down {
+      background: rgba(239, 68, 68, 0.16);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    canvas#usPriceChart {
+      width: 100%;
+      height: 155px;
+      background: #060a12;
+      border: 1px solid #182338;
+      border-radius: 12px;
+      display: block;
     }
 
     /* Bottom Navigation */
@@ -582,46 +636,71 @@
 
   <div id="toast" class="toast-box"></div>
 
-  <!-- TON Connect Modal -->
+  <!-- Real Deep-Link Wallet Connect Modal -->
   <div id="tonModal" class="modal-bg" onclick="closeTonModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
       <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-        <button onclick="showToast('📷 QR Ready')" style="width:30px;height:30px;border-radius:50%;background:#1e2430;border:none;color:#94a3b8;">⊞</button>
-        <button onclick="hideTonModal()" style="width:30px;height:30px;border-radius:50%;background:#1e2430;border:none;color:#94a3b8;">✕</button>
+        <button type="button" onclick="showToast('📷 Scan TON QR from your wallet app')" style="width:30px;height:30px;border-radius:50%;background:#1e2430;border:none;color:#94a3b8;cursor:pointer;">⊞</button>
+        <button type="button" onclick="hideTonModal()" style="width:30px;height:30px;border-radius:50%;background:#1e2430;border:none;color:#94a3b8;cursor:pointer;">✕</button>
       </div>
-      <div style="text-align:center; margin-bottom:14px;">
-        <div style="font-size:44px; color:#0098ea;">💎</div>
-        <h3 style="font-size:18px; font-weight:800; margin-top:4px;">Use your Telegram wallet</h3>
+
+      <div style="text-align:center; margin-bottom:12px;">
+        <div style="font-size:40px; color:#0098ea;">💎</div>
+        <h3 style="font-size:18px; font-weight:800; margin-top:4px;">Connect Wallet to US TOKEN</h3>
+        <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Opens wallet app / connection link to verify</div>
       </div>
-      <button class="pill-blue" style="width:100%; padding:13px; border-radius:12px; margin-bottom:8px;" onclick="connectWallet('Telegram Wallet')">✈️ Connect Telegram</button>
-      <button style="width:100%; padding:12px; border-radius:12px; background:#1b202b; border:1px solid #2b3344; color:#fff; font-weight:700; cursor:pointer;" onclick="connectWallet('Gram Wallet')">💎 Gram Wallet</button>
-      <div style="text-align:center; font-size:12px; color:#94a3b8; margin:12px 0 6px;">Or choose another app:</div>
+
+      <button type="button" class="pill-blue" style="width:100%; padding:12px; border-radius:12px; margin-bottom:8px;" onclick="launchWalletConnection('Telegram Wallet', 'https://t.me/wallet')">
+        ✈️ Connect Telegram Wallet
+      </button>
+
+      <button type="button" style="width:100%; padding:11px; border-radius:12px; background:#1b202b; border:1px solid #2b3344; color:#fff; font-weight:700; cursor:pointer;" onclick="launchWalletConnection('Tonkeeper', 'https://app.tonkeeper.com/ton-connect')">
+        💎 Tonkeeper / Gram Wallet
+      </button>
+
+      <div style="text-align:center; font-size:12px; color:#94a3b8; margin:12px 0 6px;">Or connect exchange / wallet app:</div>
+
       <div class="wallet-grid-4">
-        <div onclick="connectWallet('Binance Wallet')" style="cursor:pointer;">
+        <div onclick="launchWalletConnection('Binance', 'https://www.binance.com/en/web3wallet')" style="cursor:pointer;">
           <div class="w-icon" style="background:#181a20; color:#f0b90b; border:1px solid #2b3139;">❖</div>
-          <div style="font-size:11px;">Binance Wa...</div>
+          <div style="font-size:11px;">Binance</div>
         </div>
-        <div onclick="connectWallet('Walt Wallet')" style="cursor:pointer;">
-          <div class="w-icon" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#fff;">⋙</div>
-          <div style="font-size:11px;">Walt<br><span style="font-size:9px;color:#64748b;">ex. Wallet</span></div>
+        <div onclick="launchWalletConnection('Bitget Wallet', 'https://web3.bitget.com')" style="cursor:pointer;">
+          <div class="w-icon" style="background:linear-gradient(135deg,#0891b2,#22d3ee); color:#fff;">B</div>
+          <div style="font-size:11px;">Bitget</div>
         </div>
-        <div onclick="connectWallet('Keeper')" style="cursor:pointer;">
+        <div onclick="launchWalletConnection('TON Keeper', 'https://app.tonkeeper.com')" style="cursor:pointer;">
           <div class="w-icon" style="background:#111318; color:#fff; border:1px solid #2a2f3a;">▽</div>
           <div style="font-size:11px;">Keeper</div>
         </div>
-        <div onclick="connectWallet('TON Wallets')" style="cursor:pointer;">
+        <div onclick="launchWalletConnection('TON Connect', 'https://ton.org/wallets')" style="cursor:pointer;">
           <div class="w-icon" style="background:#1c212b; color:#60a5fa; font-size:13px;">❖💎<br>➤⊞</div>
-          <div style="font-size:11px;">View all<br>wallets</div>
+          <div style="font-size:11px;">All Wallets</div>
         </div>
       </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #232b3b; padding-top:10px; font-weight:800;">
+
+      <!-- Step 2: Manual / Confirmed Address Binding (No Fake Auto-Verify!) -->
+      <div id="walletConfirmBox" class="confirm-wallet-box">
+        <div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:6px;">
+          🔗 Connecting: <span id="selectedWalletTitle">Wallet</span>
+        </div>
+        <p style="font-size:11px; color:#94a3b8; margin-bottom:8px;">
+          Complete connection in the opened wallet app, then enter/paste your wallet address below and click Confirm:
+        </p>
+        <input type="text" id="manualWalletInput" class="input-dark" placeholder="Paste TON / Binance / Bitget address (e.g. UQB...)" />
+        <button type="button" class="pill-yellow" style="width:100%; padding:10px;" onclick="confirmWalletBinding()">
+          ✓ Confirm & Link Wallet
+        </button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #232b3b; padding-top:10px; margin-top:10px; font-weight:800;">
         <span>▽ TON Connect</span>
         <span style="font-size:11px; color:#94a3b8;">US Token Network</span>
       </div>
     </div>
   </div>
 
-  <!-- Top Header with US Flag, ELON & Language -->
+  <!-- Top Header -->
   <header class="app-header">
     <div class="brand-cluster">
       <div class="flag-elon-col">
@@ -640,7 +719,7 @@
       <div>
         <div style="display:flex; align-items:center; gap:6px;">
           <span style="font-size:16px; font-weight:900;">US TOKEN</span>
-          <span class="live-badge"><span class="live-dot"></span> LIVE <span id="clockText">09:09:00</span></span>
+          <span class="live-badge"><span class="live-dot"></span> LIVE <span id="clockText">09:23:00</span></span>
         </div>
         <div style="font-size:10px; color:#94a3b8;">1 US = $0.20 USD • Official Network</div>
       </div>
@@ -655,7 +734,7 @@
     </select>
   </header>
 
-  <!-- Persistent User Strip (Screenshot 1-4 Style) -->
+  <!-- User Strip -->
   <div class="user-strip">
     <div class="user-left">
       <div class="user-badge-circle" id="stripAvatar">US</div>
@@ -668,18 +747,17 @@
       </div>
     </div>
     <div class="strip-actions">
-      <button class="btn-connect-sm" id="stripConnectBtn" onclick="openTonModal()">💎 Connect</button>
-      <button class="btn-sound-sm" id="stripSoundBtn" onclick="toggleSound()">🔊</button>
+      <button type="button" class="btn-connect-sm" id="stripConnectBtn" onclick="openTonModal()">💎 Connect</button>
+      <button type="button" class="btn-sound-sm" id="stripSoundBtn" onclick="toggleSound()">🔊</button>
     </div>
   </div>
 
-  <!-- TAB 1: MINE & US TOKEN WALLET POOL (Combines Main Coin + Screenshot 1 Pool/Token/Controls) -->
+  <!-- TAB 1: MINE & POOL WALLET -->
   <main id="view-mine" class="section-view active">
     <div style="text-align:center; font-size:11px; color:#d4af37; margin-bottom:6px;" data-i18n="walletNotice">
       Wallet Connect will be available after 3 months - 22 Feb 2027
     </div>
 
-    <!-- Pre-Mining Follow Gate -->
     <div id="gateBox" class="card" style="display:none; border-color:#eab308;">
       <h3 style="font-size:18px; font-weight:900; margin-bottom:4px;">Complete Task To Start Mining</h3>
       <p style="font-size:11px; color:#94a3b8; margin-bottom:10px;">Step 1: Follow Official Page • Step 2: Press VERIFY</p>
@@ -688,14 +766,13 @@
           <div style="font-size:13px; font-weight:800;">1. Follow Official Page</div>
           <div style="font-size:11px; color:#94a3b8;">Team US Official</div>
         </div>
-        <button id="gateFollowBtn" class="pill-blue" onclick="markGateVisited()">Follow</button>
+        <button type="button" id="gateFollowBtn" class="pill-blue" onclick="markGateVisited()">Follow</button>
       </div>
-      <button class="btn-mine-gold" onclick="verifyGateStart()">VERIFY & START MINING</button>
+      <button type="button" class="btn-mine-gold" onclick="verifyGateStart()">VERIFY & START MINING</button>
       <div style="text-align:center; font-size:11px; color:#94a3b8;">Follow kore fire eshe VERIFY chap daw.</div>
     </div>
 
     <div id="mineMainBox">
-      <!-- Slow Rotating Coin -->
       <div class="coin-box">
         <div class="coin-spinner">
           <div class="coin-core">
@@ -731,18 +808,17 @@
         </div>
       </div>
 
-      <button id="startMineBtn" class="btn-mine-gold" onclick="startMiningAction()">
+      <button type="button" id="startMineBtn" class="btn-mine-gold" onclick="startMiningAction()">
         ⛏️ <span id="startMineLabel" data-i18n="startMine">START MINING</span>
       </button>
 
-      <button class="btn-ad-boost" onclick="watchAdBoost()">
+      <button type="button" class="btn-ad-boost" onclick="watchAdBoost()">
         ⚡ Watch Ad to Boost Mining Power (+0.05 US/hr)
       </button>
       <div style="text-align:center; font-size:11px; color:#94a3b8; margin:6px 0 12px;">
         <span id="mineStateLabel">Mining session ready</span> • <b style="color:#4ade80;">+<span id="ratePerHr">0.22</span> US/hour</b>
       </div>
 
-      <!-- Screenshot 1 Style Pool Wallet, US Token Rate Card & Controls -->
       <div class="stat-row-card">
         <div style="display:flex; align-items:center; gap:10px;">
           <div class="icon-sq">👥</div>
@@ -783,7 +859,7 @@
               <div style="font-size:12px; font-weight:800; color:#fde047; margin-top:2px;">$0.2000 <span style="color:#4ade80; font-size:10px;">1 US = $0.20 USD</span></div>
             </div>
           </div>
-          <button class="pill-blue" onclick="showToast('US Token Official Rate: $0.20 USD')">Price Info</button>
+          <button type="button" class="pill-blue" onclick="showToast('US Token Official Rate: $0.20 USD')">Price Info</button>
         </div>
 
         <div class="contract-box">
@@ -791,7 +867,7 @@
             <div style="font-size:9px; color:#94a3b8; font-weight:700;">TON CONTRACT ADDRESS (JETTON)</div>
             <div style="font-size:11px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="contractAddr">EQUS_TOKEN_TEAM_US_OFFICIAL_2027</div>
           </div>
-          <button class="pill-blue" style="padding:5px 10px; font-size:11px;" onclick="copyContract()">📋 Copy</button>
+          <button type="button" class="pill-blue" style="padding:5px 10px; font-size:11px;" onclick="copyContract()">📋 Copy</button>
         </div>
       </div>
 
@@ -805,7 +881,7 @@
             <div style="font-size:11px; color:#94a3b8;">Transfer Available Pool Balance to Wallet</div>
           </div>
         </div>
-        <button class="pill-yellow" onclick="triggerWithdraw()">Withdraw</button>
+        <button type="button" class="pill-yellow" onclick="triggerWithdraw()">Withdraw</button>
       </div>
 
       <div class="stat-row-card">
@@ -816,12 +892,12 @@
             <div style="font-size:11px; color:#94a3b8;">Your withdrawals</div>
           </div>
         </div>
-        <button class="pill-yellow" onclick="showToast('📜 Withdrawals unlock on 22 Feb 2027')">Open</button>
+        <button type="button" class="pill-yellow" onclick="showToast('📜 Withdrawals unlock on 22 Feb 2027')">Open</button>
       </div>
     </div>
   </main>
 
-  <!-- TAB 2: TASKS & ADMIN PANEL -->
+  <!-- TAB 2: TASKS & ADMIN -->
   <main id="view-tasks" class="section-view">
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -833,31 +909,31 @@
     </div>
 
     <div style="text-align:center; margin-top:14px;">
-      <button onclick="toggleAdminBox()" style="background:rgba(255,255,255,0.04);border:1px solid #2a354b;color:#64748b;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;">⚙️ Admin Panel</button>
+      <button type="button" onclick="toggleAdminBox()" style="background:rgba(255,255,255,0.04);border:1px solid #2a354b;color:#64748b;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;">⚙️ Admin Panel</button>
     </div>
 
     <div id="adminBox" class="card" style="display:none; margin-top:10px; border-color:var(--gold);">
       <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
         <b style="font-size:14px; color:var(--gold-soft);">🔐 Admin Panel</b>
-        <button onclick="document.getElementById('adminBox').style.display='none'" style="background:none;border:none;color:#ef4444;">✕</button>
+        <button type="button" onclick="document.getElementById('adminBox').style.display='none'" style="background:none;border:none;color:#ef4444;cursor:pointer;">✕</button>
       </div>
       <div id="adminLoginView">
         <input type="text" id="admUser" class="input-dark" placeholder="Username" />
         <input type="password" id="admPass" class="input-dark" placeholder="Password" />
-        <button class="btn-mine-gold" style="padding:9px; font-size:13px;" onclick="doAdminLogin()">Login</button>
+        <button type="button" class="btn-mine-gold" style="padding:9px; font-size:13px;" onclick="doAdminLogin()">Login</button>
       </div>
       <div id="adminPanelView" style="display:none;">
         <div style="font-size:11px; color:#4ade80; margin-bottom:6px;">✅ Logged in as ashik200p</div>
         <input type="text" id="tTitle" class="input-dark" placeholder="Task Title" />
         <input type="url" id="tUrl" class="input-dark" placeholder="Task Link (https://...)" />
         <input type="number" step="0.1" id="tReward" class="input-dark" placeholder="Reward in US (e.g. 1.0)" />
-        <button class="btn-mine-gold" style="padding:9px; font-size:13px;" onclick="createTask()">+ Add Task</button>
+        <button type="button" class="btn-mine-gold" style="padding:9px; font-size:13px;" onclick="createTask()">+ Add Task</button>
         <div id="adminTaskList"></div>
       </div>
     </div>
   </main>
 
-  <!-- TAB 3: MINERS UPGRADES (Screenshot 4 Priced in US @ $0.20) -->
+  <!-- TAB 3: MINERS -->
   <main id="view-miners" class="section-view">
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -869,11 +945,11 @@
       </div>
 
       <div class="pill-bar">
-        <button class="range-btn active" onclick="selectRange(1, 20, this)">L1 - 20</button>
-        <button class="range-btn" onclick="selectRange(21, 100, this)">L21 - 100</button>
-        <button class="range-btn" onclick="selectRange(101, 250, this)">L101 - 250</button>
-        <button class="range-btn" onclick="selectRange(251, 500, this)">L251 - 500</button>
-        <button class="range-btn" onclick="selectRange(501, 1000, this)">L501 - 1000</button>
+        <button type="button" class="range-btn active" onclick="selectRange(1, 20, this)">L1 - 20</button>
+        <button type="button" class="range-btn" onclick="selectRange(21, 100, this)">L21 - 100</button>
+        <button type="button" class="range-btn" onclick="selectRange(101, 250, this)">L101 - 250</button>
+        <button type="button" class="range-btn" onclick="selectRange(251, 500, this)">L251 - 500</button>
+        <button type="button" class="range-btn" onclick="selectRange(501, 1000, this)">L501 - 1000</button>
       </div>
 
       <input type="number" id="lvlSearch" class="input-dark" placeholder="🔍 Search Level (1 to 1000)..." oninput="renderMiners()" />
@@ -881,9 +957,9 @@
       <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:#94a3b8; margin-bottom:8px;">
         <span id="lvlRangeText">Showing Levels 1 - 20 of 1000</span>
         <div style="display:flex; align-items:center; gap:6px;">
-          <button onclick="changePage(-1)" style="width:24px;height:24px;border-radius:50%;background:#1e293b;border:none;color:#fff;">‹</button>
+          <button type="button" onclick="changePage(-1)" style="width:24px;height:24px;border-radius:50%;background:#1e293b;border:none;color:#fff;cursor:pointer;">‹</button>
           <span id="lvlPageText">1 / 50</span>
-          <button onclick="changePage(1)" style="width:24px;height:24px;border-radius:50%;background:#1e293b;border:none;color:#fff;">›</button>
+          <button type="button" onclick="changePage(1)" style="width:24px;height:24px;border-radius:50%;background:#1e293b;border:none;color:#fff;cursor:pointer;">›</button>
         </div>
       </div>
 
@@ -891,7 +967,7 @@
     </div>
   </main>
 
-  <!-- TAB 4: FRIENDS & REFERRALS (Screenshot 3) -->
+  <!-- TAB 4: FRIENDS -->
   <main id="view-friends" class="section-view">
     <div style="text-align:center; margin-bottom:10px;">
       <h2 style="font-size:19px; font-weight:900;">Friends</h2>
@@ -913,7 +989,7 @@
           <div style="font-size:11px; color:#94a3b8;">Create your official US Token member card</div>
         </div>
       </div>
-      <button class="pill-blue" onclick="showToast('🏆 US Token Member Card Generated!')">Create</button>
+      <button type="button" class="pill-blue" onclick="showToast('🏆 US Token Member Card Generated!')">Create</button>
     </div>
 
     <div class="stat-row-card">
@@ -924,7 +1000,7 @@
           <div style="font-size:11px; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="inviteUrlText">https://t.me/USTokenOfficialBot?start=ref_user</div>
         </div>
       </div>
-      <button class="pill-blue" onclick="copyInvite()">Copy</button>
+      <button type="button" class="pill-blue" onclick="copyInvite()">Copy</button>
     </div>
 
     <div class="stat-row-card">
@@ -935,7 +1011,7 @@
           <div style="font-size:11px; color:#94a3b8;"><span id="refSucc">0</span> successful • <span id="refTot">0</span> total</div>
         </div>
       </div>
-      <button class="pill-blue" onclick="shareInvite()">Invite</button>
+      <button type="button" class="pill-blue" onclick="shareInvite()">Invite</button>
     </div>
 
     <div class="stat-row-card">
@@ -946,7 +1022,7 @@
           <div style="font-size:11px; color:#94a3b8;"><b style="color:var(--gold-soft);" id="refRewardText">0.00 US</b> ($0.20/ref)</div>
         </div>
       </div>
-      <button class="pill-yellow" onclick="showToast('🎁 Referral Bonus: ' + state.refBonus.toFixed(2) + ' US')">Claim</button>
+      <button type="button" class="pill-yellow" onclick="showToast('🎁 Referral Bonus: ' + state.refBonus.toFixed(2) + ' US')">Claim</button>
     </div>
 
     <div class="stat-row-card">
@@ -957,7 +1033,7 @@
           <div style="font-size:11px; color:#94a3b8;"><span id="teamPoolVal">0.0000</span> US • every 24 hours, 5%</div>
         </div>
       </div>
-      <button class="pill-yellow" onclick="claimTeamPool()">Claim</button>
+      <button type="button" class="pill-yellow" onclick="claimTeamPool()">Claim</button>
     </div>
 
     <div class="card">
@@ -966,7 +1042,7 @@
     </div>
   </main>
 
-  <!-- TAB 5: PROFILE (Screenshot 2 Adapted to US Token) -->
+  <!-- TAB 5: PROFILE + BOTTOM PRICE PREDICTION CHART -->
   <main id="view-profile" class="section-view">
     <div style="text-align:center; margin:6px 0 12px;">
       <div class="user-badge-circle" style="width:64px;height:64px;font-size:22px;margin:0 auto 8px;" id="profCircle">US</div>
@@ -989,10 +1065,10 @@
         <div class="icon-sq" style="color:#4ade80;">✓</div>
         <div>
           <div style="font-size:13px; font-weight:800;">Account Verification</div>
-          <div style="font-size:11px; color:#94a3b8;" id="profVerifyText">Unverified (Connect TON Wallet)</div>
+          <div style="font-size:11px; color:#94a3b8;" id="profVerifyText">Unverified (Connect Wallet)</div>
         </div>
       </div>
-      <button class="pill-yellow" onclick="openTonModal()">Verify</button>
+      <button type="button" class="pill-yellow" onclick="openTonModal()">Verify</button>
     </div>
 
     <div class="stat-row-card" onclick="toggleSound()" style="cursor:pointer;">
@@ -1014,7 +1090,7 @@
           <div style="font-size:11px; color:#94a3b8;">US Vault Lock • Assets Bonus</div>
         </div>
       </div>
-      <button class="pill-yellow" onclick="showToast('💎 VIP unlocks at Level 5+')">Open</button>
+      <button type="button" class="pill-yellow" onclick="showToast('💎 VIP unlocks at Level 5+')">Open</button>
     </div>
 
     <div class="stat-row-card">
@@ -1027,6 +1103,25 @@
       </div>
       <div style="background:rgba(34,197,94,0.15);border:1px solid #22c55e;color:#4ade80;font-size:12px;font-weight:900;padding:6px 10px;border-radius:10px;">
         ≈ $<span id="pTotalUsd">0.00</span>
+      </div>
+    </div>
+
+    <!-- US TOKEN LIVE PRICE PREDICTION CHART AT BOTTOM OF PROFILE -->
+    <div class="prediction-card">
+      <div class="pred-header">
+        <div>
+          <div style="font-size:14px; font-weight:900; color:var(--gold-soft);">📈 US TOKEN Price Prediction</div>
+          <div style="font-size:11px; color:#94a3b8;">Base: $0.2000 • Live Forecast: <b id="predPriceText" style="color:#fff;">$0.2040</b></div>
+        </div>
+        <span id="predSignalBadge" class="pred-tag-up">▲ +2.00% Bullish</span>
+      </div>
+
+      <canvas id="usPriceChart" width="360" height="155"></canvas>
+
+      <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; margin-top:7px;">
+        <span>24h Low: $0.1940</span>
+        <span>Target Listing: $0.2000+</span>
+        <span>24h High: $0.2180</span>
       </div>
     </div>
   </main>
@@ -1088,6 +1183,8 @@
     let taskClickMap = {};
     let gateVisited = false;
     let rStart = 1, rEnd = 20, mPage = 1;
+    let pendingWalletName = '';
+    let priceSeries = [0.198, 0.200, 0.199, 0.202, 0.201, 0.204, 0.203, 0.206, 0.205, 0.208, 0.207, 0.210];
 
     function playSound(kind) {
       if (!state.sound) return;
@@ -1132,7 +1229,7 @@
     }
 
     function loadData() {
-      const raw = localStorage.getItem('us_token_full_v5');
+      const raw = localStorage.getItem('us_token_full_v6');
       if (raw) {
         try {
           state = { ...state, ...JSON.parse(raw) };
@@ -1160,7 +1257,7 @@
 
     function saveData() {
       state.lastTick = Date.now();
-      localStorage.setItem('us_token_full_v5', JSON.stringify(state));
+      localStorage.setItem('us_token_full_v6', JSON.stringify(state));
     }
 
     function getRate() {
@@ -1172,7 +1269,47 @@
       el.innerText = msg;
       el.style.display = 'block';
       clearTimeout(window.toastT);
-      window.toastT = setTimeout(() => el.style.display = 'none', 2500);
+      window.toastT = setTimeout(() => el.style.display = 'none', 2600);
+    }
+
+    // Real Wallet Deep-Link + Address Binding (Not Fake Auto-Verify)
+    function openTonModal() {
+      playSound('start');
+      document.getElementById('walletConfirmBox').style.display = 'none';
+      document.getElementById('manualWalletInput').value = '';
+      document.getElementById('tonModal').style.display = 'flex';
+    }
+
+    function hideTonModal() {
+      document.getElementById('tonModal').style.display = 'none';
+    }
+
+    function closeTonModal(e) {
+      if (e.target.id === 'tonModal') hideTonModal();
+    }
+
+    function launchWalletConnection(walletName, deepUrl) {
+      playSound('start');
+      pendingWalletName = walletName;
+      document.getElementById('selectedWalletTitle').innerText = walletName;
+      document.getElementById('walletConfirmBox').style.display = 'block';
+      window.open(deepUrl, '_blank');
+      showToast(`🔗 Opening ${walletName}... Paste address to link.`);
+    }
+
+    function confirmWalletBinding() {
+      const addr = document.getElementById('manualWalletInput').value.trim();
+      if (addr.length < 6) {
+        showToast('⚠️ Enter your valid wallet address after opening wallet!');
+        return;
+      }
+      playSound('claim');
+      state.wallet = pendingWalletName || 'Connected Wallet';
+      state.walletAddr = addr;
+      hideTonModal();
+      renderAll();
+      saveData();
+      showToast(`✅ ${state.wallet} Linked!`);
     }
 
     function startMiningAction() {
@@ -1212,20 +1349,7 @@
         playSound('claim');
         showToast('⚡ Mining Speed Boosted (+0.05 US/hr)!');
         renderAll(); saveData();
-      }, 1500);
-    }
-
-    function openTonModal() { playSound('start'); document.getElementById('tonModal').style.display = 'flex'; }
-    function hideTonModal() { document.getElementById('tonModal').style.display = 'none'; }
-    function closeTonModal(e) { if (e.target.id === 'tonModal') hideTonModal(); }
-
-    function connectWallet(name) {
-      playSound('claim');
-      state.wallet = name;
-      state.walletAddr = 'UQB' + Math.random().toString(36).substring(2, 6).toUpperCase() + '...9K2';
-      hideTonModal();
-      showToast(`💎 Connected ${name}!`);
-      renderAll(); saveData();
+      }, 1200);
     }
 
     function copyContract() {
@@ -1235,7 +1359,7 @@
     }
 
     function triggerWithdraw() {
-      if (!state.wallet) { openTonModal(); showToast('⚠️ Connect TON Wallet first!'); return; }
+      if (!state.wallet) { openTonModal(); showToast('⚠️ Connect & verify your wallet first!'); return; }
       showToast('🔒 Withdrawals unlock on 22 Feb 2027 after 90-day phase.');
     }
 
@@ -1253,10 +1377,10 @@
         const done = state.doneTasks.includes(t.id);
         const t0 = taskClickMap[t.id];
         const ready = t0 && (Date.now() - t0 >= 10000);
-        let btn = `<button class="pill-blue" onclick="openTask('${t.id}')">Follow</button>`;
-        if (done) btn = `<button class="pill-yellow" style="background:#16a34a;color:#fff;" disabled>Claimed ✓</button>`;
-        else if (ready) btn = `<button class="pill-yellow" onclick="claimTask('${t.id}')">Claim</button>`;
-        else if (t0) btn = `<button class="pill-blue" onclick="showToast('⚠️ Follow for 10s first!')">Verifying...</button>`;
+        let btn = `<button type="button" class="pill-blue" onclick="openTask('${t.id}')">Follow</button>`;
+        if (done) btn = `<button type="button" class="pill-yellow" style="background:#16a34a;color:#fff;" disabled>Claimed ✓</button>`;
+        else if (ready) btn = `<button type="button" class="pill-yellow" onclick="claimTask('${t.id}')">Claim</button>`;
+        else if (t0) btn = `<button type="button" class="pill-blue" onclick="showToast('⚠️ Follow for 10s first!')">Verifying...</button>`;
         return `
           <div class="stat-row-card">
             <div>
@@ -1331,7 +1455,7 @@
       document.getElementById('adminTaskList').innerHTML = state.tasks.map(t => `
         <div style="display:flex;justify-content:space-between;align-items:center;background:#070b14;padding:7px;border-radius:8px;margin-top:6px;font-size:11px;">
           <span>${t.title} (+${t.reward} US)</span>
-          <button onclick="removeTask('${t.id}')" style="background:#ef4444;color:#fff;border:none;padding:3px 7px;border-radius:6px;">Del</button>
+          <button type="button" onclick="removeTask('${t.id}')" style="background:#ef4444;color:#fff;border:none;padding:3px 7px;border-radius:6px;cursor:pointer;">Del</button>
         </div>
       `).join('');
     }
@@ -1378,10 +1502,10 @@
         const canBuy = !isUnl && bal >= reqUs;
         const need = Math.max(0, reqUs - bal).toFixed(2);
 
-        let btn = `<button class="lvl-btn" style="background:#1a2234;color:#64748b;" onclick="showToast('Need ${need} more US ($${(need * US_USD).toFixed(2)})')">⚡ NEED ${need} US</button>`;
-        if (isCur) btn = `<button class="lvl-btn" style="background:rgba(34,197,94,0.16);border:1px solid #22c55e;color:#4ade80;">✓ ACTIVE</button>`;
-        else if (isUnl) btn = `<button class="lvl-btn" style="background:rgba(34,197,94,0.16);border:1px solid #22c55e;color:#4ade80;" onclick="equipLvl(${lvl})">EQUIP LVL ${lvl}</button>`;
-        else if (canBuy) btn = `<button class="lvl-btn" style="background:#0098ea;color:#fff;" onclick="buyLvl(${lvl},${reqUs})">⚡ UNLOCK (${reqUs} US)</button>`;
+        let btn = `<button type="button" class="lvl-btn" style="background:#1a2234;color:#64748b;" onclick="showToast('Need ${need} more US ($${(need * US_USD).toFixed(2)})')">⚡ NEED ${need} US</button>`;
+        if (isCur) btn = `<button type="button" class="lvl-btn" style="background:rgba(34,197,94,0.16);border:1px solid #22c55e;color:#4ade80;">✓ ACTIVE</button>`;
+        else if (isUnl) btn = `<button type="button" class="lvl-btn" style="background:rgba(34,197,94,0.16);border:1px solid #22c55e;color:#4ade80;" onclick="equipLvl(${lvl})">EQUIP LVL ${lvl}</button>`;
+        else if (canBuy) btn = `<button type="button" class="lvl-btn" style="background:#0098ea;color:#fff;" onclick="buyLvl(${lvl},${reqUs})">⚡ UNLOCK (${reqUs} US)</button>`;
 
         return `
           <div class="lvl-card ${isCur ? 'current' : ''}">
@@ -1408,7 +1532,7 @@
       state.level = lvl; renderMiners(); renderAll(); saveData(); showToast(`🎉 Unlocked Lvl ${lvl}!`);
     }
 
-    // Friends & Referrals
+    // Friends
     function renderFriends() {
       document.getElementById('refSucc').innerText = state.referrals.length;
       document.getElementById('refTot').innerText = state.referrals.length;
@@ -1425,6 +1549,82 @@
       if (state.teamPool <= 0) { showToast('⏳ Team Wallet is 0.0000 US right now.'); return; }
       playSound('claim'); state.refBonus += state.teamPool; state.teamPool = 0;
       renderFriends(); renderAll(); saveData(); showToast('✅ Team Pool Claimed!');
+    }
+
+    // Live Price Prediction Chart (Up/Down Market Simulation around $0.20)
+    function updatePredictionChart() {
+      const last = priceSeries[priceSeries.length - 1];
+      const delta = (Math.random() - 0.47) * 0.0045;
+      const next = Math.max(0.185, Math.min(0.235, Number((last + delta).toFixed(4))));
+      priceSeries.push(next);
+      if (priceSeries.length > 18) priceSeries.shift();
+
+      const pct = (((next - US_USD) / US_USD) * 100).toFixed(2);
+      const isUp = next >= US_USD;
+
+      const priceEl = document.getElementById('predPriceText');
+      const badgeEl = document.getElementById('predSignalBadge');
+      if (priceEl) {
+        priceEl.innerText = `$${next.toFixed(4)}`;
+        priceEl.style.color = isUp ? '#4ade80' : '#f87171';
+      }
+      if (badgeEl) {
+        badgeEl.className = isUp ? 'pred-tag-up' : 'pred-tag-down';
+        badgeEl.innerText = `${isUp ? '▲ +' : '▼ '}${pct}% ${isUp ? 'Bullish' : 'Pullback'}`;
+      }
+
+      const canvas = document.getElementById('usPriceChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Subtle grid lines
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
+      ctx.lineWidth = 1;
+      for (let g = 1; g < 4; g++) {
+        const y = (h / 4) * g;
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      const minV = Math.min(...priceSeries) - 0.003;
+      const maxV = Math.max(...priceSeries) + 0.003;
+      const span = Math.max(0.004, maxV - minV);
+
+      const getX = (idx) => 16 + (idx / (priceSeries.length - 1)) * (w - 32);
+      const getY = (val) => h - 18 - ((val - minV) / span) * (h - 36);
+
+      // Area fill
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, isUp ? 'rgba(34, 197, 94, 0.30)' : 'rgba(239, 68, 68, 0.28)');
+      grad.addColorStop(1, 'rgba(6, 10, 18, 0.02)');
+
+      ctx.beginPath();
+      ctx.moveTo(getX(0), h - 12);
+      priceSeries.forEach((v, i) => ctx.lineTo(getX(i), getY(v)));
+      ctx.lineTo(getX(priceSeries.length - 1), h - 12);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Prediction line
+      ctx.beginPath();
+      priceSeries.forEach((v, i) => {
+        if (i === 0) ctx.moveTo(getX(i), getY(v));
+        else ctx.lineTo(getX(i), getY(v));
+      });
+      ctx.strokeStyle = isUp ? '#4ade80' : '#f87171';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Latest point dot
+      const lastX = getX(priceSeries.length - 1);
+      const lastY = getY(next);
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#fde047';
+      ctx.fill();
     }
 
     function renderAll() {
@@ -1483,6 +1683,7 @@
       if (name === 'tasks') renderTasks();
       if (name === 'miners') renderMiners();
       if (name === 'friends') renderFriends();
+      if (name === 'profile') updatePredictionChart();
       renderAll();
     }
 
@@ -1502,9 +1703,12 @@
       renderAll();
     }, 1000);
 
+    setInterval(updatePredictionChart, 2200);
     setInterval(saveData, 8000);
+
     loadData();
     renderAll();
+    updatePredictionChart();
   </script>
 </body>
 </html>
