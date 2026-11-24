@@ -1,156 +1,1057 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>US TOKEN - Official Mini App</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:radial-gradient(ellipse at top,#0a1a3a 0%,#050818 55%,#000 100%);color:#fff;min-height:100vh;padding:14px 14px 115px}
-.top{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:12px 14px;border-radius:16px}
-.logo{display:flex;align-items:center;gap:10px}
-.flag{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid #d4af37}
-.logo b{font-size:20px;letter-spacing:1px}
-.pill{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.45);border:1px solid #d4af37;padding:7px 12px;border-radius:999px;font-size:12px}
-.pill b{color:#ffd700}
-.hero{text-align:center;padding:26px 0 0}
-.coin{width:172px;height:172px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff6a8,#ffd700 32%,#b8860b 68%,#6b4e00);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(0,150,255,.45),0 0 80px rgba(255,215,0,.4),inset 0 -10px 20px rgba(0,0,0,.3);animation:float 3s ease-in-out infinite;position:relative}
-@keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
-.coin span{font-size:72px;color:#7a5c00;font-weight:900;text-shadow:0 2px 0 #fff8}
-.gem{position:absolute;width:44px;height:44px;background:#2b6cff;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 22px #2b6cff}
-.big{font-size:74px;font-weight:900;line-height:1;margin-top:18px}
-.big-sub{font-size:22px;letter-spacing:5px;font-weight:800}
-.gold-small{color:#d4af37;font-size:11px;letter-spacing:1px;margin-top:10px}
-.ring{width:80px;height:80px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top:3px solid #ffd700;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:18px auto 0}
-.ring b{font-size:20px}.ring span{font-size:10px;color:#7aa2ff}
-.btn{width:100%;background:linear-gradient(180deg,#ffe97a,#f5c518);color:#111;border:none;padding:18px;border-radius:999px;font-size:18px;font-weight:900;margin-top:20px;box-shadow:0 12px 30px rgba(245,197,24,.35);cursor:pointer}
-.btn:disabled{background:#222;color:#777;box-shadow:none}
-.stats{display:flex;gap:10px;margin-top:18px}
-.stat{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.25);border-radius:16px;padding:16px 8px;text-align:center}
-.stat span{font-size:24px}.stat small{color:#d4af37;font-size:11px;display:block;margin-top:8px}.stat b{font-size:16px;display:block;margin-top:4px}
-.note{margin-top:14px;background:rgba(255,180,0,.08);border:1px solid rgba(255,180,0,.3);color:#ffcf7a;padding:12px;border-radius:12px;font-size:12px;line-height:1.6}
-.page{display:none}.page.active{display:block}
-.box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px;margin-top:16px}
-.task-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08);gap:10px}
-.task-row button{background:#ffd700;border:none;padding:9px 16px;border-radius:999px;font-weight:800;white-space:nowrap}
-.task-row button.done{background:#16a34a;color:#fff}
-.wait{margin-top:12px;text-align:center;color:#ffd700;font-size:13px;font-weight:600;min-height:20px}
-.check{display:flex;gap:10px;align-items:center;background:rgba(0,0,0,.3);padding:13px;border-radius:12px;margin-top:12px;font-size:14px}
-.check input{width:22px;height:22px;accent-color:#ffd700}
-.field{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#111;color:#fff;margin-top:10px}
-.ref-box{display:flex;gap:8px;background:#111;border:1px solid #333;border-radius:12px;padding:10px;margin-top:12px;align-items:center}
-.ref-box input{flex:1;background:transparent;border:none;color:#fff;outline:none;font-size:14px}
-.ref-box button{background:#333;color:#fff;border:none;padding:8px 10px;border-radius:8px}
-.nav{position:fixed;bottom:14px;left:14px;right:14px;background:rgba(20,25,50,.95);border:1px solid rgba(255,215,0,.3);display:flex;padding:8px;border-radius:20px;z-index:99}
-.nav div{flex:1;text-align:center;color:#888;font-size:11px;padding:8px 0;border-radius:14px;cursor:pointer}
-.nav div.active{background:linear-gradient(180deg,#ffe97a,#f5c518);color:#111;font-weight:800}
-.nav span{font-size:22px;display:block}
-.timer-box{text-align:center;padding:18px}
-.timer-box b{font-size:26px;color:#ffd700}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>US Token - Team US Mining Mini App</title>
+  <!-- Telegram Web App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-dark: #070b19;
+      --bg-card: #111936;
+      --bg-card-light: #1a254d;
+      --us-red: #e63946;
+      --us-blue: #1d3557;
+      --us-navy: #0a1128;
+      --gold: #ffd700;
+      --gold-dark: #d97706;
+      --text-main: #ffffff;
+      --text-muted: #94a3b8;
+      --green: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #13214a 0%, var(--bg-dark) 75%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: 85px;
+    }
+
+    /* Header & Team US Branding */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: rgba(10, 17, 40, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .us-flag-badge {
+      width: 38px;
+      height: 26px;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(230, 57, 70, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      flex-shrink: 0;
+    }
+
+    .brand-titles h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #ffffff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .team-us-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(90deg, var(--us-red), #b91c1c);
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.6px;
+      margin-top: 2px;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .user-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--us-red), var(--us-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    /* Stats Bar */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 12px 16px 4px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .stat-val {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .stat-val.rank {
+      color: #60a5fa;
+    }
+
+    /* Sections */
+    .tab-section {
+      display: none;
+      padding: 12px 16px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Balance Display */
+    .balance-container {
+      text-align: center;
+      margin: 12px 0 18px;
+    }
+
+    .balance-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .balance-main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .balance-main span {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
+    }
+
+    /* Coin Tapper */
+    .coin-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0 22px;
+      position: relative;
+    }
+
+    .coin-outer {
+      width: 235px;
+      height: 235px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #3b82f6, #1e3a8a 60%, #0f172a 100%);
+      padding: 12px;
+      box-shadow: 0 0 40px rgba(59, 130, 246, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.08s ease;
+      position: relative;
+    }
+
+    .coin-outer:active {
+      transform: scale(0.94);
+    }
+
+    .coin-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff3a1, #ffd700 45%, #b45309 95%);
+      border: 5px solid #fde047;
+      box-shadow: inset 0 4px 12px rgba(255, 255, 255, 0.7), inset 0 -6px 15px rgba(120, 53, 15, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #451a03;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .coin-us-text {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .coin-sub-text {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-top: 4px;
+      color: #78350f;
+    }
+
+    .coin-stars {
+      font-size: 12px;
+      letter-spacing: 4px;
+      margin-top: 6px;
+      color: #92400e;
+    }
+
+    /* Floating +1 Animation */
+    .float-num {
+      position: fixed;
+      font-size: 26px;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      pointer-events: none;
+      animation: floatUp 0.85s ease-out forwards;
+      z-index: 999;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-95px) scale(1.25); }
+    }
+
+    /* Energy & Daily Bonus */
+    .energy-box {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 12px;
+    }
+
+    .energy-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #070b19;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--us-red), #f59e0b, var(--gold));
+      border-radius: 10px;
+      transition: width 0.2s ease;
+    }
+
+    .daily-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #1d4ed8, #e63946);
+      color: white;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.35);
+    }
+
+    .daily-btn:disabled {
+      background: #1e293b;
+      color: #64748b;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* Cards for Upgrade / Tasks / Wallet */
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .item-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px;
+      padding: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .item-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--bg-card-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .item-info h3 {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .item-info p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, #ffd700, #d97706);
+      color: #111;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .action-btn:disabled {
+      background: #334155;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .action-btn.completed {
+      background: var(--green);
+      color: white;
+    }
+
+    /* Referral Box */
+    .ref-box {
+      background: linear-gradient(135deg, #172554, #1e1b4b);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .ref-link-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .ref-input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    /* Wallet Form */
+    .wallet-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: #070b19;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 17, 40, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 6px 12px;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--gold);
+      background: rgba(255, 215, 0, 0.1);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid var(--gold);
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 1000;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-<div class="top"><div class="logo"><div class="flag">🇺🇸</div><b>US TOKEN</b></div><div class="pill">🪙 Balance: <b id="topBal">0.00 US</b></div></div>
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
 
-<!-- HOME -->
-<div id="home" class="page active">
-  <div class="hero">
-    <div class="coin"><span>$</span><div class="gem"></div></div>
-    <div class="big" id="bal">0.00</div>
-    <div class="big-sub">US</div>
-    <div class="gold-small" id="status">EARNING BALANCE • NOT CLAIMED YET</div>
-    <div class="ring"><b id="prog">0%</b><span>Mining Progress</span></div>
+  <!-- Header with US Flag & Team US -->
+  <header class="header">
+    <div class="brand-box">
+      <!-- Crisp US Flag SVG -->
+      <div class="us-flag-badge">
+        <svg viewBox="0 0 7410 3900" width="100%" height="100%" preserveAspectRatio="none">
+          <rect width="7410" height="3900" fill="#b22234"/>
+          <path d="M0,450H7410m0,600H0m0,600H7410m0,600H0m0,600H7410m0,600H0" stroke="#fff" stroke-width="300"/>
+          <rect width="2964" height="2100" fill="#3c3b6e"/>
+          <g fill="#fff">
+            <circle cx="494" cy="420" r="110"/><circle cx="988" cy="420" r="110"/><circle cx="1482" cy="420" r="110"/><circle cx="1976" cy="420" r="110"/><circle cx="2470" cy="420" r="110"/>
+            <circle cx="741" cy="735" r="110"/><circle cx="1235" cy="735" r="110"/><circle cx="1729" cy="735" r="110"/><circle cx="2223" cy="735" r="110"/>
+            <circle cx="494" cy="1050" r="110"/><circle cx="988" cy="1050" r="110"/><circle cx="1482" cy="1050" r="110"/><circle cx="1976" cy="1050" r="110"/><circle cx="2470" cy="1050" r="110"/>
+            <circle cx="741" cy="1365" r="110"/><circle cx="1235" cy="1365" r="110"/><circle cx="1729" cy="1365" r="110"/><circle cx="2223" cy="1365" r="110"/>
+            <circle cx="494" cy="1680" r="110"/><circle cx="988" cy="1680" r="110"/><circle cx="1482" cy="1680" r="110"/><circle cx="1976" cy="1680" r="110"/><circle cx="2470" cy="1680" r="110"/>
+          </g>
+        </svg>
+      </div>
+      <div class="brand-titles">
+        <h1>US Token</h1>
+        <div class="team-us-tag">🇺🇸 TEAM US OFFICIAL</div>
+      </div>
+    </div>
+
+    <div class="user-pill">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <span id="userName">Miner</span>
+    </div>
+  </header>
+
+  <!-- Top Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Tap Power</div>
+      <div class="stat-val" id="statTap">+1</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Auto / Hour</div>
+      <div class="stat-val" id="statPph">+0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">US Rank</div>
+      <div class="stat-val rank" id="statRank">Bronze</div>
+    </div>
   </div>
-  <button class="btn" id="startBtn" onclick="clickStart()">⚡ CLAIM / START MINING</button>
-  <div class="stats">
-    <div class="stat"><span>⚡</span><small>Mining Speed</small><b>12.5 US/h</b></div>
-    <div class="stat"><span>👥</span><small>Friends</small><b id="friendCount">0</b></div>
-    <div class="stat"><span>🏆</span><small>Rank</small><b>—</b></div>
-  </div>
-  <div class="note">⚠️ US Points are community points. No money value yet. Never pay anyone for US Token. Official updates only in this app.</div>
-</div>
 
-<!-- TASK -->
-<div id="tasks" class="page">
-  <h2 style="margin-top:8px;text-align:center;font-size:28px">Unlock Mining</h2>
-  <p style="color:#aaa;font-size:14px;margin-top:8px;line-height:1.6;text-align:center">Complete the task to start mining US TOKEN</p>
-  <div class="box">
-    <div style="color:#d4af37;font-size:12px">Task 1 • Required</div>
-    <div class="task-row"><div><b>Follow Facebook Page</b><br><small style="color:#999">Real Drama Official • Required</small></div><button id="fbBtn" onclick="openFB()">Follow</button></div>
-    <div class="timer-box"><div class="ring" style="margin:10px auto"><b id="waitNum">15s</b><span>Waiting...</span></div></div>
-    <div class="wait" id="waitMsg">Click Follow first</div>
-    <label class="check"><input type="checkbox" id="confirmCheck" disabled onchange="onCheck()"> I have Followed the Facebook Page</label>
-    <button class="btn" id="verifyBtn" disabled onclick="verifyNow()">VERIFY & START MINING</button>
-  </div>
-</div>
+  <!-- TAB 1: MINE -->
+  <section id="tab-mine" class="tab-section active">
+    <div class="balance-container">
+      <div class="balance-sub">Total US Token Balance</div>
+      <div class="balance-main">
+        <span>🇺🇸</span>
+        <span id="balanceDisplay">0</span>
+      </div>
+    </div>
 
-<!-- EARN -->
-<div id="earn" class="page">
-  <h2 style="margin-top:8px">Earn</h2>
-  <div class="box"><p style="color:#aaa;line-height:1.6">Daily mining bonus. Claim every hour to keep your progress.</p><button class="btn" onclick="claim()">CLAIM +0.12 US</button></div>
-  <div class="box timer-box"><b>⏳ Mining Countdown</b><br><b id="countdown" style="margin-top:8px;display:block">90 days 00:00:00</b><p style="color:#999;font-size:12px;margin-top:6px">Wallet Connect unlocks on 22 Feb 2027</p></div>
-  <div class="box"><b>🔥 Daily Task</b><p style="color:#aaa;margin-top:8px;line-height:1.6">Come back daily & claim to increase your mining speed.</p><button class="btn" onclick="claim()">DAILY CHECK-IN +0.12 US</button></div>
-</div>
+    <!-- Big Interactive US Coin -->
+    <div class="coin-wrapper">
+      <div class="coin-outer" id="coinBtn">
+        <div class="coin-inner">
+          <div class="coin-us-text">US</div>
+          <div class="coin-sub-text">TOKEN</div>
+          <div class="coin-stars">★ ★ ★ ★ ★</div>
+        </div>
+      </div>
+    </div>
 
-<!-- FRIENDS -->
-<div id="friends" class="page">
-  <h2 style="margin-top:8px;text-align:center">Friends</h2>
-  <p style="color:#aaa;margin-top:8px;line-height:1.6;text-align:center">Invite friends get +10 US for each active friend.</p>
-  <div class="box">
-    <p style="color:#999;font-size:13px;text-align:center">Your referral link</p>
-    <div class="ref-box"><input id="refLink" readonly value="https://t.me/YourBot?start=123"><button onclick="copyRef()">📋</button></div>
-    <p style="margin-top:12px"><b>Total Invites: 0</b></p>
-    <p style="color:#888;font-size:13px;margin-top:10px;text-align:center">No friends yet<br>When your friends join using your link, they'll appear here.</p>
-    <button class="btn" onclick="copyRef()">COPY REFERRAL LINK</button>
-  </div>
-</div>
+    <!-- Energy Bar -->
+    <div class="energy-box">
+      <div class="energy-header">
+        <span>⚡ Mining Energy</span>
+        <span><span id="energyText">1000</span> / <span id="maxEnergyText">1000</span></span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="energyFill"></div>
+      </div>
+    </div>
 
-<!-- WALLET -->
-<div id="wallet" class="page">
-  <h2 style="margin-top:8px;text-align:center">Wallet</h2>
-  <div class="box timer-box"><small style="color:#999">Total Balance</small><div style="font-size:48px;color:#ffd700;font-weight:900;margin-top:8px" id="bal3">0.00 US</div><p style="color:#aaa;font-size:13px;margin-top:8px">Wallet Connect unlocks on 22 Feb 2027</p></div>
-  <button class="btn" style="opacity:.6">Connect Wallet 🔒 locked</button>
-  <p style="text-align:center;color:#888;font-size:13px;margin-top:10px">Keep mining daily.</p>
-  <div class="note">Wallet will be connected after 3 months. Keep mining daily. Never share your seed phrase with anyone.</div>
-</div>
+    <!-- Daily Bonus -->
+    <button class="daily-btn" id="dailyBonusBtn" onclick="claimDailyBonus()">
+      🎁 Claim Daily Team US Bonus (+500 US Token)
+    </button>
+  </section>
 
-<!-- PROFILE -->
-<div id="profile" class="page">
-  <h2 style="margin-top:8px">Profile</h2>
-  <div class="box"><b id="uName" style="font-size:18px">Guest User</b><p style="color:#888;font-size:13px;margin-top:4px" id="uId">ID: -</p><p style="color:#ffd700;margin-top:12px">Status: <span id="uStatus">Not Started</span></p><p style="color:#aaa;font-size:13px;margin-top:8px">Mining Speed: 12.5 US/h • Rank: —</p></div>
-  <div class="box"><b>⚙️ Settings</b><p style="color:#aaa;margin-top:8px;line-height:1.8">• Language: English<br>• Notifications: On<br>• Version: 1.0 - US TOKEN Brand</p></div>
-</div>
+  <!-- TAB 2: UPGRADE -->
+  <section id="tab-upgrade" class="tab-section">
+    <div class="section-title">
+      <span>🚀 Mining Boosters & Nodes</span>
+      <span style="font-size:12px; color:var(--gold);">Team US Lab</span>
+    </div>
+    <div id="upgradeList"></div>
+  </section>
 
-<div class="nav">
-  <div class="active" onclick="showPage('home',this)"><span>🏠</span>Home</div>
-  <div onclick="showPage('earn',this)"><span>⚡</span>Earn</div>
-  <div onclick="showPage('friends',this)"><span>👥</span>Friends</div>
-  <div onclick="showPage('wallet',this)"><span>👛</span>Wallet</div>
-  <div onclick="showPage('profile',this)"><span>👤</span>Profile</div>
-</div>
+  <!-- TAB 3: TASKS & REFERRAL -->
+  <section id="tab-tasks" class="tab-section">
+    <div class="ref-box">
+      <h3 style="font-size:15px; margin-bottom:4px;">🇺🇸 Invite Friends to Team US</h3>
+      <p style="font-size:12px; color:#cbd5e1;">Get <b>+1,000 US Token</b> for every friend who joins via your link!</p>
+      <div class="ref-link-row">
+        <input type="text" id="refLinkInput" class="ref-input" readonly value="https://t.me/USToken_TeamUS_Bot?start=ref123" />
+        <button class="action-btn" onclick="copyRefLink()">Copy</button>
+      </div>
+    </div>
 
-<script>
-let tg=window.Telegram?.WebApp; if(tg){tg.ready();tg.expand();}
-const FB_LINK="https://www.facebook.com/share/1B8nsFBYTi/";
-let balance=parseFloat(localStorage.getItem('us_bal')||'0');
-let mining=localStorage.getItem('us_mining')==='1';
-let fbClicked=false,waitDone=false;
-function showPage(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav div').forEach(d=>d.classList.remove('active'));if(el)el.classList.add('active');}
-function save(){localStorage.setItem('us_bal',balance);localStorage.setItem('us_mining',mining?'1':'0');}
-function update(){document.getElementById('bal').innerText=balance.toFixed(2);document.getElementById('topBal').innerText=balance.toFixed(2)+' US';document.getElementById('bal3').innerText=balance.toFixed(2)+' US';document.getElementById('prog').innerText=Math.min(100,Math.floor(balance))+'%';if(mining){document.getElementById('startBtn').innerText='⚡ CLAIM +0.12 US';document.getElementById('status').innerText='MINING ACTIVE • +12.5 US / HOUR';document.getElementById('uStatus').innerText='Mining Active';}}
-function clickStart(){if(mining){claim();return;}showPage('tasks',null);}
-function openFB(){if(tg)tg.openLink(FB_LINK);else window.open(FB_LINK,'_blank');fbClicked=true;let b=document.getElementById('fbBtn');b.innerText='Opened ✓';b.classList.add('done');let sec=15;document.getElementById('waitMsg').innerText='Please wait '+sec+' sec... Go and Follow';document.getElementById('waitNum').innerText=sec+'s';let iv=setInterval(()=>{sec--;document.getElementById('waitMsg').innerText='Please wait '+sec+' sec... Go and Follow';document.getElementById('waitNum').innerText=sec+'s';if(sec<=0){clearInterval(iv);waitDone=true;document.getElementById('waitMsg').innerText='Now tick the checkbox';document.getElementById('waitNum').innerText='Done ✓';document.getElementById('confirmCheck').disabled=false;}},1000);}
-function onCheck(){document.getElementById('verifyBtn').disabled=!(fbClicked&&waitDone&&document.getElementById('confirmCheck').checked);}
-function verifyNow(){if(!fbClicked||!waitDone||!document.getElementById('confirmCheck').checked){alert('Please complete all steps');return;}mining=true;save();update();alert('Congratulations! Mining Started!');showPage('home',null);}
-function claim(){if(!mining){alert('First complete task!');showPage('tasks',null);return;}balance+=0.12;save();update();alert('Claimed +0.12 US');}
-function copyRef(){let i=document.getElementById('refLink');i.select();document.execCommand('copy');alert('Link Copied!');}
-setInterval(()=>{if(mining){balance+=0.00033;save();update();}},10000);
-let end=Date.now()+90*24*3600*1000;
-setInterval(()=>{let d=end-Date.now();let days=Math.floor(d/86400000),h=Math.floor(d%86400000/3600000),m=Math.floor(d%3600000/60000),s=Math.floor(d%60000/1000);let t=days+' days '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');let el=document.getElementById('countdown');if(el)el.innerText=t;},1000);
-if(tg?.initDataUnsafe?.user){document.getElementById('uName').innerText=tg.initDataUnsafe.user.first_name;document.getElementById('uId').innerText='ID: '+tg.initDataUnsafe.user.id;document.getElementById('refLink').value='https://t.me/YourBot?start='+tg.initDataUnsafe.user.id;}
-update();
-</script>
+    <div class="section-title">
+      <span>🎯 Official Team US Tasks</span>
+    </div>
+    <div id="taskList"></div>
+  </section>
+
+  <!-- TAB 4: WALLET -->
+  <section id="tab-wallet" class="tab-section">
+    <div class="wallet-card">
+      <div class="section-title">
+        <span>💳 Withdraw US Token</span>
+        <span style="font-size:11px; color:var(--green);">Min: 10,000 US</span>
+      </div>
+
+      <div class="form-group">
+        <label>Select Payment Network / Method</label>
+        <select id="withdrawMethod" class="form-control">
+          <option value="TON Wallet">💎 TON Wallet (TON Network)</option>
+          <option value="USDT (TRC20)">💵 USDT (TRC20)</option>
+          <option value="Bkash">📱 Bkash (Bangladesh)</option>
+          <option value="Nagad">📱 Nagad (Bangladesh)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Wallet Address / Account Number</label>
+        <input type="text" id="walletAddress" class="form-control" placeholder="Enter TON / USDT address or phone number" />
+      </div>
+
+      <div class="form-group">
+        <label>Amount (US Token)</label>
+        <input type="number" id="withdrawAmount" class="form-control" placeholder="Minimum 10000" />
+      </div>
+
+      <button class="daily-btn" onclick="submitWithdraw()">Submit Withdrawal Request</button>
+    </div>
+
+    <div class="section-title">
+      <span>📜 Withdrawal History</span>
+    </div>
+    <div id="withdrawHistory"></div>
+  </section>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('mine', this)">
+      <span class="nav-icon">⛏️</span>
+      <span>Mine</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('upgrade', this)">
+      <span class="nav-icon">⚡</span>
+      <span>Upgrade</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('tasks', this)">
+      <span class="nav-icon">🎯</span>
+      <span>Tasks</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('wallet', this)">
+      <span class="nav-icon">💰</span>
+      <span>Wallet</span>
+    </div>
+  </nav>
+
+  <script>
+    // Initialize Telegram WebApp
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor('#0a1128');
+    }
+
+    // Default Game State
+    let state = {
+      balance: 0,
+      tapPower: 1,
+      pph: 0,
+      energy: 1000,
+      maxEnergy: 1000,
+      lastSaved: Date.now(),
+      lastDaily: 0,
+      upgrades: {
+        multitap: { level: 1, baseCost: 100, type: 'tap', boost: 1, name: 'Multitap Power', icon: '👆', desc: '+1 US Token per tap' },
+        energy: { level: 1, baseCost: 150, type: 'energy', boost: 500, name: 'Energy Tank', icon: '🔋', desc: '+500 Max Energy limit' },
+        mint: { level: 0, baseCost: 300, type: 'pph', boost: 120, name: 'US Mint Machine', icon: '🏛️', desc: '+120 US Token / hour' },
+        wallstreet: { level: 0, baseCost: 1000, type: 'pph', boost: 500, name: 'Wall Street Bot', icon: '📈', desc: '+500 US Token / hour' },
+        fed: { level: 0, baseCost: 5000, type: 'pph', boost: 2800, name: 'Federal Reserve Node', icon: '🦅', desc: '+2,800 US Token / hour' }
+      },
+      completedTasks: [],
+      withdrawals: []
+    };
+
+    const tasksData = [
+      { id: 'tg_channel', title: 'Join Team US Official Channel', reward: 1000, icon: '📢', url: 'https://t.me/telegram' },
+      { id: 'tg_group', title: 'Join US Token Community Chat', reward: 800, icon: '💬', url: 'https://t.me/telegram' },
+      { id: 'x_follow', title: 'Follow Team US on X (Twitter)', reward: 1200, icon: '🐦', url: 'https://x.com' },
+      { id: 'yt_watch', title: 'Watch US Token Intro Video', reward: 1500, icon: '▶️', url: 'https://youtube.com' }
+    ];
+
+    // Load Saved Data & Calculate Offline Mining
+    function loadState() {
+      const saved = localStorage.getItem('us_token_team_us_v1');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed, upgrades: { ...state.upgrades, ...(parsed.upgrades || {}) } };
+          
+          // Calculate offline earnings
+          const now = Date.now();
+          const secondsPassed = Math.floor((now - state.lastSaved) / 1000);
+          if (secondsPassed > 5) {
+            // Regen energy
+            state.energy = Math.min(state.maxEnergy, state.energy + secondsPassed * 2);
+            // Offline PPH (max 3 hours)
+            if (state.pph > 0) {
+              const cappedSeconds = Math.min(secondsPassed, 10800);
+              const earned = Math.floor((state.pph / 3600) * cappedSeconds);
+              if (earned > 0) {
+                state.balance += earned;
+                setTimeout(() => showToast(`🇺🇸 Team US Offline Mining: +${earned.toLocaleString()} US!`), 600);
+              }
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // Set Telegram User Info
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        const name = u.first_name || u.username || 'Miner';
+        document.getElementById('userName').innerText = name;
+        document.getElementById('userAvatar').innerText = name.charAt(0).toUpperCase();
+        document.getElementById('refLinkInput').value = `https://t.me/USToken_TeamUS_Bot?start=${u.id}`;
+      }
+    }
+
+    function saveState() {
+      state.lastSaved = Date.now();
+      localStorage.setItem('us_token_team_us_v1', JSON.stringify(state));
+    }
+
+    // Toast Helper
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        t.style.display = 'none';
+      }, 2800);
+    }
+
+    // Rank Calculator
+    function getRank(bal) {
+      if (bal >= 1000000) return 'President 🦅';
+      if (bal >= 250000) return 'Diamond 💎';
+      if (bal >= 50000) return 'Gold 🥇';
+      if (bal >= 10000) return 'Silver 🥈';
+      return 'Bronze 🥉';
+    }
+
+    // Update UI
+    function updateUI() {
+      document.getElementById('balanceDisplay').innerText = Math.floor(state.balance).toLocaleString();
+      document.getElementById('statTap').innerText = `+${state.tapPower}`;
+      document.getElementById('statPph').innerText = `+${state.pph.toLocaleString()}`;
+      document.getElementById('statRank').innerText = getRank(state.balance);
+
+      document.getElementById('energyText').innerText = Math.floor(state.energy);
+      document.getElementById('maxEnergyText').innerText = state.maxEnergy;
+      const pct = Math.min(100, (state.energy / state.maxEnergy) * 100);
+      document.getElementById('energyFill').style.width = `${pct}%`;
+
+      // Check Daily Bonus (24h cooldown)
+      const oneDay = 24 * 60 * 60 * 1000;
+      const dailyBtn = document.getElementById('dailyBonusBtn');
+      if (Date.now() - state.lastDaily < oneDay) {
+        dailyBtn.disabled = true;
+        dailyBtn.innerText = '✅ Daily Team US Bonus Claimed';
+      } else {
+        dailyBtn.disabled = false;
+        dailyBtn.innerText = '🎁 Claim Daily Team US Bonus (+500 US Token)';
+      }
+    }
+
+    // Coin Tap Handler
+    const coinBtn = document.getElementById('coinBtn');
+    coinBtn.addEventListener('pointerdown', (e) => {
+      if (state.energy < state.tapPower) {
+        showToast('⚡ Not enough energy! Wait to recharge.');
+        return;
+      }
+
+      state.balance += state.tapPower;
+      state.energy -= state.tapPower;
+
+      // Haptic feedback in Telegram
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
+
+      // Floating number animation
+      const floatEl = document.createElement('div');
+      floatEl.className = 'float-num';
+      floatEl.innerText = `+${state.tapPower}`;
+      floatEl.style.left = `${e.clientX - 15}px`;
+      floatEl.style.top = `${e.clientY - 25}px`;
+      document.body.appendChild(floatEl);
+      setTimeout(() => floatEl.remove(), 850);
+
+      updateUI();
+      saveState();
+    });
+
+    // Claim Daily Bonus
+    function claimDailyBonus() {
+      const oneDay = 24 * 60 * 60 * 1000;
+      if (Date.now() - state.lastDaily < oneDay) return;
+      state.balance += 500;
+      state.lastDaily = Date.now();
+      showToast('🎉 +500 US Token Daily Bonus Added!');
+      updateUI();
+      saveState();
+    }
+
+    // Render Upgrades
+    function renderUpgrades() {
+      const container = document.getElementById('upgradeList');
+      container.innerHTML = '';
+
+      Object.keys(state.upgrades).forEach(key => {
+        const up = state.upgrades[key];
+        const cost = Math.floor(up.baseCost * Math.pow(1.65, up.level));
+        const canAfford = state.balance >= cost;
+
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-left">
+            <div class="item-icon">${up.icon}</div>
+            <div class="item-info">
+              <h3>${up.name} <span style="color:#60a5fa; font-size:11px;">(Lv ${up.level})</span></h3>
+              <p>${up.desc}</p>
+            </div>
+          </div>
+          <button class="action-btn" ${canAfford ? '' : 'disabled'} onclick="buyUpgrade('${key}')">
+            🪙 ${cost.toLocaleString()}
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function buyUpgrade(key) {
+      const up = state.upgrades[key];
+      const cost = Math.floor(up.baseCost * Math.pow(1.65, up.level));
+      if (state.balance < cost) {
+        showToast('❌ Insufficient US Token balance!');
+        return;
+      }
+
+      state.balance -= cost;
+      up.level += 1;
+
+      if (up.type === 'tap') state.tapPower += up.boost;
+      if (up.type === 'energy') {
+        state.maxEnergy += up.boost;
+        state.energy = state.maxEnergy;
+      }
+      if (up.type === 'pph') state.pph += up.boost;
+
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred('success');
+      }
+
+      showToast(`🚀 Upgraded ${up.name} to Level ${up.level}!`);
+      updateUI();
+      renderUpgrades();
+      saveState();
+    }
+
+    // Render Tasks
+    function renderTasks() {
+      const container = document.getElementById('taskList');
+      container.innerHTML = '';
+
+      tasksData.forEach(task => {
+        const done = state.completedTasks.includes(task.id);
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-left">
+            <div class="item-icon">${task.icon}</div>
+            <div class="item-info">
+              <h3>${task.title}</h3>
+              <p style="color:var(--gold); font-weight:700;">+${task.reward.toLocaleString()} US Token</p>
+            </div>
+          </div>
+          <button class="action-btn ${done ? 'completed' : ''}" ${done ? 'disabled' : ''} onclick="completeTask('${task.id}')">
+            ${done ? 'Claimed ✓' : 'Start'}
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function completeTask(id) {
+      if (state.completedTasks.includes(id)) return;
+      const task = tasksData.find(t => t.id === id);
+      if (!task) return;
+
+      window.open(task.url, '_blank');
+      state.completedTasks.push(id);
+      state.balance += task.reward;
+
+      showToast(`✅ Task Completed! +${task.reward.toLocaleString()} US Token`);
+      updateUI();
+      renderTasks();
+      saveState();
+    }
+
+    function copyRefLink() {
+      const input = document.getElementById('refLinkInput');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      showToast('📋 Team US Referral Link Copied!');
+    }
+
+    // Wallet & Withdrawals
+    function submitWithdraw() {
+      const method = document.getElementById('withdrawMethod').value;
+      const address = document.getElementById('walletAddress').value.trim();
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+
+      if (!address) {
+        showToast('⚠️ Please enter your wallet address or number.');
+        return;
+      }
+      if (isNaN(amount) || amount < 10000) {
+        showToast('⚠️ Minimum withdrawal is 10,000 US Token.');
+        return;
+      }
+      if (amount > state.balance) {
+        showToast('❌ Insufficient US Token balance.');
+        return;
+      }
+
+      state.balance -= amount;
+      state.withdrawals.unshift({
+        id: 'TX' + Math.floor(100000 + Math.random() * 900000),
+        method,
+        address,
+        amount,
+        date: new Date().toLocaleDateString(),
+        status: 'Pending'
+      });
+
+      document.getElementById('walletAddress').value = '';
+      document.getElementById('withdrawAmount').value = '';
+
+      showToast('✅ Withdrawal request submitted to Team US!');
+      updateUI();
+      renderWithdrawals();
+      saveState();
+    }
+
+    function renderWithdrawals() {
+      const container = document.getElementById('withdrawHistory');
+      if (state.withdrawals.length === 0) {
+        container.innerHTML = `<p style="font-size:12px; color:var(--text-muted); text-align:center; padding:15px;">No withdrawal requests yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = state.withdrawals.map(w => `
+        <div class="item-card">
+          <div class="item-info">
+            <h3>${w.method} • <span style="color:var(--gold);">${w.amount.toLocaleString()} US</span></h3>
+            <p>${w.address} • ${w.date}</p>
+          </div>
+          <span style="font-size:11px; font-weight:800; color:#fbbf24; background:rgba(251,191,36,0.15); padding:4px 9px; border-radius:8px;">
+            ${w.status}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    // Tab Navigation
+    function switchTab(tabName, el) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      el.classList.add('active');
+
+      if (tabName === 'upgrade') renderUpgrades();
+      if (tabName === 'tasks') renderTasks();
+      if (tabName === 'wallet') renderWithdrawals();
+    }
+
+    // Passive Energy Regen & Auto-Mining Loop (Every 1 Second)
+    setInterval(() => {
+      if (state.energy < state.maxEnergy) {
+        state.energy = Math.min(state.maxEnergy, state.energy + 2);
+      }
+      if (state.pph > 0) {
+        state.balance += state.pph / 3600;
+      }
+      updateUI();
+    }, 1000);
+
+    // Save periodically
+    setInterval(saveState, 10000);
+
+    // Boot App
+    loadState();
+    updateUI();
+  </script>
 </body>
 </html>
