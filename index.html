@@ -40,7 +40,6 @@
       touch-action: manipulation;
     }
 
-    /* Top Header */
     .app-header {
       display: flex;
       align-items: center;
@@ -134,7 +133,6 @@
       outline: none;
     }
 
-    /* User Strip */
     .user-strip {
       display: flex;
       align-items: center;
@@ -231,24 +229,26 @@
       display: block;
     }
 
+    /* Logo Matching Screenshot 4 (2029_2.jpg) */
     .coin-box {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 10px 0;
+      margin: 10px 0 8px;
+      position: relative;
     }
 
     .coin-spinner {
-      width: 170px;
-      height: 170px;
+      width: 176px;
+      height: 176px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fef08a, #eab308 55%, #854d0e 95%);
-      padding: 9px;
-      box-shadow: 0 0 32px rgba(234, 179, 8, 0.35);
+      background: radial-gradient(circle at 35% 30%, #fef08a, #eab308 58%, #78350f 96%);
+      padding: 11px;
+      box-shadow: 0 0 36px rgba(234, 179, 8, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: spinSlow 18s linear infinite;
+      animation: spinSlow 22s linear infinite;
     }
 
     @keyframes spinSlow {
@@ -260,22 +260,29 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 2px dashed rgba(113, 63, 18, 0.75);
-      background: radial-gradient(circle, #ca8a04, #713f12);
+      border: 2px solid rgba(254, 240, 138, 0.65);
+      background: radial-gradient(circle, #1e3a8a 0%, #0f172a 75%);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .coin-shield {
-      margin-top: -16px;
-      background: #0f172a;
+    .us-shield-badge {
+      margin-top: -18px;
+      z-index: 5;
+      background: linear-gradient(180deg, #1d4ed8, #1e3a8a);
       border: 2px solid var(--gold);
-      padding: 2px 14px;
-      border-radius: 10px;
-      font-size: 12px;
+      border-radius: 8px 8px 14px 14px;
+      padding: 3px 13px 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .us-shield-text {
+      font-size: 13px;
       font-weight: 900;
-      z-index: 4;
+      letter-spacing: 0.5px;
+      color: #ffffff;
     }
 
     .gold-ribbon {
@@ -471,11 +478,11 @@
       outline: none;
     }
 
-    /* Wallet Deep-Link Modal */
+    /* TON Connect Style Modal (Matches Screenshot 2 & 3) */
     .modal-bg {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.82);
+      background: rgba(0, 0, 0, 0.84);
       z-index: 1500;
       display: none;
       align-items: flex-end;
@@ -485,26 +492,35 @@
     .modal-sheet {
       width: 100%;
       max-width: 440px;
-      background: #12151c;
+      background: #14171f;
       border-top-left-radius: 22px;
       border-top-right-radius: 22px;
-      padding: 18px 16px 24px;
+      padding: 16px 16px 24px;
       border-top: 1px solid #273042;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .wallet-grid-4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 10px 8px;
       text-align: center;
-      margin: 12px 0 14px;
+      margin: 10px 0 14px;
+    }
+
+    .w-item {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .w-icon {
       width: 48px;
       height: 48px;
       border-radius: 13px;
-      margin: 0 auto 4px;
+      margin-bottom: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -512,16 +528,70 @@
       font-size: 18px;
     }
 
-    .confirm-wallet-box {
-      background: #0b0f17;
+    .w-label {
+      font-size: 10px;
+      line-height: 1.2;
+      color: #e2e8f0;
+    }
+
+    .w-sub {
+      font-size: 9px;
+      color: #64748b;
+    }
+
+    /* Screenshot 1 Style Request Access Box */
+    .request-access-card {
+      background: #0d121b;
       border: 1px solid #2a374f;
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 16px;
+      padding: 14px;
       margin-top: 10px;
       display: none;
     }
 
-    /* Price Prediction Chart Box at Bottom of Profile */
+    .pair-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 8px 0 12px;
+    }
+
+    .pair-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: #172033;
+      border: 1px solid #2b3a55;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .btn-ton-connect-big {
+      width: 100%;
+      background: #2b88ff;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Swap Modal */
+    .swap-box {
+      background: #090d16;
+      border: 1px solid #233047;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* Price Prediction Chart Box */
     .prediction-card {
       background: linear-gradient(160deg, #0d1629, #090e1a);
       border: 1px solid #1e3a5f;
@@ -566,7 +636,6 @@
       display: block;
     }
 
-    /* Bottom Navigation */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -636,67 +705,145 @@
 
   <div id="toast" class="toast-box"></div>
 
-  <!-- Real Deep-Link Wallet Connect Modal -->
+  <!-- TON Connect Wallet Selector + Access Request Modal -->
   <div id="tonModal" class="modal-bg" onclick="closeTonModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
-      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
         <button type="button" onclick="showToast('📷 Scan TON QR from your wallet app')" style="width:30px;height:30px;border-radius:50%;background:#1e2430;border:none;color:#94a3b8;cursor:pointer;">⊞</button>
         <button type="button" onclick="hideTonModal()" style="width:30px;height:30px;border-radius:50%;background:#1e2430;border:none;color:#94a3b8;cursor:pointer;">✕</button>
       </div>
 
-      <div style="text-align:center; margin-bottom:12px;">
-        <div style="font-size:40px; color:#0098ea;">💎</div>
-        <h3 style="font-size:18px; font-weight:800; margin-top:4px;">Connect Wallet to US TOKEN</h3>
-        <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Opens wallet app / connection link to verify</div>
-      </div>
-
-      <button type="button" class="pill-blue" style="width:100%; padding:12px; border-radius:12px; margin-bottom:8px;" onclick="launchWalletConnection('Telegram Wallet', 'https://t.me/wallet')">
-        ✈️ Connect Telegram Wallet
-      </button>
-
-      <button type="button" style="width:100%; padding:11px; border-radius:12px; background:#1b202b; border:1px solid #2b3344; color:#fff; font-weight:700; cursor:pointer;" onclick="launchWalletConnection('Tonkeeper', 'https://app.tonkeeper.com/ton-connect')">
-        💎 Tonkeeper / Gram Wallet
-      </button>
-
-      <div style="text-align:center; font-size:12px; color:#94a3b8; margin:12px 0 6px;">Or connect exchange / wallet app:</div>
-
-      <div class="wallet-grid-4">
-        <div onclick="launchWalletConnection('Binance', 'https://www.binance.com/en/web3wallet')" style="cursor:pointer;">
-          <div class="w-icon" style="background:#181a20; color:#f0b90b; border:1px solid #2b3139;">❖</div>
-          <div style="font-size:11px;">Binance</div>
+      <div id="walletChooserView">
+        <div style="text-align:center; margin-bottom:10px;">
+          <div style="font-size:38px; color:#0098ea;">💎</div>
+          <h3 style="font-size:18px; font-weight:800; margin-top:3px;">Use your Telegram wallet</h3>
         </div>
-        <div onclick="launchWalletConnection('Bitget Wallet', 'https://web3.bitget.com')" style="cursor:pointer;">
-          <div class="w-icon" style="background:linear-gradient(135deg,#0891b2,#22d3ee); color:#fff;">B</div>
-          <div style="font-size:11px;">Bitget</div>
-        </div>
-        <div onclick="launchWalletConnection('TON Keeper', 'https://app.tonkeeper.com')" style="cursor:pointer;">
-          <div class="w-icon" style="background:#111318; color:#fff; border:1px solid #2a2f3a;">▽</div>
-          <div style="font-size:11px;">Keeper</div>
-        </div>
-        <div onclick="launchWalletConnection('TON Connect', 'https://ton.org/wallets')" style="cursor:pointer;">
-          <div class="w-icon" style="background:#1c212b; color:#60a5fa; font-size:13px;">❖💎<br>➤⊞</div>
-          <div style="font-size:11px;">All Wallets</div>
-        </div>
-      </div>
 
-      <!-- Step 2: Manual / Confirmed Address Binding (No Fake Auto-Verify!) -->
-      <div id="walletConfirmBox" class="confirm-wallet-box">
-        <div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:6px;">
-          🔗 Connecting: <span id="selectedWalletTitle">Wallet</span>
-        </div>
-        <p style="font-size:11px; color:#94a3b8; margin-bottom:8px;">
-          Complete connection in the opened wallet app, then enter/paste your wallet address below and click Confirm:
-        </p>
-        <input type="text" id="manualWalletInput" class="input-dark" placeholder="Paste TON / Binance / Bitget address (e.g. UQB...)" />
-        <button type="button" class="pill-yellow" style="width:100%; padding:10px;" onclick="confirmWalletBinding()">
-          ✓ Confirm & Link Wallet
+        <button type="button" class="pill-blue" style="width:100%; padding:12px; border-radius:12px; margin-bottom:8px;" onclick="selectWalletApp('Telegram Wallet', 'https://t.me/wallet')">
+          ✈️ Connect Telegram
         </button>
+
+        <button type="button" style="width:100%; padding:11px; border-radius:12px; background:#1b202b; border:1px solid #2b3344; color:#fff; font-weight:700; cursor:pointer;" onclick="selectWalletApp('Gram Wallet', 'https://t.me/wallet')">
+          💎 Gram Wallet
+        </button>
+
+        <div style="text-align:center; font-size:12px; color:#94a3b8; margin:11px 0 6px;">Or choose another app:</div>
+
+        <div class="wallet-grid-4">
+          <div class="w-item" onclick="selectWalletApp('Binance Wallet', 'https://www.binance.com/en/web3wallet')">
+            <div class="w-icon" style="background:#181a20; color:#f0b90b; border:1px solid #2b3139;">❖</div>
+            <div class="w-label">Binance Wa...</div>
+            <div class="w-sub">Recent</div>
+          </div>
+          <div class="w-item" onclick="selectWalletApp('Walt Wallet', 'https://t.me/wallet')">
+            <div class="w-icon" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#fff;">⋙</div>
+            <div class="w-label">Walt</div>
+            <div class="w-sub">ex. Wallet</div>
+          </div>
+          <div class="w-item" onclick="selectWalletApp('Keeper', 'https://app.tonkeeper.com')">
+            <div class="w-icon" style="background:#111318; color:#fff; border:1px solid #2a2f3a;">▽</div>
+            <div class="w-label">Keeper</div>
+          </div>
+          <div class="w-item" onclick="toggleAllWallets()">
+            <div class="w-icon" style="background:#1c212b; color:#60a5fa; font-size:13px;">❖💎<br>➤⊞</div>
+            <div class="w-label">View all<br>wallets</div>
+          </div>
+        </div>
+
+        <div id="moreWalletsGrid" class="wallet-grid-4" style="display:none; border-top:1px solid #232b3b; padding-top:10px;">
+          <div class="w-item" onclick="selectWalletApp('Bitget Wallet', 'https://web3.bitget.com')">
+            <div class="w-icon" style="background:linear-gradient(135deg,#0891b2,#22d3ee); color:#fff;">B</div>
+            <div class="w-label">Bitget Wallet</div>
+          </div>
+          <div class="w-item" onclick="selectWalletApp('OKX Wallet', 'https://www.okx.com/web3')">
+            <div class="w-icon" style="background:#a3e635; color:#090d16;">❖</div>
+            <div class="w-label">OKX Wallet</div>
+          </div>
+          <div class="w-item" onclick="selectWalletApp('Tonhub', 'https://tonhub.com')">
+            <div class="w-icon" style="background:linear-gradient(135deg,#7c3aed,#c084fc); color:#fff;">💎</div>
+            <div class="w-label">Tonhub</div>
+          </div>
+          <div class="w-item" onclick="selectWalletApp('Bybit Wallet', 'https://www.bybit.com/en/web3')">
+            <div class="w-icon" style="background:#18181b; color:#facc15; border:1px solid #3f3f46;">BY</div>
+            <div class="w-label">Bybit Wallet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screenshot 1 Style: Request Access to Wallet Address -->
+      <div id="requestAccessView" class="request-access-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:11px; color:#94a3b8; cursor:pointer;" onclick="backToWalletChooser()">← Change Wallet</span>
+          <span style="font-size:11px; color:#38bdf8; font-weight:700;" id="reqWalletName">Binance Wallet</span>
+        </div>
+
+        <div class="pair-logos">
+          <div class="pair-box" style="color:#38bdf8;">💎</div>
+          <div style="color:#64748b; font-size:12px;">•••|•••</div>
+          <div class="pair-box" style="color:var(--gold-soft);">US</div>
+        </div>
+
+        <div style="text-align:center;">
+          <div style="font-size:15px; font-weight:800;">Connect to <span style="color:#38bdf8;">ustoken.app</span></div>
+          <p style="font-size:11px; color:#94a3b8; margin:4px 0 10px;">
+            US TOKEN is requesting access to your wallet address.
+          </p>
+        </div>
+
+        <input type="text" id="walletAddressInput" class="input-dark" placeholder="Enter / Paste your wallet address (e.g. UQCE...2hEJ)" />
+
+        <label style="display:flex; justify-content:space-between; align-items:center; background:#141b29; padding:9px 11px; border-radius:10px; margin-bottom:10px; font-size:12px; font-weight:700;">
+          <span>Allow Notifications</span>
+          <input type="checkbox" id="allowNotifCheck" checked />
+        </label>
+
+        <button type="button" class="btn-ton-connect-big" onclick="confirmWalletConnect()">
+          Connect wallet
+        </button>
+
+        <div style="text-align:center; font-size:10px; color:#64748b; margin-top:8px;">
+          Be sure to check the service address before connecting the wallet.
+        </div>
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #232b3b; padding-top:10px; margin-top:10px; font-weight:800;">
         <span>▽ TON Connect</span>
-        <span style="font-size:11px; color:#94a3b8;">US Token Network</span>
+        <span style="font-size:11px; color:#94a3b8;">?</span>
       </div>
+    </div>
+  </div>
+
+  <!-- Swap Modal (USDT / TON / US TOKEN Converter) -->
+  <div id="swapModal" class="modal-bg" onclick="closeSwapModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <b style="font-size:16px; color:var(--gold-soft);">⇄ Swap & Convert (USDT / US)</b>
+        <button type="button" onclick="hideSwapModal()" style="width:30px;height:30px;border-radius:50%;background:#1e2430;border:none;color:#94a3b8;cursor:pointer;">✕</button>
+      </div>
+
+      <div class="swap-box">
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; margin-bottom:5px;">
+          <span>From Token</span>
+          <span>Rate: 1 US = $0.20 USDT</span>
+        </div>
+        <select id="swapFromPair" class="input-dark" onchange="calcSwapPreview()">
+          <option value="us_to_usdt">US TOKEN (US) → USDT</option>
+          <option value="usdt_to_us">USDT → US TOKEN (US)</option>
+          <option value="ton_to_us">TON → US TOKEN (US)</option>
+        </select>
+
+        <div style="font-size:11px; color:#94a3b8; margin-bottom:5px;">Amount</div>
+        <input type="number" step="0.01" id="swapAmountInput" class="input-dark" value="10" oninput="calcSwapPreview()" />
+
+        <div style="background:#0d1424; border:1px solid #1e2d48; border-radius:10px; padding:10px; font-size:12px;">
+          Estimated Receive: <b id="swapReceiveText" style="color:#4ade80;">2.00 USDT</b>
+        </div>
+      </div>
+
+      <button type="button" class="btn-mine-gold" style="margin-bottom:0;" onclick="executeSwap()">
+        ⇄ Confirm Swap
+      </button>
+      <div id="swapHistoryBox" style="margin-top:10px; font-size:11px; color:#94a3b8;"></div>
     </div>
   </div>
 
@@ -719,7 +866,7 @@
       <div>
         <div style="display:flex; align-items:center; gap:6px;">
           <span style="font-size:16px; font-weight:900;">US TOKEN</span>
-          <span class="live-badge"><span class="live-dot"></span> LIVE <span id="clockText">09:23:00</span></span>
+          <span class="live-badge"><span class="live-dot"></span> LIVE <span id="clockText">09:37:00</span></span>
         </div>
         <div style="font-size:10px; color:#94a3b8;">1 US = $0.20 USD • Official Network</div>
       </div>
@@ -773,18 +920,21 @@
     </div>
 
     <div id="mineMainBox">
+      <!-- Logo Matching Screenshot 4 (2029_2.jpg) -->
       <div class="coin-box">
         <div class="coin-spinner">
           <div class="coin-core">
-            <svg width="84" height="84" viewBox="0 0 100 100">
-              <polygon points="50,5 85,50 50,65" fill="#60a5fa"/>
-              <polygon points="50,5 15,50 50,65" fill="#93c5fd"/>
-              <polygon points="50,95 85,50 50,65" fill="#1d4ed8"/>
-              <polygon points="50,95 15,50 50,65" fill="#3b82f6"/>
+            <svg width="86" height="86" viewBox="0 0 100 100">
+              <polygon points="50,8 84,50 50,64" fill="#38bdf8"/>
+              <polygon points="50,8 16,50 50,64" fill="#7dd3fc"/>
+              <polygon points="50,92 84,50 50,64" fill="#1d4ed8"/>
+              <polygon points="50,92 16,50 50,64" fill="#2563eb"/>
             </svg>
           </div>
         </div>
-        <div class="coin-shield">US</div>
+        <div class="us-shield-badge">
+          <div class="us-shield-text">US</div>
+        </div>
         <div style="font-size:14px; font-weight:900; color:var(--gold-soft); margin-top:4px;">US TOKEN</div>
       </div>
 
@@ -872,6 +1022,18 @@
       </div>
 
       <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:0.6px; margin:10px 0 6px;">CONTROLS</div>
+
+      <!-- Swap Button -->
+      <div class="stat-row-card">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="icon-sq" style="color:#38bdf8;">⇄</div>
+          <div>
+            <div style="font-size:13px; font-weight:800;">Swap</div>
+            <div style="font-size:11px; color:#94a3b8;">Convert USDT / TON & US Token</div>
+          </div>
+        </div>
+        <button type="button" class="pill-blue" onclick="openSwapModal()">Swap</button>
+      </div>
 
       <div class="stat-row-card">
         <div style="display:flex; align-items:center; gap:10px;">
@@ -1106,7 +1268,6 @@
       </div>
     </div>
 
-    <!-- US TOKEN LIVE PRICE PREDICTION CHART AT BOTTOM OF PROFILE -->
     <div class="prediction-card">
       <div class="pred-header">
         <div>
@@ -1126,7 +1287,6 @@
     </div>
   </main>
 
-  <!-- Bottom 5-Tab Bar -->
   <nav class="bottom-bar">
     <div class="b-tab active" onclick="goTab('mine', this)">
       <span style="font-size:18px;">⛏️</span>
@@ -1155,6 +1315,7 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     const US_USD = 0.20;
+    const TON_USD = 5.20;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     let state = {
@@ -1177,13 +1338,14 @@
         { id: 'tk2', title: 'Follow Team US on X', url: 'https://x.com', reward: 1.0 }
       ],
       doneTasks: [],
-      referrals: []
+      referrals: [],
+      swaps: []
     };
 
     let taskClickMap = {};
     let gateVisited = false;
     let rStart = 1, rEnd = 20, mPage = 1;
-    let pendingWalletName = '';
+    let chosenWalletApp = '';
     let priceSeries = [0.198, 0.200, 0.199, 0.202, 0.201, 0.204, 0.203, 0.206, 0.205, 0.208, 0.207, 0.210];
 
     function playSound(kind) {
@@ -1229,7 +1391,7 @@
     }
 
     function loadData() {
-      const raw = localStorage.getItem('us_token_full_v6');
+      const raw = localStorage.getItem('us_token_full_v7');
       if (raw) {
         try {
           state = { ...state, ...JSON.parse(raw) };
@@ -1257,7 +1419,7 @@
 
     function saveData() {
       state.lastTick = Date.now();
-      localStorage.setItem('us_token_full_v6', JSON.stringify(state));
+      localStorage.setItem('us_token_full_v7', JSON.stringify(state));
     }
 
     function getRate() {
@@ -1272,11 +1434,12 @@
       window.toastT = setTimeout(() => el.style.display = 'none', 2600);
     }
 
-    // Real Wallet Deep-Link + Address Binding (Not Fake Auto-Verify)
+    // TON Connect Modal Flow (Screenshot 1, 2, 3)
     function openTonModal() {
       playSound('start');
-      document.getElementById('walletConfirmBox').style.display = 'none';
-      document.getElementById('manualWalletInput').value = '';
+      document.getElementById('walletChooserView').style.display = 'block';
+      document.getElementById('requestAccessView').style.display = 'none';
+      document.getElementById('moreWalletsGrid').style.display = 'none';
       document.getElementById('tonModal').style.display = 'flex';
     }
 
@@ -1288,28 +1451,94 @@
       if (e.target.id === 'tonModal') hideTonModal();
     }
 
-    function launchWalletConnection(walletName, deepUrl) {
-      playSound('start');
-      pendingWalletName = walletName;
-      document.getElementById('selectedWalletTitle').innerText = walletName;
-      document.getElementById('walletConfirmBox').style.display = 'block';
-      window.open(deepUrl, '_blank');
-      showToast(`🔗 Opening ${walletName}... Paste address to link.`);
+    function toggleAllWallets() {
+      const g = document.getElementById('moreWalletsGrid');
+      g.style.display = g.style.display === 'none' ? 'grid' : 'none';
     }
 
-    function confirmWalletBinding() {
-      const addr = document.getElementById('manualWalletInput').value.trim();
+    function selectWalletApp(appName, appUrl) {
+      playSound('start');
+      chosenWalletApp = appName;
+      document.getElementById('reqWalletName').innerText = appName;
+      document.getElementById('walletChooserView').style.display = 'none';
+      document.getElementById('requestAccessView').style.display = 'block';
+      window.open(appUrl, '_blank');
+    }
+
+    function backToWalletChooser() {
+      document.getElementById('requestAccessView').style.display = 'none';
+      document.getElementById('walletChooserView').style.display = 'block';
+    }
+
+    function confirmWalletConnect() {
+      const addr = document.getElementById('walletAddressInput').value.trim();
       if (addr.length < 6) {
-        showToast('⚠️ Enter your valid wallet address after opening wallet!');
+        showToast('⚠️ Enter your wallet address to connect!');
         return;
       }
       playSound('claim');
-      state.wallet = pendingWalletName || 'Connected Wallet';
+      state.wallet = chosenWalletApp || 'Wallet';
       state.walletAddr = addr;
       hideTonModal();
       renderAll();
       saveData();
-      showToast(`✅ ${state.wallet} Linked!`);
+      showToast(`✅ Connected to ${state.wallet}!`);
+    }
+
+    // Swap Modal Flow
+    function openSwapModal() {
+      playSound('start');
+      calcSwapPreview();
+      renderSwapHistory();
+      document.getElementById('swapModal').style.display = 'flex';
+    }
+
+    function hideSwapModal() {
+      document.getElementById('swapModal').style.display = 'none';
+    }
+
+    function closeSwapModal(e) {
+      if (e.target.id === 'swapModal') hideSwapModal();
+    }
+
+    function calcSwapPreview() {
+      const pair = document.getElementById('swapFromPair').value;
+      const amt = parseFloat(document.getElementById('swapAmountInput').value) || 0;
+      let outText = '0.00';
+      if (pair === 'us_to_usdt') outText = `${(amt * US_USD).toFixed(2)} USDT`;
+      else if (pair === 'usdt_to_us') outText = `${(amt / US_USD).toFixed(2)} US`;
+      else if (pair === 'ton_to_us') outText = `${((amt * TON_USD) / US_USD).toFixed(2)} US`;
+      document.getElementById('swapReceiveText').innerText = outText;
+    }
+
+    function executeSwap() {
+      const pair = document.getElementById('swapFromPair').value;
+      const amt = parseFloat(document.getElementById('swapAmountInput').value);
+      if (isNaN(amt) || amt <= 0) {
+        showToast('⚠️ Enter a valid swap amount!');
+        return;
+      }
+      const receive = document.getElementById('swapReceiveText').innerText;
+      playSound('claim');
+      state.swaps.unshift({
+        summary: `${amt} (${pair.replace('_to_', ' → ').toUpperCase()}) ≈ ${receive}`,
+        time: new Date().toLocaleTimeString()
+      });
+      state.swaps = state.swaps.slice(0, 5);
+      saveData();
+      renderSwapHistory();
+      showToast(`⇄ Swap Recorded: ${receive}`);
+    }
+
+    function renderSwapHistory() {
+      const box = document.getElementById('swapHistoryBox');
+      if (!state.swaps.length) {
+        box.innerHTML = 'No swap records yet.';
+        return;
+      }
+      box.innerHTML = `<b style="color:#cbd5e1;">Recent Swaps:</b>` + state.swaps.map(s =>
+        `<div style="margin-top:4px;color:#94a3b8;">• ${s.summary} <span style="font-size:10px;">(${s.time})</span></div>`
+      ).join('');
     }
 
     function startMiningAction() {
@@ -1359,7 +1588,7 @@
     }
 
     function triggerWithdraw() {
-      if (!state.wallet) { openTonModal(); showToast('⚠️ Connect & verify your wallet first!'); return; }
+      if (!state.wallet) { openTonModal(); showToast('⚠️ Connect your wallet first!'); return; }
       showToast('🔒 Withdrawals unlock on 22 Feb 2027 after 90-day phase.');
     }
 
@@ -1370,7 +1599,6 @@
       showToast(state.sound ? '🔊 Sound ON' : '🔇 Sound Muted');
     }
 
-    // Tasks & Admin
     function renderTasks() {
       const box = document.getElementById('tasksList');
       box.innerHTML = state.tasks.map(t => {
@@ -1460,7 +1688,6 @@
       `).join('');
     }
 
-    // Miners Grid
     function selectRange(s, e, el) {
       rStart = s; rEnd = e; mPage = 1;
       document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
@@ -1532,7 +1759,6 @@
       state.level = lvl; renderMiners(); renderAll(); saveData(); showToast(`🎉 Unlocked Lvl ${lvl}!`);
     }
 
-    // Friends
     function renderFriends() {
       document.getElementById('refSucc').innerText = state.referrals.length;
       document.getElementById('refTot').innerText = state.referrals.length;
@@ -1551,7 +1777,6 @@
       renderFriends(); renderAll(); saveData(); showToast('✅ Team Pool Claimed!');
     }
 
-    // Live Price Prediction Chart (Up/Down Market Simulation around $0.20)
     function updatePredictionChart() {
       const last = priceSeries[priceSeries.length - 1];
       const delta = (Math.random() - 0.47) * 0.0045;
@@ -1580,7 +1805,6 @@
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Subtle grid lines
       ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
       ctx.lineWidth = 1;
       for (let g = 1; g < 4; g++) {
@@ -1595,7 +1819,6 @@
       const getX = (idx) => 16 + (idx / (priceSeries.length - 1)) * (w - 32);
       const getY = (val) => h - 18 - ((val - minV) / span) * (h - 36);
 
-      // Area fill
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, isUp ? 'rgba(34, 197, 94, 0.30)' : 'rgba(239, 68, 68, 0.28)');
       grad.addColorStop(1, 'rgba(6, 10, 18, 0.02)');
@@ -1608,7 +1831,6 @@
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // Prediction line
       ctx.beginPath();
       priceSeries.forEach((v, i) => {
         if (i === 0) ctx.moveTo(getX(i), getY(v));
@@ -1618,7 +1840,6 @@
       ctx.lineWidth = 2.5;
       ctx.stroke();
 
-      // Latest point dot
       const lastX = getX(priceSeries.length - 1);
       const lastY = getY(next);
       ctx.beginPath();
@@ -1658,7 +1879,7 @@
 
       if (state.wallet) {
         document.getElementById('stripConnectBtn').innerText = `✓ ${state.wallet.split(' ')[0]}`;
-        document.getElementById('profVerifyText').innerText = `Verified (${state.wallet}: ${state.walletAddr})`;
+        document.getElementById('profVerifyText').innerText = `Connected (${state.wallet}: ${state.walletAddr})`;
       }
 
       const btn = document.getElementById('startMineBtn');
